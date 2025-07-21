@@ -25,11 +25,21 @@ See credentials doc for username, password, and network setting to use.
 	* Expand filesystem
 Reboot after configuration
 
-Clone repository<br>
+Clone repository into home directory<br>
 `git clone https://github.com/communityvirtualpowerplant/demandResponse_UX_research`
 
-Create .env file if accessing either the Kasa or Airtable APIs.
-* In rpi_zero_sensor directory: `sudo nano /home/case/CASE_sensor_network/rpi_zero_sensor/.env`
+Clone the display repository into home directory<br>
+`git clone https://github.com/waveshareteam/e-Paper.git`
+
+Create a virtual environment in demandResponse_UX_research/ directory `python -m venv venv`
+
+Install python dependencies
+* `source venv/bin/activate`
+* `pip install -r requirements`
+Note that installing the waveshare and Jetson libraries will probably fail. Navigate to the epaper directory and use `pip install .`
+
+Copy the env-template file
+* `sudo cp env-template.txt .env`
 * Add the Airtable API key and Kasa user credentials, with the variable names shown below. See credentials doc for info.
 	* `AIRTABLE=**************`
 	* `KASA_UN=**************`
