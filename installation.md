@@ -28,8 +28,8 @@ Reboot after configuration
 Clone repository into home directory<br>
 `git clone https://github.com/communityvirtualpowerplant/demandResponse_UX_research`
 
-Clone the display repository into home directory<br>
-`git clone https://github.com/waveshareteam/e-Paper.git`
+<!-- Clone the display repository into home directory<br>
+`git clone https://github.com/waveshareteam/e-Paper.git` -->
 
 Create a virtual environment in demandResponse_UX_research/ directory `python -m venv venv`
 
@@ -37,6 +37,10 @@ Install python dependencies
 * `source venv/bin/activate`
 * `pip install -r requirements`
 Note that installing the waveshare and Jetson libraries will probably fail. Navigate to the epaper directory and use `pip install .`
+
+Run pigpiod as a service (this allows you to access gpio without sudo)
+`sudo systemctl enable pigpiod`<br>
+`sudo systemctl start pigpiod`
 
 Copy the env-template file
 * `sudo cp env-template.txt .env`

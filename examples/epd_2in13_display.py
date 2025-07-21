@@ -5,10 +5,10 @@
 
 import sys
 import os
-# picdir = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), 'pic')
+# picdir = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), 'assets')
 # libdir = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), 'lib')
-picdir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'pic')
-libdir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'assets')
+picdir = '/home/drux/demandResponse_UX_research/assets'
+libdir = '/home/drux/demandResponse_UX_research/lib'
 
 if os.path.exists(libdir):
     sys.path.append(libdir)
