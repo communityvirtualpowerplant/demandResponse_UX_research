@@ -43,12 +43,18 @@ Run pigpiod as a service (this allows you to access gpio without sudo)
 `sudo systemctl enable pigpiod`<br>
 `sudo systemctl start pigpiod`
 
+Edit hostname file, so the correct local IP can be retrieved easily
+* `sudo nano /etc/hosts`
+* comment out or delete this line: `127.0.1.1 HOSTNAME`
+
 Copy the env-template file
 * `sudo cp env-template.txt .env`
 * Add the Airtable API key and Kasa user credentials, with the variable names shown below. See credentials doc for info.
 	* `AIRTABLE=**************`
 	* `KASA_UN=**************`
 	* `KASA_PW=**************`
+
+Create data directory if not present
 
 ## Automate
 `chmod +x /home/drux/demandResponse_UX_research/services/plug_logger.py`

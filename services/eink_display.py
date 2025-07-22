@@ -13,7 +13,6 @@ import requests
 from datetime import datetime, timedelta
 from PIL import Image,ImageDraw,ImageFont
 import asyncio
-#from typing import Any, Dict, Optional, Tuple, List
 
 # picdir = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), 'assets')
 # libdir = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), 'lib')
@@ -36,12 +35,14 @@ screenWidth = epd.height
 screenHeight = epd.width
 print(f'W={screenWidth}, H={screenHeight}')
 
+# either should work, but make sure to comment out the line
+#'127.0.1.1 HOSTNAME' from /etc/hosts
 hostname = socket.gethostname()
-#IPAddr = socket.gethostbyname(hostname)
-IPAddr = socket.gethostbyname(socket.getfqdn())
+IPAddr = socket.gethostbyname(hostname)
+#IPAddr = socket.gethostbyname(socket.getfqdn())
 print(IPAddr)
 
-async def send_get_request(ip:str='localhost', port:int=5000,endpoint:str='',type:str='json',timeout=1) -> Any:
+async def send_get_request(ip:str='localhost', port:int=5000,endpoint:str='',type:str='json',timeout=1):
         """Send GET request to the IP."""
         try:
             response = requests.get(f"http://{ip}:{port}/{endpoint}", timeout=timeout)
