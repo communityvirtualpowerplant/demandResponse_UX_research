@@ -1,0 +1,15 @@
+[Unit]
+Description= Bluetti power station data logger
+After=network.target
+Wants=network.target
+
+[Service]
+ExecStart=/home/drux/demandResponse_UX_research/venv/bin/python /home/drux/demandResponse_UX_research/services/bluetti_logger.py
+WorkingDirectory=/home/drux
+StandardOutput=inherit
+StandardError=inherit
+Restart=always
+User=drux
+
+[Install]
+WantedBy=multi-user.target

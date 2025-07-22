@@ -1,0 +1,20 @@
+[Unit]
+Description= e-ink display
+After=network.target
+Wants=network.target
+
+[Service]
+ExecStart=/home/drux/demandResponse_UX_research/venv/bin/python /home/drux/demandResponse_UX_research/services/eink_display.py
+WorkingDirectory=/home/drux
+Restart=always
+RestartSec=5
+User=drux
+
+# Hard memory limit (50MB)
+MemoryMax=50M
+
+# Soft CPU limit (40% of 1 core)
+CPUQuota=40%
+
+[Install]
+WantedBy=multi-user.target

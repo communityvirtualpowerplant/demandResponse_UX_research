@@ -92,7 +92,7 @@ async def main(SPS: SmartPowerStation) -> None:
                         "powerstation_outputMode": result['output_mode'],
                         "powerstation_deviceType": result['device_type']}
 
-        fileName = f'{dataDirectory}powerstation_ {str(datetime.date.today())}.csv'
+        fileName = f'{dataDirectory}powerstation_{str(datetime.date.today())}.csv'
 
         await writeData(fileName, pd.DataFrame([tempResults]))
 
