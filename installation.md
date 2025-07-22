@@ -31,6 +31,7 @@ Clone repository into home directory<br>
 <!-- Clone the display repository into home directory<br>
 `git clone https://github.com/waveshareteam/e-Paper.git` -->
 
+Make the data directory
 Create a virtual environment in demandResponse_UX_research/ directory `python -m venv venv`
 
 Install python dependencies
@@ -48,6 +49,15 @@ Copy the env-template file
 	* `AIRTABLE=**************`
 	* `KASA_UN=**************`
 	* `KASA_PW=**************`
+
+## Automate
+`chmod +x /home/drux/demandResponse_UX_research/services/plug_logger.py`
+`cp /home/drux/demandResponse_UX_research/services/plug_logger.service /etc/systemd/system/plug_logger.service`
+
+`systemctl daemon-reexec`
+`systemctl daemon-reload`
+`systemctl enable sht31d_logger.service`
+`systemctl start sht31d_logger.service`
 
 # Smart Plug Installation
 
