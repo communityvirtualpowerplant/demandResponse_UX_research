@@ -4,6 +4,9 @@ import subprocess
 import glob
 import pandas as pd
 from typing import Any, Dict, Optional, List
+import logging
+
+logging.basicConfig(format='%(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',level=logging.DEBUG)
 
 class API():
     def __init__(self,dd:str):
@@ -74,15 +77,17 @@ class API():
 
         return warnings
 
-    def check_file_size_uniformity(self, folder_path:str, tolerance_ratio:float=0.2)->Dict:
+    # startDate is used if there are test files that should be excluded
+    def check_file_size_uniformity(self, folder_path:str, startDate=None,tolerance_ratio:float=0.2)->Dict:
         interval_minutes=60*60*24
         file_data=[]
         for f in os.listdir(folder_path):
             try:
                 full_path = os.path.join(folder_path, f)
                 if os.path.isfile(full_path):
-                    ts = self.parse_timestamp(f,startDate)
-                    if ts:
+                    if startDate != None:
+                        ts = self.parse_timestamp(f,startDate)
+                    if (ts) | startDate == None:
                         size = os.path.getsize(full_path)
                         file_data.append((f, ts, size))
             except Exception as e:
