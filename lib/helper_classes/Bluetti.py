@@ -61,7 +61,8 @@ class Bluetti():
                     t.cancel()
                     await asyncio.gather(t, return_exceptions=True)
                     #raise  # or handle however you want
-                    return myData
+                    if tries == 2:
+                        return myData
 
             # Poll device
             for command in device.logging_commands:
