@@ -8,13 +8,15 @@ __pycache__/*
 *.key
 *.csr
 
+
+data/*
+!data/README.md
+
 venv/*
 
 .env
 
 .github/
-
-# *.ipynb
 
 .ipynb_checkpoints/
 *-checkpoint.py

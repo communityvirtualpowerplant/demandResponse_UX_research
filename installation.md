@@ -49,7 +49,6 @@ Copy the env-template file
 	* `KASA_UN=**************`
 	* `KASA_PW=**************`
 
-
 # Smart Plug Installation
 
 1) Connect device to Wifi
@@ -61,4 +60,4 @@ Copy the env-template file
 4) Update device
 5) Add device to Participant# group
 6) Set default state to on.
-7) Test by running `python utilities/collectPlugs.py`
+7) Test by running `python examples/kasa_smart_plugs.py`. All 3 devices should show up.
