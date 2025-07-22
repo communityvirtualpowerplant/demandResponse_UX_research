@@ -41,9 +41,6 @@ logging.basicConfig(format='%(levelname)-8s [%(filename)s:%(lineno)d] %(message)
 freq = 60 * 5
 # configFile = '../config/config.json'
 
-#changed based on hardware
-#bleAdapter = "hci0"
-
 # ============================
 # Utilities
 # ============================
@@ -62,16 +59,19 @@ async def main(SPS: SmartPowerStation) -> None:
         SPS.reset_bluetooth()
 
         # add wake up function to this
-        try:
-            devices = await scan_devices(scan_duration)
-            logging.debug(devices)
-        except Exception as e:
-            logging.error(f"Error during scanning: {e}")
-            return
+        for tries in range(3)
+            try:
+                devices = await scan_devices(scan_duration)
+                logging.debug(devices)
+                break
+            except Exception as e:
+                logging.error(f"Error during scanning: {e}")
+                return
 
-        if not devices:
-            logging.error("No devices found. Exiting")
-            sys.exit(0)
+            if not devices:
+                logging.error("No devices found.")
+                #sys.exit(0)
+            await asyncio.sleep(1+tries)
 
         #there should only be 1 device, so change this?
         for d in devices:
