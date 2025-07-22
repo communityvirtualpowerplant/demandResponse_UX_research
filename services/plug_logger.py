@@ -10,7 +10,7 @@ import logging
 import pandas as pd
 
 # ------------------ Config ------------------ #
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(format='%(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',level=logging.DEBUG)
 
 repoRoot = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 logging.debug(repoRoot)
@@ -29,6 +29,8 @@ pw = os.getenv('KASA_PW')
 if not un or not pw:
     logger.error("Missing KASA_UN or KASA_PW in environment.")
     raise EnvironmentError("Missing Kasa credentials")
+
+FREQ_SECONDS = 60 * 5
 
 # discover Kasa devices and collect power data
 async def discoverAll():

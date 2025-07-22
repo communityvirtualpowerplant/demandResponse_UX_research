@@ -57,10 +57,10 @@ class BluetoothClient:
                     await self._connect()
                     #async.run(self._connect())
                 elif self.state == ClientState.CONNECTED:
-                    if not self.name:
-                        await self._get_name()
-                    else:
-                        await self._start_listening()
+                    # if not self.name:
+                    #     await self._get_name()
+                    # else:
+                    await self._start_listening()
                 elif self.state == ClientState.READY:
                     await self._perform_command()
                 elif self.state == ClientState.DISCONNECTING:
