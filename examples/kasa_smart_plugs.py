@@ -11,16 +11,17 @@ load_dotenv()
 un = os.getenv('KASA_UN')
 pw = os.getenv('KASA_PW')
 
-# async def discoverSingle():
-#     #discover a single specific device
-#     device = await Discover.discover_single(
-#         "127.0.0.1",
-#         credentials=Credentials(un, pw),
-#         discovery_timeout=10
-#     )
+# flip state of outlet
+async def flipState(dev):
 
-#     #await device.update()  # Request the update
-#     print(device.alias)  # Print out the alias
+    await dev.update()
+
+    if dev.is_on:
+        print(dev.alias + ' is on. Turning off now...')
+        await dev.turn_off()
+    else:
+        print(dev.alias + ' is off. Turning on now...')
+        await dev.turn_on()
 
 async def discoverAll():
     #discover all available devices
@@ -29,7 +30,6 @@ async def discoverAll():
         discovery_timeout=10
     )
 
-
     print(len(devices))
 
     for ip, device in devices.items():
@@ -37,12 +37,11 @@ async def discoverAll():
         print(f'{device.alias} ({device.mac}) at {device.host}')
         print(f'{device.modules}')
 
+        flipState(device)
+
         energy_module = device.modules.get("Energy")
         print(f'Power: {energy_module.current_consumption}W') #this library is really dumb - they use the word current to describe live power in Watts, NOT amperage
 
-        # print("⚡ Energy Monitoring Data:")
-        # for key, value in vars(energy_module).items():
-        #     print(f"  {key}: {value}")
         await device.disconnect()
         print('')
 

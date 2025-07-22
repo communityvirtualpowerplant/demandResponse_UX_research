@@ -43,11 +43,11 @@ async def discoverAll():
 
     dataDF = pd.DataFrame(data={
         "datetime" : [datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")],
-        "battery-in-W": "",
-        "battery-out-W": "",
+        "batteryin-W": "",
+        "batteryout-W": "",
         "ac-W": ""})
 
-    logging.debug(len(devices))
+    #logging.debug(len(devices))
 
     for ip, device in devices.items():
         try:
@@ -55,8 +55,10 @@ async def discoverAll():
 
             energy_module = device.modules.get("Energy")
 
-            dataDF[f'participant{participantNumber}-in-_W']=energy_module.current_consumption
-            logging.debug(energy_module.current_consumption)
+            splitAlias = device.alias.split('-')
+            dataDF[f'{splitAlias[0]}-W']=energy_module.current_consumption
+
+            #logging.debug(energy_module.current_consumption)
             await device.disconnect()
         except Exception as e:
             logging.error(e)
@@ -71,7 +73,7 @@ async def main():
         logging.debug(power_data)
 
         # create a new file daily to save data or append if the file already exists
-        fileName = '/home/drux/data/plugs' + '_'+str(datetime.date.today())+'.csv'
+        fileName = f'/home/drux/data/plugs_{str(datetime.date.today())}.csv'
 
         try:
             with open(fileName) as csvfile:
