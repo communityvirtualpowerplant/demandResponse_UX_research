@@ -22,7 +22,7 @@ class API():
         files = sorted(glob.glob(file_pattern))
         fileName = files[-1]
 
-        fullFilePath = os.path.join(filePath, fileName) #os.path.join(fileName)
+        fullFilePath = os.path.join(d, fileName) #os.path.join(fileName)
         df = pd.read_csv(fullFilePath)  # Update path as needed
 
         return [df, fileName]

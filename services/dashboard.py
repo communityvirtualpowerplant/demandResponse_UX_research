@@ -47,7 +47,7 @@ def index():
 
 @app.route("/today", methods=['GET'])
 def today():
-    file_pattern = os.path.join(filePath, f"*.csv")
+    file_pattern = os.path.join(api.dataPath, f"*.csv")
     files = sorted(glob.glob(file_pattern))
     if len(files)>0:
         fileName = files[-1]
