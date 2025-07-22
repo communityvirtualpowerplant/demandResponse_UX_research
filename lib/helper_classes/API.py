@@ -16,9 +16,9 @@ class API():
         self.static_folder='../frontend/static'
         self.template_folder='../frontend/templates'
 
-    def getMostRecent(d,s):
+    def getMostRecent(self,d,s):
 
-        file_pattern = os.path.join(f'{d}/{s}', f"*.csv")
+        file_pattern = os.path.join(f'{d}', f"{s}*.csv")
         files = sorted(glob.glob(file_pattern))
         fileName = files[-1]
 
