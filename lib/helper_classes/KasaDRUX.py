@@ -20,7 +20,7 @@ class KasaDRUX():
 
     async def getData(self):
 
-        devices = self.discoverAll()
+        devices = await self.discoverAll()
 
         dataDF = pd.DataFrame(data={
             "datetime" : [datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")],
@@ -76,7 +76,7 @@ class KasaDRUX():
         return s
 
     async def setEventState(self):
-        devices = self.discoverAll()
+        devices = await self.discoverAll()
 
         for ip, device in devices.items():
             try:
@@ -100,7 +100,7 @@ class KasaDRUX():
 
         # turn all relays on
         async def setNormalState(self,dev):
-            devices = self.discoverAll()
+            devices = await self.discoverAll()
             for ip, device in devices.items():
                 try:
                     #await device.update()
