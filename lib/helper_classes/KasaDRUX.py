@@ -101,13 +101,13 @@ class KasaDRUX():
             except Exception as e:
                 logging.error(e)
 
-        # turn all relays on
-        async def setNormalState(self,dev):
-            devices = await self.discoverAll()
-            for ip, device in devices.items():
-                try:
-                    #await device.update()
-                    await setState(device,True)
-                    await device.disconnect()
-                except Exception as e:
-                    logging.error(e)
+    # turn all relays on
+    async def setNormalState(self):
+        devices = await self.discoverAll()
+        for ip, device in devices.items():
+            try:
+                #await device.update()
+                await setState(device,True)
+                await device.disconnect()
+            except Exception as e:
+                logging.error(e)
