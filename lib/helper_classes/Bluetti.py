@@ -61,6 +61,7 @@ class Bluetti():
                     t.cancel()
                     await asyncio.gather(t, return_exceptions=True)
                     #raise  # or handle however you want
+                    await asyncio.sleep(1+tries)
                     if tries == 2:
                         return myData
 
