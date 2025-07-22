@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Smart Power Station</title>
+    <meta http-equiv="refresh" content="60" />
+    <link rel="stylesheet" href="/static/css/sps.css">
+    <!-- <style>
+        body { font-family: sans-serif; margin: 2em;}
+        .data-table{ width:100%; }
+        table { border-collapse: collapse; table-layout:fixed; width: 100%; font-size:9px;}
+        td, th { padding: 0.5em; border: 1px solid #ccc; word-break: break-all;}
+    </style> -->
+</head>
+<body>
+    <nav>
+      <div class="left-links">
+        <a href="/">home</a>
+        <a href="/today">raw data</a>
+      </div>
+      <div class="right-content">
+        <a href="mailto:alex@alexnathanson.com">alex@alexnathanson.com</a>
+      </div>
+
+    </nav>
+
+    <div class='raw-data'>
+
+        <h1>Smart Power Station</h1>
+        <p>
+            Download CSV file with /api/data?file=FILENAME_WITH_NO_SUFFIX<br>
+            View file list with /api/files
+        </p>
+        <table>
+            <tr>
+            {% for c in cols %}
+                <th>{{ c }}</th>
+            {% endfor %}
+            </tr>
+            {% for row in data %}
+            <tr>
+                {% for d in row %}
+                    <td>{{ d }}</td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <p>Auto-refreshes every 60 seconds</p>
+</body>
+</html>

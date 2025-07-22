@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <title>Aggregation Viewer</title>
+    <link rel="stylesheet" href="/static/css/sps.css">
+
+    <link rel="icon" href="./favicon.ico" type="image/x-icon">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-3.0.1.min.js" charset="utf-8"></script>
+  </head>
+  <body>
+    <nav>
+      <div class="left-links">
+        <a href="/">home</a>
+        <a href="/today">raw data</a>
+      </div>
+      <div class="right-content">
+        <a href="mailto:alex@alexnathanson.com">alex@alexnathanson.com</a>
+      </div>
+
+      <!-- <a href="api"></a>-->
+    </nav>
+
+    <main>
+        
+      <p>
+        A Community Virtual Power Plant (CVPP) merges the principles of community energy with virtual power plant (VPP) systems. This website serves as platform for research in developing this concept and applying it in an urban US context. It draws on lessons learned from community solar, electricity co-ops, and community energy systems in the US; balcony solar in Germany; and adhoc electricity networks in Pakistan (among other initiatives) to consider how this may work.
+      </p>
+      <div id="status">
+        Mode: <span id='mode'></span> | Position: <span id='position'></span> | Event Status: <span id='eventStatus'></span>
+      </div>
+
+      <div class="image-row">
+        <div class="image-element" id="statusCanvasContainer"></div>
+        <div class="image-element" id="controlLogicContainer">
+          <img id="controlImage" src="static/images/smartPowerStation_May1_2025-Controls.png">
+          <div>
+            <a href="#" data-img='/static/images/smartPowerStation_May1_2025-Controls.png'>Normal Logic</a> | 
+            <a href="#" data-img='/static/images/smartPowerStation_May1_2025-Controls_Event.png'>Event Logic</a>
+          </div>
+        </div>
+      </div>
+
+
+      <<div class = plot-container>
+        <div id="plotPower"></div>
+        <div id="plotEnergy"></div>
+      </div>
+
+
+<!--         <h3>Demand Response</h3>
+      event upcoming
+      event ongoing/ time remaining
+      commitment % met
+      amount flexed
+      baseline
+      daily specs -->
+
+    </main>
+
+    <script src="/static/js/sps_animation.js"></script>
+    <script src="/static/js/control_info.js"></script>
+    <script src="/static/js/plot_power.js"></script>
+  </body>
+</html>

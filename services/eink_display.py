@@ -121,7 +121,7 @@ def displayIP(font24):
     ip_draw.rectangle((50, 40, 220, 105), fill = 255)
     ip_draw.text((50, 40), f'{hostname}\n{IPAddr}', font = font24, fill = 0)
     epd.displayPartial(epd.getbuffer(ip_image))
-    time.sleep(1)
+    time.sleep(15)
 
 def main():
 
