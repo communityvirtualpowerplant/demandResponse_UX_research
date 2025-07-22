@@ -13,8 +13,6 @@ if os.path.exists(libdir):
 
 from KasaDRUX import KasaDRUX
 
-
-
 load_dotenv()
 un = os.getenv('KASA_UN')
 pw = os.getenv('KASA_PW')

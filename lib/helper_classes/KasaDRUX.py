@@ -64,7 +64,7 @@ class KasaDRUX():
     # flip state of outlet
     async def setState(self, dev,toState):
 
-        #await dev.update()
+        await dev.update()
 
         if toState:
             await dev.turn_on()
@@ -85,16 +85,16 @@ class KasaDRUX():
 
         for ip, device in devices.items():
             try:
-                #await device.update()
+                await device.update()
 
                 # turn AC off
                 if 'ac' in device.alias:
                     await self.setState(device,False)
                 # turn battery input off
-                elif 'batteryin' in dev.alias:
+                elif 'batteryin' in device.alias:
                     await self.setState(device,False)
                 # turn battery output on
-                elif 'batteryout' in dev.alias:
+                elif 'batteryout' in device.alias:
                     await self.setState(device,True)
 
                 await device.disconnect()
@@ -105,9 +105,11 @@ class KasaDRUX():
     async def setNormalState(self):
         devices = await self.discoverAll()
         for ip, device in devices.items():
+            await device.update()
+
             try:
                 #await device.update()
-                await setState(device,True)
+                await self.setState(device,True)
                 await device.disconnect()
             except Exception as e:
                 logging.error(e)
