@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, send_file, abort, jsonify
 from flask_cors import CORS
 import csv
-#import datetime
+import datetime
 import os
 import sys
 import glob
@@ -77,7 +77,7 @@ def get_csv_for_date():
 
     if file == 'now':
         try:
-            df = API.getMostRecent(filePath,filePrefix)[0]
+            df = api.getMostRecent(filePath,filePrefix)[0]
             last_row = df.iloc[-1].to_dict()
             return jsonify(last_row)
         except FileNotFoundError:
@@ -141,17 +141,17 @@ def health_check():
     dt = datetime.datetime.now()
 
     try:
-        cpu_tempC = float(API.run_command("vcgencmd measure_temp").replace('temp=','').replace("\'C",""))
+        cpu_tempC = float(api.run_command("vcgencmd measure_temp").replace('temp=','').replace("\'C",""))
     except Exception as e:
         cpu_tempC = f"error: {str(e)}"
 
     try:
-        uptime = API.run_command("uptime").split(',')[0]
+        uptime = api.run_command("uptime").split(',')[0]
     except Exception as e:
         uptime = f"error: {str(e)}"
 
     try:
-        availMem = int(API.run_command("free -h").split('\n')[1].split()[-1].replace('Mi',''))
+        availMem = int(api.run_command("free -h").split('\n')[1].split()[-1].replace('Mi',''))
         memStatus = 'OK'
         if availMem < 50:
             memStatus = 'VERY LOW'
@@ -162,12 +162,12 @@ def health_check():
         memoryUsage = f"error: {str(e)}"
 
     try:
-        diskUsage = API.parse_disk_usage()
+        diskUsage = api.parse_disk_usage()
     except Exception as e:
         diskUsage = f"error: {str(e)}"
 
     try:
-        throttled = API.run_command("vcgencmd get_throttled")
+        throttled = api.run_command("vcgencmd get_throttled")
         if "0x0" in throttled:
             throttled = "OK"
         else:
@@ -177,12 +177,12 @@ def health_check():
         powerIssues = f"error: {str(e)}"
 
     try:
-        sdCardErrors = API.check_mmc_errors()# run_command("dmesg | grep mmc")
+        sdCardErrors = api.check_mmc_errors()# run_command("dmesg | grep mmc")
     except Exception as e:
         sdCardErrors = f"error: {str(e)}"
 
     try:
-        fileStatus = API.check_file_size_uniformity("/home/case/data")
+        fileStatus = api.check_file_size_uniformity(api.dataPath)
     except Exception as e:
         fileStatus = f"error: {str(e)}"
 
