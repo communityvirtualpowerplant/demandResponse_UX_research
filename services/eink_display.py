@@ -5,6 +5,15 @@
 
 import sys
 import os
+import logging
+import traceback
+import socket
+import time
+import requests
+from datetime import datetime, timedelta
+from PIL import Image,ImageDraw,ImageFont
+import asyncio
+
 # picdir = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), 'assets')
 # libdir = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), 'lib')
 picdir = '/home/drux/demandResponse_UX_research/assets'
@@ -13,13 +22,7 @@ libdir = '/home/drux/demandResponse_UX_research/lib'
 if os.path.exists(libdir):
     sys.path.append(libdir)
 
-import logging
 from waveshare_epd import epd2in13_V4
-from datetime import datetime, timedelta
-from PIL import Image,ImageDraw,ImageFont
-import traceback
-import socket
-import time
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -36,6 +39,21 @@ hostname = socket.gethostname()
 #IPAddr = socket.gethostbyname(hostname)
 IPAddr = socket.gethostbyname(socket.getfqdn())
 print(IPAddr)
+
+async def send_get_request(self, ip:str='localhost', port:int=5000,endpoint:str,type:str,timeout=1) -> Any:
+        """Send GET request to the IP."""
+        try:
+            response = requests.get(f"http://{ip}:{port}/{endpoint}", timeout=timeout)
+            if type == 'json':
+                return response.json()
+            elif type == 'text':
+                return response.text
+            else:
+                return response.status_code
+        except requests.Timeout as e:
+            return e
+        except Exception as e:
+            return e
 
 def upcomingScreen(font24):
     eTime = '4pm'
@@ -123,7 +141,7 @@ def displayIP(font24):
     epd.displayPartial(epd.getbuffer(ip_image))
     time.sleep(15)
 
-def main():
+async def main():
 
     logging.info("init and Clear")
     epd.init()
@@ -134,6 +152,8 @@ def main():
     font24 = ImageFont.truetype(os.path.join(picdir, 'Font.ttc'), 24)
 
     displayIP(font24)
+
+    logging.debug(await send_get_request(endpoint='api/data?date=now&source=plugs'))
 
     screenState = 0
 
@@ -164,7 +184,8 @@ def main():
                 break
 
 try:
-    main()
+    #main()
+    asyncio.run(main())
 # except KeyboardInterrupt:
 #     epd.init()
 #     epd.Clear(0xFF)

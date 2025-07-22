@@ -10,7 +10,7 @@ ExecStart=/home/drux/demandResponse_UX_research/venv/bin/python /home/drux/deman
 WorkingDirectory=/home/drux
 Restart=always
 RestartSec=5
-User=dux
+User=drux
 
 # Hard memory limit (50MB)
 MemoryMax=50M

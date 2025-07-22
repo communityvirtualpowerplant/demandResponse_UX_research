@@ -111,7 +111,7 @@ def get_csv_for_date():
             return jsonify({'error': str(e)}), 500
     else:
         try:
-            fileName = f'{file}.csv'
+            fileName = f'{filePrefix}_{file}.csv'
 
             file_pattern = os.path.join(api.dataPath, f"{filePrefix}*.csv")
             files = sorted(glob.glob(file_pattern))
