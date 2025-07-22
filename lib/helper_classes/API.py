@@ -30,6 +30,28 @@ class API():
         except Exception as e:
             return f"Exception: {str(e)}"
 
+
+    def parse_disk_usage():
+        stat = os.statvfs("/")
+
+        total = stat.f_frsize * stat.f_blocks      # Total space
+        free = stat.f_frsize * stat.f_bavail       # Available space
+        used = total - free
+
+        total_mb = total // (1024 * 1024)
+        used_mb = used // (1024 * 1024)
+        free_mb = free // (1024 * 1024)
+        percent_used = round((used / total) * 100, 1)
+
+        diskDict =  {
+            "total_mb": total_mb,
+            "used_mb": used_mb,
+            "free_mb": free_mb,
+            "percent_used": percent_used
+        }
+
+        return diskDict
+
     #parse timestamp
     def parse_timestamp(self, filename, startDate:str, time_format:str="%Y-%m-%d",):
         fileDate = filename.split("_")[-1].replace(".csv","")
