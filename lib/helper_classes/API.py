@@ -31,7 +31,7 @@ class API():
             return f"Exception: {str(e)}"
 
 
-    def parse_disk_usage():
+    def parse_disk_usage(self):
         stat = os.statvfs("/")
 
         total = stat.f_frsize * stat.f_blocks      # Total space
