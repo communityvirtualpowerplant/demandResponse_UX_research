@@ -64,6 +64,13 @@ def today():
 def discover():
     return jsonify({'name': config['location']}), 200
 
+# upcoming and ongoing event info
+@app.route("/api/event", methods=['GET'])
+def getEventInfo():
+    return jsonify({'ongoing': 0,
+        'upcoming': 0,
+        'availableWh':0}), 200
+
 @app.route("/api/data", methods=['GET'])
 def get_csv_for_date():
     #options: 'plugs' or 'powerstation'
@@ -77,7 +84,7 @@ def get_csv_for_date():
 
     if file == 'now':
         try:
-            df = api.getMostRecent(filePath,filePrefix)[0]
+            df = api.getMostRecent(api.dataPath,filePrefix)[0]
             last_row = df.iloc[-1].to_dict()
             return jsonify(last_row)
         except FileNotFoundError:
@@ -87,7 +94,7 @@ def get_csv_for_date():
 
     elif file == 'recent':
         try:
-            file_pattern = os.path.join(filePath, f"*.csv")
+            file_pattern = os.path.join(api.dataPath, f"*.csv")
             files = sorted(glob.glob(file_pattern))
             fileName = files[-1]
             dn = fileName.split('/')[-1]
@@ -101,7 +108,7 @@ def get_csv_for_date():
         try:
             fileName = file+'.csv'
 
-            file_pattern = os.path.join(filePath, f"{filePrefix}*.csv")
+            file_pattern = os.path.join(api.dataPath, f"{filePrefix}*.csv")
             files = sorted(glob.glob(file_pattern))
 
             for f in files:
@@ -112,13 +119,6 @@ def get_csv_for_date():
         except Exception as e:
             return jsonify({'error': str(e)}), 500
 
-# upcoming and ongoing event info
-@app.route("/api/event", methods=['GET'])
-def getEventInfo():
-    return jsonify({'ongoing': 0,
-        'upcoming': 0,
-        'availableWh':0}), 200
-
 @app.route("/api/files", methods=['GET'])
 def list_csv_files():
     filePrefix = request.args.get("source")
@@ -127,7 +127,7 @@ def list_csv_files():
         return "Please provide source - either plugs or powerstation", 400
 
     # Get all CSV files in the data/ directory
-    file_pattern = os.path.join(filePath, f"{filePrefix}*.csv")
+    file_pattern = os.path.join(api.dataPath, f"{filePrefix}*.csv")
     files = sorted(glob.glob(file_pattern))
 
     # Return just the filenames (without full paths)
