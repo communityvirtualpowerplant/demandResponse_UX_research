@@ -1,6 +1,9 @@
 import asyncio
 from kasa import Discover, Credentials
 import pandas as pd
+import logging
+
+logging.basicConfig(format='%(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',level=logging.DEBUG)
 
 class KasaDRUX():
     def __init__(self,un,pw):
@@ -61,7 +64,7 @@ class KasaDRUX():
     # flip state of outlet
     async def setState(self, dev,toState):
 
-        await dev.update()
+        #await dev.update()
 
         if toState:
             await dev.turn_on()
@@ -71,6 +74,8 @@ class KasaDRUX():
         logging.debug(f'{dev.alias} is {toState}')
 
     async def getState(self,dev):
+        await dev.update()
+
         s = dev.is_on
         logging.debug(f'{dev.alias} is {s}')
         return s
@@ -80,19 +85,17 @@ class KasaDRUX():
 
         for ip, device in devices.items():
             try:
-                await device.update()
-
-                setState(device,True)
+                #await device.update()
 
                 # turn AC off
                 if 'ac' in device.alias:
-                    setState(device,False)
+                    await self.setState(device,False)
                 # turn battery input off
                 elif 'batteryin' in dev.alias:
-                    setState(device,False)
+                    await self.setState(device,False)
                 # turn battery output on
                 elif 'batteryout' in dev.alias:
-                    setState(device,True)
+                    await self.setState(device,True)
 
                 await device.disconnect()
             except Exception as e:
@@ -104,7 +107,7 @@ class KasaDRUX():
             for ip, device in devices.items():
                 try:
                     #await device.update()
-                    setState(device,True)
+                    await setState(device,True)
                     await device.disconnect()
                 except Exception as e:
                     logging.error(e)
