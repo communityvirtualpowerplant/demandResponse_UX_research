@@ -1,0 +1,15 @@
+{"plugs":
+	{"ac-in":true,
+	"battery-in":true,
+	"battery-out":true},
+"battery":
+	{"percentage":0},
+"events":
+	{"ongoing":false,
+	"upcoming":false,
+	"crsp_time":14,
+	"crsp_baseline":0,
+	"crsp_avgPerf":0,
+	"dlrp_baseline":0,
+	"dlrp_avgPerf":0}
+}

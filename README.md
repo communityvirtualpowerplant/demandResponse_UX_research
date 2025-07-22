@@ -1,5 +1,7 @@
 # demandResponse_UX_research
 
+This is a demand response testing platform.
+
 ## Installation
 
 Raspberry Pi Zeros and Smart Plugs must be on household's wifi network.

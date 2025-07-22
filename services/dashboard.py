@@ -66,7 +66,7 @@ def today():
 
 # untested!
 # upcoming and ongoing event info
-@app.route("/api/event", methods=['GET'])
+@app.route("/api/state", methods=['GET'])
 def getEventInfo():
     return jsonify({'ongoing': 0,
         'upcoming': 0,

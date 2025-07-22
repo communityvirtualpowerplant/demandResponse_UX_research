@@ -1,6 +1,7 @@
 import time
 import csv
 import os
+import sys
 import datetime
 import json
 from dotenv import load_dotenv
@@ -8,6 +9,11 @@ import asyncio
 from kasa import Discover, Credentials
 import logging
 import pandas as pd
+
+libdir = '/home/drux/demandResponse_UX_research/lib/helper_classes'
+if os.path.exists(libdir):
+    sys.path.append(libdir)
+from KasaDRUX import KasaDRUX
 
 # ------------------ Config ------------------ #
 logging.basicConfig(format='%(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',level=logging.DEBUG)
@@ -30,45 +36,47 @@ if not un or not pw:
     logger.error("Missing KASA_UN or KASA_PW in environment.")
     raise EnvironmentError("Missing Kasa credentials")
 
+kD = KasaDRUX(un,pw)
+
 freq = 60 * 5
 
-# discover Kasa devices and collect power data
-async def discoverAll():
+# # discover Kasa devices and collect power data
+# async def discoverAll():
 
-    #discover all available devices
-    devices = await Discover.discover(
-        credentials=Credentials(un, pw),
-        discovery_timeout=10
-        )
+#     #discover all available devices
+#     devices = await Discover.discover(
+#         credentials=Credentials(un, pw),
+#         discovery_timeout=10
+#         )
 
-    dataDF = pd.DataFrame(data={
-        "datetime" : [datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")],
-        "batteryin-W": "",
-        "batteryout-W": "",
-        "ac-W": ""})
+#     dataDF = pd.DataFrame(data={
+#         "datetime" : [datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")],
+#         "batteryin-W": "",
+#         "batteryout-W": "",
+#         "ac-W": ""})
 
-    #logging.debug(len(devices))
+#     #logging.debug(len(devices))
 
-    for ip, device in devices.items():
-        try:
-            await device.update()
+#     for ip, device in devices.items():
+#         try:
+#             await device.update()
 
-            energy_module = device.modules.get("Energy")
+#             energy_module = device.modules.get("Energy")
 
-            splitAlias = device.alias.split('-')
-            dataDF[f'{splitAlias[1]}-W']=energy_module.current_consumption
+#             splitAlias = device.alias.split('-')
+#             dataDF[f'{splitAlias[1]}-W']=energy_module.current_consumption
 
-            #logging.debug(energy_module.current_consumption)
-            await device.disconnect()
-        except Exception as e:
-            logging.error(e)
+#             #logging.debug(energy_module.current_consumption)
+#             await device.disconnect()
+#         except Exception as e:
+#             logging.error(e)
 
-    return dataDF
+#     return dataDF
 
 async def main():
 
     while True:
-        power_data = await discoverAll()
+        power_data = await kD.getData()
 
         logging.debug(power_data)
 

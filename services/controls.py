@@ -3,11 +3,11 @@ import asyncio
 import os
 import sys
 import logging
+from datetime import datetime, timedelta
 
 logging.basicConfig(format='%(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',level=logging.DEBUG)
 
 libdir = '/home/drux/demandResponse_UX_research/lib/helper_classes'
-
 if os.path.exists(libdir):
     sys.path.append(libdir)
 
@@ -22,20 +22,34 @@ if not un or not pw:
 kD = KasaDRUX(un,pw)
 
 async def main():
-    await kD.setEventState()
+    while True:
+        # get event status from Airtable
 
-    await asyncio.sleep(30)
+        # listen for button to pause for 1 hour
+        if buttonPressed:
+            buttonTime = datetime.now()
 
-    await kD.setNormalState()
+        pause = False
+        if datetime.now() - buttonTime < 1:
+            pause = True
+        # respond to event status as needed
+        if event and not pause:
+            await kD.setEventState()
+        elif eventUpcoming:
+            #if true, battery can discharge during prep state (add indicator for battery ok to use)
+            await kD.setPrepState(True)
+        elif pause:
+            await kD.setPrepState(True) #should it be in normal state when paused?
+        else:
+            await kD.setNormalState()
 
-# get event status
+        # periodically (once a day?) estimate baseline
+            # read AC power data for required period
+            # filter to event window
+            # get energy w/ trapazoid method
+            # divide by 4 hours
 
-# listen for button
-
-# get baseline
-
-# predict event
-
+        await asyncio.sleep(5*60)
 
 if __name__ == "__main__":
     try:

@@ -156,13 +156,16 @@ async def main():
 
     displayIP(font24)
 
-    power = await send_get_request(endpoint='api/data?date=now&source=plugs')
-    battery = await send_get_request(endpoint='api/data?date=now&source=powerstation')
 
-    screenState = 0
+
 
     # full refresh loop (roughly every 180 minutes)
     while True:
+
+        power = await send_get_request(endpoint='api/data?date=now&source=plugs')
+        battery = await send_get_request(endpoint='api/data?date=now&source=powerstation')
+
+        screenState = 0
 
         epd.init()
         epd.Clear(0xFF)
