@@ -30,7 +30,7 @@ if not un or not pw:
     logger.error("Missing KASA_UN or KASA_PW in environment.")
     raise EnvironmentError("Missing Kasa credentials")
 
-FREQ_SECONDS = 60 * 5
+freq = 60 * 5
 
 # discover Kasa devices and collect power data
 async def discoverAll():
@@ -56,7 +56,7 @@ async def discoverAll():
             energy_module = device.modules.get("Energy")
 
             splitAlias = device.alias.split('-')
-            dataDF[f'{splitAlias[0]}-W']=energy_module.current_consumption
+            dataDF[f'{splitAlias[1]}-W']=energy_module.current_consumption
 
             #logging.debug(energy_module.current_consumption)
             await device.disconnect()
@@ -73,7 +73,7 @@ async def main():
         logging.debug(power_data)
 
         # create a new file daily to save data or append if the file already exists
-        fileName = f'/home/drux/data/plugs_{str(datetime.date.today())}.csv'
+        fileName = f'/home/drux/demandResponse_UX_research/data/plugs_{str(datetime.date.today())}.csv'
 
         try:
             with open(fileName) as csvfile:

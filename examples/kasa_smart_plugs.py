@@ -37,7 +37,7 @@ async def discoverAll():
         print(f'{device.alias} ({device.mac}) at {device.host}')
         print(f'{device.modules}')
 
-        flipState(device)
+        await flipState(device)
 
         energy_module = device.modules.get("Energy")
         print(f'Power: {energy_module.current_consumption}W') #this library is really dumb - they use the word current to describe live power in Watts, NOT amperage
