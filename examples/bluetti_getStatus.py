@@ -131,7 +131,7 @@ async def scan_devices(scan_duration: int):
 
 async def statusUpdate(bleDev):
 
-    bluettiDev = Bluetti(bleDev["address"],bleDev["name"])
+    bluettiDev = Bluetti(bleDev.address,bleDev.name)
     try:
         result = await bluettiDev.getStatus()
     except Exception as e:
