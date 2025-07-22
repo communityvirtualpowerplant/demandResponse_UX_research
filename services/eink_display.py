@@ -13,6 +13,7 @@ import requests
 from datetime import datetime, timedelta
 from PIL import Image,ImageDraw,ImageFont
 import asyncio
+#from typing import Any, Dict, Optional, Tuple, List
 
 # picdir = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), 'assets')
 # libdir = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), 'lib')
@@ -40,7 +41,7 @@ hostname = socket.gethostname()
 IPAddr = socket.gethostbyname(socket.getfqdn())
 print(IPAddr)
 
-async def send_get_request(self, ip:str='localhost', port:int=5000,endpoint:str,type:str,timeout=1) -> Any:
+async def send_get_request(ip:str='localhost', port:int=5000,endpoint:str='',type:str='json',timeout=1) -> Any:
         """Send GET request to the IP."""
         try:
             response = requests.get(f"http://{ip}:{port}/{endpoint}", timeout=timeout)
@@ -82,7 +83,7 @@ def eventScreen(f):
     sDraw.rectangle((50,80), (screenWidth-50,screenHeight-100), fill = 0)
     epd.displayPartial(epd.getbuffer(sImage))
 
-def normalScreen(f):
+def normalScreen(f,w):
 
     # display IP and hostname on start up
     sImage = Image.new('1', (screenWidth,screenHeight), 255)
@@ -92,6 +93,7 @@ def normalScreen(f):
     # top
     sDraw.rectangle((0,0, screenWidth,screenHeight/2), fill = 255)
     sDraw.text((screenWidth/2,0), f'No event upcoming!', anchor='ma',font = f, fill = 0)
+    sDraw.text((screenWidth/2,screenHeight/4), f'AC power draw: {w}W', anchor='ma',font = f, fill = 0)
 
     # center of fan
     rad = 10
@@ -153,7 +155,8 @@ async def main():
 
     displayIP(font24)
 
-    logging.debug(await send_get_request(endpoint='api/data?date=now&source=plugs'))
+    power = await send_get_request(endpoint='api/data?date=now&source=plugs')
+    battery = await send_get_request(endpoint='api/data?date=now&source=powerstation')
 
     screenState = 0
 
@@ -175,7 +178,7 @@ async def main():
         while True:
             myTime = datetime.now()
             if updateScreen:
-                normalScreen(font15)
+                normalScreen(font15,power['ac-W'])
                 updateScreen = False
                 num = num + 1
             # full refresh should be greater than 3 minutes or after 3 partial refreshes
