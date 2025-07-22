@@ -1,5 +1,9 @@
+import os
+import sys
+from typing import Any, Dict, Optional, List
+
 class API():
-    def __init__(self,dd:str)
+    def __init__(self,dd:str):
         self.dataPath = dd
         self.static_folder='../frontend/static'
         self.template_folder='../frontend/templates'

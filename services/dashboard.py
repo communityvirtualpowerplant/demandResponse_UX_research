@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, send_file, abort, jsonify
 from flask_cors import CORS
 import csv
 #import datetime
-import os 
+import os
 import glob
 import json
 import pandas as pd
