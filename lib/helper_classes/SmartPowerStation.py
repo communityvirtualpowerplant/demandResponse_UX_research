@@ -20,11 +20,11 @@ import os
 
 class SmartPowerStation():
     def __init__(self,info=True, debug=True,error=True):
-        self.config = self.getConfig(conf)
-        self.name = self.config['location']
-        self.location = self.config['location']
-        self.promise = self.config['promise']
-        self.network = self.config['network']
+        # self.config = self.getConfig(conf)
+        # self.name = self.config['location']
+        # self.location = self.config['location']
+        # self.promise = self.config['promise']
+        # self.network = self.config['network']
         self.printInfo = info
         self.printDebug = debug
         self.printError = error
