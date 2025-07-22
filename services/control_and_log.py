@@ -12,7 +12,7 @@ import pandas as pd
 # ------------------ Config ------------------ #
 logging.basicConfig(level=logging.DEBUG)
 
-repoRoot = os.path.dirname(os.path.realpath(__file__))
+repoRoot = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 logging.debug(repoRoot)
 
 with open(os.path.join(repoRoot,'config.json')) as f:
@@ -21,8 +21,6 @@ with open(os.path.join(repoRoot,'config.json')) as f:
 participantNumber = int(config["participant"])
 network = config["network"]
 logging.debug(network)
-
-# deviceNum = config["sensor"]["number"]
 
 # ------------------ Environmental Variables ------------------ #
 load_dotenv()
@@ -53,10 +51,7 @@ async def discoverAll():
         try:
             await device.update()
 
-            # print(f'{device.alias} ({device.mac}) at {device.host}')
             energy_module = device.modules.get("Energy")
-            # print(f'Power: {energy_module.current_consumption}W') #this library is really dumb - they use the word current to describe live power in Watts, NOT amperage
-            # print('')
 
             dataDF[f'participant{participantNumber}-in-_W']=energy_module.current_consumption
             logging.debug(energy_module.current_consumption)

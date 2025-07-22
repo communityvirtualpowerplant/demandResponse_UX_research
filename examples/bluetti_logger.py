@@ -41,7 +41,7 @@ deviceFile = '../config/devices.json'
 configFile = '../config/config.json'
 
 #changed based on hardware
-bleAdapter = "hci0"
+#bleAdapter = "hci0"
 
 # ============================
 # Utilities
