@@ -60,6 +60,8 @@ class API():
         fileDate = filename.split("_")[-1].replace(".csv","")
         if fileDate and (fileDate != str(datetime.date.today())): #ignore today's file
             formattedFileDate = datetime.datetime.strptime(fileDate, time_format)
+            if startDate == None:
+                return formattedFileDate
             if formattedFileDate > datetime.datetime.strptime(startDate, time_format): #filter by start date
                 return formattedFileDate
             return None
@@ -85,9 +87,8 @@ class API():
             try:
                 full_path = os.path.join(folder_path, f)
                 if os.path.isfile(full_path):
-                    if startDate != None:
-                        ts = self.parse_timestamp(f,startDate)
-                    if (ts) | startDate == None:
+                    ts = self.parse_timestamp(f,startDate)
+                    if ts:
                         size = os.path.getsize(full_path)
                         file_data.append((f, ts, size))
             except Exception as e:
