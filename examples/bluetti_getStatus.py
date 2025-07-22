@@ -2,8 +2,8 @@
 # run with "python -m examples.ble_logStatus" + location from parent directory
 
 import sys
+import os
 import subprocess
-# import numpy as np
 import pandas as pd
 import csv
 import asyncio
@@ -13,6 +13,15 @@ import logging
 import datetime
 from typing import cast
 from typing import Any, Dict, Optional, Tuple, List
+
+# add libraries to path
+libdir = '/home/drux/demandResponse_UX_research/lib'
+if os.path.exists(libdir):
+    sys.path.append(libdir)
+libdir = '/home/drux/demandResponse_UX_research/lib/helper_classes'
+if os.path.exists(libdir):
+    sys.path.append(libdir)
+
 from Bluetti import Bluetti
 from bluetti_mqtt.bluetooth import (
     check_addresses, build_device, scan_devices, BluetoothClient, ModbusError,
@@ -25,11 +34,6 @@ from bleak import BleakClient, BleakError, BleakScanner
 from bleak.backends.device import BLEDevice
 from bleak.backends.scanner import AdvertisementData
 from SmartPowerStation import SmartPowerStation
-
-# add libraries to path
-libdir = '/home/drux/demandResponse_UX_research/lib'
-if os.path.exists(libdir):
-    sys.path.append(libdir)
 
 bluettiSTR = ['AC180','AC2']
 
@@ -59,7 +63,7 @@ async def main(SPS: SmartPowerStation) -> None:
     scan_duration = 5
 
     try:
-        devices = await scan_devices(scan_duration, filteredEntries)
+        devices = await scan_devices(scan_duration)
     except Exception as e:
         logging.error(f"Error during scanning: {e}")
         return
@@ -97,19 +101,17 @@ async def main(SPS: SmartPowerStation) -> None:
 
 # returns list of BLE objects and matching saved devices i.e. [BLE, saved]
 async def scan_devices(scan_duration: int):
-    filteredDevices = []
+    deviceList = []
 
-    addressList = []
     def discovery_handler(device: BLEDevice, advertisement_data: AdvertisementData):
-        # mf = ''
-        # notFound = 1
 
         if device.name is None:
             return
 
-        if 'bluetti' in device.name:
-            if device.address not in addressList:
-                addressList.append(device.address)
+        #logging.debug(f'{device.name}')
+        if any(b in device.name for b in bluettiSTR):
+            if device.address not in deviceList:
+                deviceList.append(device)
 
     logging.info(f"Scanning for BLE devices for {scan_duration} seconds...")
 
@@ -117,20 +119,20 @@ async def scan_devices(scan_duration: int):
     async with BleakScanner(detection_callback=discovery_handler) as scanner:
         await asyncio.sleep(scan_duration)
     
-    logging.debug(addressList)
+    logging.debug(deviceList)
 
     # Some BLE chipsets (especially on Raspberry Pi) need a few seconds between scanning and connecting.
     await asyncio.sleep(2)
     
-    return filteredDevices
+    return deviceList
 
 async def statusUpdate(device):
     bleDev = device[0]
-    savedDev = device[1]
+    #savedDev = device[1]
 
-    savedDev['device'] = Bluetti(savedDev["address"],savedDev["name"])
+    bluettiDev = Bluetti(bleDev["address"],bleDev["name"])
     try:
-        result = await savedDev['device'].getStatus()
+        result = await bluettiDev['device'].getStatus()
     except Exception as e:
         logging.error(f"Error getting Bluetti status: {e}")
 
