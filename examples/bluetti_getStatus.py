@@ -37,7 +37,7 @@ from SmartPowerStation import SmartPowerStation
 
 bluettiSTR = ['AC180','AC2']
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(format='%(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',level=logging.DEBUG)
 
 # dataDirectory = '../data/'
 # deviceFile = '../config/devices.json'
@@ -64,6 +64,7 @@ async def main(SPS: SmartPowerStation) -> None:
 
     try:
         devices = await scan_devices(scan_duration)
+        logging.debug(devices)
     except Exception as e:
         logging.error(f"Error during scanning: {e}")
         return
@@ -102,6 +103,7 @@ async def main(SPS: SmartPowerStation) -> None:
 # returns list of BLE objects and matching saved devices i.e. [BLE, saved]
 async def scan_devices(scan_duration: int):
     deviceList = []
+    addresses = []
 
     def discovery_handler(device: BLEDevice, advertisement_data: AdvertisementData):
 
@@ -110,7 +112,8 @@ async def scan_devices(scan_duration: int):
 
         #logging.debug(f'{device.name}')
         if any(b in device.name for b in bluettiSTR):
-            if device.address not in deviceList:
+            if device.address not in addresses:
+                addresses.append(device.address)
                 deviceList.append(device)
 
     logging.info(f"Scanning for BLE devices for {scan_duration} seconds...")
@@ -126,13 +129,11 @@ async def scan_devices(scan_duration: int):
     
     return deviceList
 
-async def statusUpdate(device):
-    bleDev = device[0]
-    #savedDev = device[1]
+async def statusUpdate(bleDev):
 
     bluettiDev = Bluetti(bleDev["address"],bleDev["name"])
     try:
-        result = await bluettiDev['device'].getStatus()
+        result = await bluettiDev.getStatus()
     except Exception as e:
         logging.error(f"Error getting Bluetti status: {e}")
 
