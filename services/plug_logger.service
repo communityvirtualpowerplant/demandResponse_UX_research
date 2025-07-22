@@ -9,7 +9,7 @@ WorkingDirectory=/home/drux
 StandardOutput=inherit
 StandardError=inherit
 Restart=always
-User=case
+User=drux
 
 [Install]
 WantedBy=multi-user.target

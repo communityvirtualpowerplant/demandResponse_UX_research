@@ -56,8 +56,8 @@ Copy the env-template file
 
 `systemctl daemon-reexec`
 `systemctl daemon-reload`
-`systemctl enable sht31d_logger.service`
-`systemctl start sht31d_logger.service`
+`systemctl enable plug_logger.service`
+`systemctl start plug_logger.service`
 
 # Smart Plug Installation
 
