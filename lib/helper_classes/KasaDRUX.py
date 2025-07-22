@@ -73,7 +73,7 @@ class KasaDRUX():
     async def getState(self,dev):
         s = dev.is_on
         logging.debug(f'{dev.alias} is {s}')
-        return s:
+        return s
 
     async def setEventState(self):
         devices = self.discoverAll()

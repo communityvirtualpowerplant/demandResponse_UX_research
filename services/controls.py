@@ -1,14 +1,16 @@
 from dotenv import load_dotenv
 import asyncio
+import os
+import sys
 
-libdir = '/home/drux/demandResponse_UX_research/lib'
+libdir = '/home/drux/demandResponse_UX_research/lib/helper_classes'
 
 if os.path.exists(libdir):
     sys.path.append(libdir)
 
-from KasaDrux import KasaDrux
+from KasaDRUX import KasaDRUX
 
-kD = KasaDrux()
+kD = KasaDRUX()
 
 load_dotenv()
 un = os.getenv('KASA_UN')
