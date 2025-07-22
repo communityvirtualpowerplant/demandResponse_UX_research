@@ -42,47 +42,26 @@ class Bluetti():
         myData={
         }
 
+        client = None
+
         try:
             device = build_device(self.address, self.name)
 
             print(f'Connecting to {self.address}')
             client = BluetoothClient(self.address)
 
-            # loop = asyncio.get_running_loop()
-            # #bTask = loop.create_task(client.run())
-
-        #try:
-            # async with asyncio.TaskGroup() as tg:
-            # #     # Start the client
-            #     tg.create_task(client.run())
-
-                # for _ in range(self.maxTries):
-                #     if client.is_ready:
-                #         break
-                #     print('Waiting for connection...')
-                #     await asyncio.sleep(1)
-                # else:
-                #     print('Connection timeout')
-                #     # return myData
-                # Wait for client.is_ready with timeout
-
-                # try:
-                #     await asyncio.wait_for(self._wait_for_ready(client), timeout=10)
-                # except asyncio.TimeoutError:
-                #     print("Timeout: Device did not become ready.")
-                #     run_task.cancel()  # Cancel client.run()
-                #     await asyncio.gather(run_task, return_exceptions=True)  # Clean cancellation
-                #     return myData
             t = asyncio.get_running_loop().create_task(client.run())
 
-            try:
-                await asyncio.wait_for(self._wait_for_ready(client), timeout=20)
-            except asyncio.TimeoutError:
-                print("[BLE] Connection timeout. Cancelling client task...")
-                t.cancel()
-                await asyncio.gather(t, return_exceptions=True)
-                #raise  # or handle however you want
-                return myData
+            for tries in range(3):
+                try:
+                    await asyncio.wait_for(self._wait_for_ready(client), timeout=20)
+                    break
+                except asyncio.TimeoutError:
+                    print("[BLE] Connection timeout. Cancelling client task...")
+                    t.cancel()
+                    await asyncio.gather(t, return_exceptions=True)
+                    #raise  # or handle however you want
+                    return myData
 
             # Poll device
             for command in device.logging_commands:
@@ -94,12 +73,13 @@ class Bluetti():
         except Exception as e:
             print(f"Unexpected error during command execution: {e}")
         finally:
-            try:
-                if client.client: # and client.client.is_connected:
-                    await client.client.disconnect()
-                    print("Disconnected BLE client")
-            except Exception as e:
-                print(f"Error during BLE disconnect: {e}")
+            if client and getattr(client, "client", None): #this if may not be necessary but doesn't hurt
+                try:
+                    if client.client: # and client.client.is_connected:
+                        await client.client.disconnect()
+                        print("Disconnected BLE client")
+                except Exception as e:
+                    print(f"Error during BLE disconnect: {e}")
 
         return myData
 
