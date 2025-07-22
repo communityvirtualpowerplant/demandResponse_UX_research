@@ -47,7 +47,11 @@ def index():
 
 @app.route("/today", methods=['GET'])
 def today():
-    file_pattern = os.path.join(api.dataPath, f"*.csv")
+    #options: 'plugs' or 'powerstation'
+    filePrefix = request.args.get("source")
+    #file = request.args.get("date")
+
+    file_pattern = os.path.join(api.dataPath, f"{filePrefix}*.csv")
     files = sorted(glob.glob(file_pattern))
     if len(files)>0:
         fileName = files[-1]
@@ -60,16 +64,17 @@ def today():
         rows = []
     return render_template('data.html', cols = cols, data=rows)
 
-@app.route("/api/discover", methods=['GET'])
-def discover():
-    return jsonify({'name': config['location']}), 200
-
+# untested!
 # upcoming and ongoing event info
 @app.route("/api/event", methods=['GET'])
 def getEventInfo():
     return jsonify({'ongoing': 0,
         'upcoming': 0,
         'availableWh':0}), 200
+
+@app.route("/api/discover", methods=['GET'])
+def discover():
+    return jsonify({'name': config['participant']}), 200
 
 @app.route("/api/data", methods=['GET'])
 def get_csv_for_date():
@@ -94,7 +99,7 @@ def get_csv_for_date():
 
     elif file == 'recent':
         try:
-            file_pattern = os.path.join(api.dataPath, f"*.csv")
+            file_pattern = os.path.join(api.dataPath, f"{filePrefix}*.csv")
             files = sorted(glob.glob(file_pattern))
             fileName = files[-1]
             dn = fileName.split('/')[-1]
@@ -106,7 +111,7 @@ def get_csv_for_date():
             return jsonify({'error': str(e)}), 500
     else:
         try:
-            fileName = file+'.csv'
+            fileName = f'{file}.csv'
 
             file_pattern = os.path.join(api.dataPath, f"{filePrefix}*.csv")
             files = sorted(glob.glob(file_pattern))
