@@ -8,6 +8,17 @@ class API():
         self.static_folder='../frontend/static'
         self.template_folder='../frontend/templates'
 
+    def getMostRecent(d,s):
+
+        file_pattern = os.path.join(f'{d}/{s}', f"*.csv")
+        files = sorted(glob.glob(file_pattern))
+        fileName = files[-1]
+
+        fullFilePath = os.path.join(filePath, fileName) #os.path.join(fileName)
+        df = pd.read_csv(fullFilePath)  # Update path as needed
+
+        return [df, fileName]
+
     # run subprocess
     def run_command(self, cmd):
         try:

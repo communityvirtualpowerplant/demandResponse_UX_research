@@ -3,6 +3,7 @@ from flask_cors import CORS
 import csv
 #import datetime
 import os
+import sys
 import glob
 import json
 import pandas as pd
@@ -20,8 +21,11 @@ logging.basicConfig(format='%(levelname)-8s [%(filename)s:%(lineno)d] %(message)
 repoRoot = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 logging.debug(repoRoot)
 
-with open(os.path.join(repoRoot,'config.json')) as f:
-    config = json.load(f)
+try:
+    with open(os.path.join(repoRoot,'config.json')) as f:
+        config = json.load(f)
+except Exception as e:
+    logging.error(f"Error during reading config file: {e}")
 
 participantNumber = int(config["participant"])
 
@@ -29,36 +33,13 @@ api = API('../data/')
 
 app = Flask(
     __name__,
-    static_folder=api['static_folder'],       # custom static folder
-    template_folder=api['template_folder']   # custom templates folder
+    static_folder=api.static_folder,       # custom static folder
+    template_folder=api.template_folder   # custom templates folder
 )
 
 # CORS is enabled for all routes. This simplifies the frontend visualization,
 # but could be removed for security purposes or to more easily enforce throttling without straining the Pi Zeros.
-CORS(app)  
-
-# reads json and returns it as dict
-def getConfig(fn:str) -> dict:
-    # Read data from a JSON file
-    try:
-        with open(fn, "r") as json_file:
-            return json.load(json_file)
-    except Exception as e:
-        print(f"Error during reading config file: {e}")
-        return {}
-
-
-filePrefix = str(config['location']) + '_'
-
-def getMostRecent():
-    file_pattern = os.path.join(API['dataPath'], f"*.csv")
-    files = sorted(glob.glob(file_pattern))
-    fileName = files[-1]
-
-    fullFilePath = os.path.join(filePath, fileName) #os.path.join(fileName)
-    df = pd.read_csv(fullFilePath)  # Update path as needed
-    
-    return [df, fileName]
+CORS(app)
 
 @app.route("/", methods=['GET'])
 def index():
@@ -86,17 +67,17 @@ def discover():
 @app.route("/api/data", methods=['GET'])
 def get_csv_for_date():
     #options: 'plugs' or 'powerstation'
-    dataSource = request.args.get("source")
+    filePrefix = request.args.get("source")
     file = request.args.get("date")
-    if not dataSource:
+
+    if not filePrefix:
         return "Please provide source - either plugs or powerstation", 400
     if not file:
         return "Please provide file name in proper form (see api/files) or date=now for most recent data", 400
 
-    #change this to data
     if file == 'now':
         try:
-            df = getMostRecent()[0]
+            df = API.getMostRecent(filePath,filePrefix)[0]
             last_row = df.iloc[-1].to_dict()
             return jsonify(last_row)
         except FileNotFoundError:
@@ -120,7 +101,7 @@ def get_csv_for_date():
         try:
             fileName = file+'.csv'
 
-            file_pattern = os.path.join(filePath, f"*.csv")
+            file_pattern = os.path.join(filePath, f"{filePrefix}*.csv")
             files = sorted(glob.glob(file_pattern))
 
             for f in files:
@@ -138,17 +119,15 @@ def getEventInfo():
         'upcoming': 0,
         'availableWh':0}), 200
 
-# # serves predictions, analysis and system specs
-# @app.route("/api/system", methods=['GET'])
-# def getSystemInfo():
-#     return "system", 200
-
 @app.route("/api/files", methods=['GET'])
 def list_csv_files():
-    #fileName = filePrefix +str(datetime.date.today())+'.csv'
+    filePrefix = request.args.get("source")
+
+    if not filePrefix:
+        return "Please provide source - either plugs or powerstation", 400
 
     # Get all CSV files in the data/ directory
-    file_pattern = os.path.join(filePath, f"*.csv")
+    file_pattern = os.path.join(filePath, f"{filePrefix}*.csv")
     files = sorted(glob.glob(file_pattern))
 
     # Return just the filenames (without full paths)
@@ -217,7 +196,6 @@ def health_check():
         "sdCardErrors" : sdCardErrors,
         "fileStatus":fileStatus
     })
-
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=False)
