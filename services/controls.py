@@ -30,7 +30,7 @@ kD = KasaDRUX(un,pw)
 atEvents = Airtable(atKey,'apptjKq3GAr5CVOQT','events')
 
 async def main():
-    logging.debug(atEvents.listRecords())
+    logging.debug(await atEvents.listRecords())
 
     while True:
         # get event status from Airtable
@@ -39,12 +39,16 @@ async def main():
         # get next event
 
         # listen for button to pause for 1 hour
-        if buttonPressed:
-            buttonTime = datetime.now()
+        # try:
+        #     if buttonPressed:
+        #         buttonTime = datetime.now()
+        # except Exception as e:
+        #     logging.error(f'{e}')
 
         pause = False
-        if datetime.now() - buttonTime < 1:
-            pause = True
+        # if datetime.now() - buttonTime < 1:
+        #     pause = True
+
         # respond to event status as needed
         if event and not pause:
             await kD.setEventState()
