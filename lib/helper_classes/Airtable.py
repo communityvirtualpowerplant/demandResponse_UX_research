@@ -7,20 +7,29 @@ from typing import Any, Dict, Optional, List
 
 # ------------------ Airtable Class ------------------ #
 class Airtable():
-    def __init__(self, key:str, table:str, name:str=''):
+    def __init__(self, key:str, base:str,table:str, name:str=''):
         self.key = key
-        self.url = 'https://api.airtable.com/v0/appWyfKF1xclZ6OtH/'
+        self.baseURL = 'https://api.airtable.com/v0/'
+        self.base = base
         self.table = table
         self.IDs = []
         self.names=[]
 
-    # retrieves record IDs by name
-    async def getRecordID(self,name:List)-> List:
+    async def listRecords(self):
+        try:
+            res = await self.send_secure_get_request(f'{self.baseURL}{self.base}/{self.table}')
+            return res
+        except Exception as e:
+            logging.error(e)
+        return None
+
+    # retrieves record IDs by name column (if name column exists)
+    async def getRecordIDbyName(self,name:List)-> List:
         IDlist = []
         for n in name:
             logging.debug(name)
             try:
-                # get list of records filtered by name
+                # get list of records filtered by date
 
                 mURL = f'{self.url}{self.table}?maxRecords=3&view=Grid%20view&filterByFormula=name%3D%22{n}%22' #filter results by name column
                 res = await self.send_secure_get_request(mURL)

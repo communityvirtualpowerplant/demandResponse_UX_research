@@ -156,9 +156,6 @@ async def main():
 
     displayIP(font24)
 
-
-
-
     # full refresh loop (roughly every 180 minutes)
     while True:
 

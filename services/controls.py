@@ -12,18 +12,31 @@ if os.path.exists(libdir):
     sys.path.append(libdir)
 
 from KasaDRUX import KasaDRUX
+from Airtable import Airtable
 
 load_dotenv()
 un = os.getenv('KASA_UN')
 pw = os.getenv('KASA_PW')
+atKey = os.getenv('AIRTABLE')
+
 if not un or not pw:
     logger.error("Missing KASA_UN or KASA_PW in environment.")
     raise EnvironmentError("Missing Kasa credentials")
+if not atKey:
+    logger.error("Missing Airtable key in environment.")
+    raise EnvironmentError("Missing Airtable credentials")
+
 kD = KasaDRUX(un,pw)
+atEvents = Airtable(atKey,'apptjKq3GAr5CVOQT','events')
 
 async def main():
+    logging.debug(atEvents.listRecords())
+
     while True:
         # get event status from Airtable
+
+        # pull dates and filter
+        # get next event
 
         # listen for button to pause for 1 hour
         if buttonPressed:
