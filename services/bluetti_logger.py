@@ -39,6 +39,8 @@ bluettiSTR = ['AC180','AC2']
 logging.basicConfig(format='%(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',level=logging.DEBUG)
 
 freq = 60 * 5
+
+dataDirectory = f'/home/drux/demandResponse_UX_research/data/'
 # configFile = '../config/config.json'
 
 # ============================
@@ -59,7 +61,7 @@ async def main(SPS: SmartPowerStation) -> None:
         SPS.reset_bluetooth()
 
         # add wake up function to this
-        for tries in range(3)
+        for tries in range(3):
             try:
                 devices = await scan_devices(scan_duration)
                 logging.debug(devices)
@@ -90,7 +92,7 @@ async def main(SPS: SmartPowerStation) -> None:
                         "powerstation_outputMode": result['output_mode'],
                         "powerstation_deviceType": result['device_type']}
 
-        fileName = f'{dataDirectory}_ {str(datetime.date.today())}.csv'
+        fileName = f'{dataDirectory}powerstation_ {str(datetime.date.today())}.csv'
 
         await writeData(fileName, pd.DataFrame([tempResults]))
 
@@ -100,7 +102,6 @@ async def main(SPS: SmartPowerStation) -> None:
 async def writeData(fn, df):
     # create a new file daily to save data
     # or append if the file already exists
-
     logging.debug(df)
 
     try:
