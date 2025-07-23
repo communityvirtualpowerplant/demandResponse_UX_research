@@ -202,18 +202,24 @@ async def main():
     updateData = datetime.now() # will get updated every 5 minutes
     updateState = datetime.now() # will get updated every 30 seconds
 
+    power = await send_get_request(endpoint='api/data?date=now&source=plugs')
+    battery = await send_get_request(endpoint='api/data?date=now&source=powerstation')
+    state = await send_get_request(endpoint='api/state')
+    updateScreen = True
+
     while True:
         updateScreen = False
 
         #  get most recent data
-        if(datetime.now() - updateData> timedelta(minutes=5))
+        if(datetime.now() - updateData> timedelta(minutes=5)):
             power = await send_get_request(endpoint='api/data?date=now&source=plugs')
             battery = await send_get_request(endpoint='api/data?date=now&source=powerstation')
             updateScreen = True
-            fullRefresh = True
-        if(datetime.now() - updateState> timedelta(seconds=10))
+            updateData = datetime.now()
+        if(datetime.now() - updateState> timedelta(seconds=10)):
             oldState = state
             state = await send_get_request(endpoint='api/state')
+            updateState = datetime.now()
             if oldState != state:
                 updateScreen = True
 
