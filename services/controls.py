@@ -41,9 +41,12 @@ except Exception as e:
 csrpTime = int(config["csrp"])
 logging.debug(f'CSRP start time is {csrpTime}')
 
+def calcBaseline(st):
+    return None
+
 # returns a dictionary with either False or datetime values
 def isCSRPEventUpcoming(df,t)-> dict:
-    cState = {'now':False,'upcoming':False}
+    cState = {'now':False,'upcoming':False,'baselineW':0}
 
     csrpDF = df[df['type']=='csrp']
     for index, row in csrpDF.iterrows():
@@ -55,11 +58,13 @@ def isCSRPEventUpcoming(df,t)-> dict:
         elif (datetime.now()-csrpStartTime > timedelta(hours=0)) and (datetime.now()-csrpStartTime <= timedelta(hours=4)):
             logging.debug('CSRP event ongoing!')
             cState['now'] = csrpStartTime
+
+    #cState['baselineW']=calcBaseline(csrpStartTime)
     return cState
 
 # returns a dictionary with either False or datetime values
 def isDLRPEventUpcoming(df)-> dict:
-    dState = {'now':False,'upcoming':False}
+    dState = {'now':False,'upcoming':False,'baselineW':0}
     dlrpDF = df[df['type']=='dlrp']
     for index, row in dlrpDF.iterrows():
         dlrpStartTime = row['date'].replace(hour=int(row['time']))
@@ -71,6 +76,7 @@ def isDLRPEventUpcoming(df)-> dict:
             logging.debug('event ongoing')
             dState['now'] = dlrpStartTime
 
+    #dState['baselineW']=calcBaseline(dlrpStartTime)
     return dState
 
 def convert_datetimes(obj):
