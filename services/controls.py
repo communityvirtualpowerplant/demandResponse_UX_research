@@ -111,7 +111,7 @@ async def main():
         # try:
         #     if buttonPressed:
         #         buttonTime = datetime.now()
-        #           eventDict['eventPause']=False
+        #           stateDict['eventPause']=False
         # except Exception as e:
         #     logging.error(f'{e}')
 
@@ -119,7 +119,7 @@ async def main():
         saveState(stateDict)
 
         # respond to event status as needed
-        if ((eventCSRP['now']) or (eventDLRP['now'])) and (not eventDict['eventPause']):
+        if ((eventCSRP['now']) or (eventDLRP['now'])) and (not stateDict['eventPause']):
             # check that event is still going on...
             logging.debug('EVENT NOW!')
             await kD.setEventState()
