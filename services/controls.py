@@ -56,7 +56,7 @@ button_event = asyncio.Event()
 
 def on_press():
     buttonState['state']=True
-    buttonState['time']=datetime.now()
+    buttonState['datetime']=datetime.now()
     button_event.set()
     #asyncio.sleep(1) #wait 1 second to minize double presses
     #logging.debug(f'Button pressed! {buttonState}')
@@ -153,7 +153,7 @@ async def main():
         stateDict = {'datetime':datetime.now(),
                     'csrp':eventCSRP,
                     'dlrp':eventDLRP,
-                    'eventPause':False}
+                    'eventPause':{'state':False,'datetime':None}}
 
         logging.debug(stateDict)
 
