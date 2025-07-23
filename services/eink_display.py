@@ -107,7 +107,17 @@ def eventScreen(f):
     epd.displayPartial(epd.getbuffer(sImage))
 
 def eventPausedScreen(f):
-    return None
+    # display IP and hostname on start up
+    sImage = Image.new('1', (screenWidth,screenHeight), 255)
+    sDraw = ImageDraw.Draw(sImage)
+    epd.displayPartBaseImage(epd.getbuffer(sImage))
+
+    sDraw.rectangle((0,0, screenWidth,screenHeight), fill = 255)
+    sDraw.text((screenWidth, 10), f'Event paused until...!!!', font = f,  anchor="mt",fill = 0)
+
+    sDraw.rectangle((50,80,screenWidth-50,100), fill = 255)
+    sDraw.rectangle((53,83,screenWidth-56,94), fill = 0)
+    epd.displayPartial(epd.getbuffer(sImage))
 
 def normalScreen(f,w=None):
 
@@ -172,11 +182,14 @@ async def displayIP(font24):
     epd.displayPartial(epd.getbuffer(ip_image))
     asyncio.sleep(30) #needs to wait for the API to spin up before moving on
 
+def fullRefresh():
+    epd.init()
+    epd.Clear(0xFF)
+
 async def main():
 
     logging.info("init and Clear")
-    epd.init()
-    epd.Clear(0xFF)
+    fullRefresh()
 
     # Drawing on the image - any TTF font should work
     font15 = ImageFont.truetype(os.path.join(picdir, 'Font.ttc'), 15)
@@ -184,55 +197,62 @@ async def main():
 
     await displayIP(font24)
 
-    # full refresh loop (roughly every 180 minutes)
+    num = 0 # partial refresh counter (should full refresh after every 3 partials)
+    lastRefresh = datetime.now()
+    updateData = datetime.now() # will get updated every 5 minutes
+    updateState = datetime.now() # will get updated every 30 seconds
+
     while True:
-        power = await send_get_request(endpoint='api/data?date=now&source=plugs')
-        battery = await send_get_request(endpoint='api/data?date=now&source=powerstation')
-        state = await send_get_request(endpoint='api/state')
+        updateScreen = False
 
-        epd.init()
-        epd.Clear(0xFF)
+        #  get most recent data
+        if(datetime.now() - updateData> timedelta(minutes=5))
+            power = await send_get_request(endpoint='api/data?date=now&source=plugs')
+            battery = await send_get_request(endpoint='api/data?date=now&source=powerstation')
+            updateScreen = True
+            fullRefresh = True
+        if(datetime.now() - updateState> timedelta(seconds=10))
+            oldState = state
+            state = await send_get_request(endpoint='api/state')
+            if oldState != state:
+                updateScreen = True
 
-        # time_image = Image.new('1', (epd.height, epd.width), 255)
-        # time_draw = ImageDraw.Draw(time_image)
-        # epd.displayPartBaseImage(epd.getbuffer(time_image))
-        num = 0 # partial refresh counter (should full refresh after every 3 partials)
-        lastRefresh = datetime.now()
+        if num >= 3:
+            num = 0
+            fullrefresh()
 
-        #partical refresh loop
-        updateScreen = True
-        while True:
-            # exit loop if state unknown
-            if not state:
-                debug.error(f'no state!')
-                normalScreen(font15)
-                break
+        # exit loop if state unknown
+        if not state:
+            debug.error(f'no state!')
+            normalScreen(font15)
+            num = num + 1
+            continue
 
-            myTime = datetime.now()
-            if updateScreen:
-                if not state['eventPause']:
-                    if not state['csrp']['now']:
-                        if not state['dlrp']['now']:
-                            if not state['csrp']['upcoming']:
-                                if not state['dlrp']['upcoming']:
-                                    normalScreen(font15,power['ac-W'])
-                                else:
-                                    upcomingScreen(font15)
+        myTime = datetime.now()
+        if updateScreen:
+            if not state['eventPause']['state']:
+                if not state['csrp']['now']:
+                    if not state['dlrp']['now']:
+                        if not state['csrp']['upcoming']:
+                            if not state['dlrp']['upcoming']:
+                                normalScreen(font15,power['ac-W'])
                             else:
                                 upcomingScreen(font15)
                         else:
-                            eventScreen(font15)
+                            upcomingScreen(font15)
                     else:
                         eventScreen(font15)
                 else:
-                    eventPausedScreen(font15)
+                    eventScreen(font15)
+            else:
+                eventPausedScreen(font15)
 
-                updateScreen = False
-                num = num + 1
-            # full refresh should be greater than 3 minutes or after 3 partial refreshes
-            time.sleep(1)
-            if(myTime - lastRefresh> timedelta(minutes=10)) | (num>=3):
-                break
+            updateScreen = False
+            num = num + 1
+        # full refresh should be greater than 3 minutes or after 3 partial refreshes
+        asyncio.sleep(1)
+        # if(myTime - lastRefresh> timedelta(minutes=10)) | (num>=3):
+        #     break
 
 try:
     #main()
