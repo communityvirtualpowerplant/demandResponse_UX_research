@@ -237,7 +237,7 @@ async def main():
             if datetime.now()-stateDict['eventPause']['datetime'] > timedelta(hours=1):
                 # unpause
                 stateDict['eventPause']={'state':False,'datetime':datetime.now()}
-                logging.debug(f'unpausing!: {stateDict['eventPause']}')
+                logging.debug(f"unpausing!: {stateDict['eventPause']}")
 
         #save state
         saveState(stateDict)
