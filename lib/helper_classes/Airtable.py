@@ -121,3 +121,13 @@ class Airtable():
         else:
             logging.warning(f'{response.status_code}: {response.text}')
             return False
+
+    def parseListToDF(self,res):
+        fields = []
+        for r in res['records']:
+            fields.append(r['fields'])
+
+        df = pd.DataFrame(data=fields)
+        df['date'] = pd.to_datetime(df['date'])
+
+        return df

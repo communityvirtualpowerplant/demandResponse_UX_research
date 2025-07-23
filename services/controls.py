@@ -4,6 +4,7 @@ import os
 import sys
 import logging
 from datetime import datetime, timedelta
+import pandas as pd
 
 logging.basicConfig(format='%(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',level=logging.DEBUG)
 
@@ -29,8 +30,40 @@ if not atKey:
 kD = KasaDRUX(un,pw)
 atEvents = Airtable(atKey,'apptjKq3GAr5CVOQT','events')
 
+def isCSRPEventUpcoming(df,t):
+    csrpDF = df[df['type']=='csrp']
+
+    for index, row in csrpDF.iterrows():
+        csrpStartTime = row['date'].replace(hour=csrpTime)
+        logging.debug(datetime.now()-csrpStartTime)
+        if (datetime.now()-csrpStartTime < timedelta(hours=0)) and (datetime.now()-csrpStartTime >= timedelta(hours=-21)):
+            logging.debug('event upcoming within 21 hours')
+        elif (datetime.now()-csrpStartTime > timedelta(hours=0)) and (datetime.now()-csrpStartTime <= timedelta(hours=4)):
+            logging.debug('event ongoing')
+
+def isDLRPEventUpcoming(df):
+    dlrpDF = df[df['type']=='dlrp']
+    for index, row in dlrpDF.iterrows():
+        dlrpStartTime = row['date'].replace(hour=int(row['time']))
+        print(datetime.now()-dlrpStartTime)
+        if (datetime.now()-dlrpStartTime < timedelta(hours=0)) and (datetime.now()-dlrpStartTime >= timedelta(hours=-2)):
+            print('event upcoming within 2 hours')
+        elif (datetime.now()-dlrpStartTime > timedelta(hours=0)) and (datetime.now()-dlrpStartTime <= timedelta(hours=4)):
+            print('event ongoing')
+
 async def main():
-    logging.debug(await atEvents.listRecords())
+
+    eventDF = atEvents.parseListToDF(await atEvents.listRecords())
+
+    #filter results
+    eventDF = eventDF[~eventDF['status'].isin(['cancelled','past'])]
+
+    csrpTime = 17 # pull this from config!
+    isCSRPEventUpcoming(eventDF,csrpTime)
+
+    isDLRPEventUpcoming(eventDF)
+
+    logging.debug(eventDF)
 
     while True:
         # get event status from Airtable
