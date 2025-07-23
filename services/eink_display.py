@@ -24,7 +24,7 @@ if os.path.exists(libdir):
 
 from waveshare_epd import epd2in13_V4
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(format='%(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',level=logging.DEBUG)
 
 logging.info("DR Display")
 
@@ -44,18 +44,27 @@ print(IPAddr)
 
 async def send_get_request(ip:str='localhost', port:int=5000,endpoint:str='',type:str='json',timeout=1):
         """Send GET request to the IP."""
-        try:
-            response = requests.get(f"http://{ip}:{port}/{endpoint}", timeout=timeout)
-            if type == 'json':
-                return convert_bools(response.json())
-            elif type == 'text':
-                return response.text
-            else:
-                return response.status_code
-        except requests.Timeout as e:
-            return e
-        except Exception as e:
-            return e
+        # get own data
+        max_tries = 3
+        for attempt in range(max_tries):
+            try:
+                response = requests.get(f"http://{ip}:{port}/{endpoint}", timeout=timeout)
+                response.raise_for_status()
+                if type == 'json':
+                    res= convert_bools(response.json())
+                elif type == 'text':
+                    res= response.text
+                else:
+                    res= response.status_code
+                break
+            except Exception as e:
+                logging.error(f'{e}')
+                if attempt == max_tries-1: # try up to 3 times
+                    return e
+                else:
+                    logging.debug('SLEEEEEEEEEEEEEEEEEPING')
+                    await asyncio.sleep(1+attempt)
+        return res
 
 # Function to recursively convert "true"/"false" strings to Booleans
 def convert_bools(obj):
@@ -149,7 +158,7 @@ def normalScreen(f,w):
     sDraw.line([(0,screenHeight/2),(screenWidth,screenHeight/2)], fill=0,width=2, joint=None)
     epd.displayPartial(epd.getbuffer(sImage))
 
-def displayIP(font24):
+async def displayIP(font24):
     # display IP and hostname on start up
     ip_image = Image.new('1', (screenWidth,screenHeight), 255)
     ip_draw = ImageDraw.Draw(ip_image)
@@ -158,7 +167,7 @@ def displayIP(font24):
     ip_draw.rectangle((50, 40, 220, 105), fill = 255)
     ip_draw.text((50, 40), f'{hostname}\n{IPAddr}', font = font24, fill = 0)
     epd.displayPartial(epd.getbuffer(ip_image))
-    time.sleep(15)
+    asyncio.sleep(30) #needs to wait for the API to spin up before moving on
 
 async def main():
 
@@ -170,11 +179,10 @@ async def main():
     font15 = ImageFont.truetype(os.path.join(picdir, 'Font.ttc'), 15)
     font24 = ImageFont.truetype(os.path.join(picdir, 'Font.ttc'), 24)
 
-    displayIP(font24)
+    await displayIP(font24)
 
     # full refresh loop (roughly every 180 minutes)
     while True:
-
         power = await send_get_request(endpoint='api/data?date=now&source=plugs')
         battery = await send_get_request(endpoint='api/data?date=now&source=powerstation')
         state = await send_get_request(endpoint='api/state')
