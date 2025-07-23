@@ -69,14 +69,12 @@ def today():
 @app.route("/api/state", methods=['GET'])
 def getState():
     try:
-        with open("state.json", "r") as jsonFile:
+        with open(os.path.join(repoRoot,'services/state.json'), "r") as jsonFile:
             data = json.load(jsonFile)
             return jsonify(data), 200
     except Exception as e:
         logging.error(f'Exception reading state.json: {e}')
         return jsonify({'error': str(e)}), 500
-
-
 
 @app.route("/api/discover", methods=['GET'])
 def discover():

@@ -85,7 +85,7 @@ def convert_datetimes(obj):
 
 def saveState(d:dict):
     try:
-        with open("state.json", "w") as json_file:
+        with open(os.path.join(repoRoot,'services/state.json'), "w") as json_file:
             json.dump(convert_datetimes(d), json_file, indent=4)
             logging.debug(f'State written to file. :)')
     except Exception as e:
