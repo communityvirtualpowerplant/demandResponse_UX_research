@@ -48,7 +48,7 @@ logging.debug(f'CSRP start time is {csrpTime}')
 ################
 
 # Optional: hold_time=1.0 when_held if held for 1s
-button = Button(26,bounce_time=0.5)  # Debounce time in seconds
+button = Button(26,bounce_time=0.1)  # Debounce time in seconds
 
 buttonState = {'state':False,'datetime':None}
 # Event used to "wake up" the sleeping task
@@ -126,16 +126,20 @@ def saveState(d:dict):
 async def sleeper(sec):
     logging.debug(f"Sleeping until button press or until {sec} seconds")
 
-    #clear past presses
-    button_event.is_set()
-
-    # await button_event.wait()
-    button_event.clear()
     try:
+        #clear past presses
+        button_event.is_set():
+        #logging.debug("Already pressed")
+
+        # await button_event.wait()
+        button_event.clear()
+
         await asyncio.wait_for(button_event.wait(), timeout=sec)
         logging.debug("Woken up by button!")
     except asyncio.TimeoutError:
         logging.debug("Timed out — no button press.")
+    except Exception as e:
+        logging.debug(f'sleeper error: {e}')
 
 ##############
 #### Main ####
