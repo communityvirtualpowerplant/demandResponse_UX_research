@@ -50,7 +50,7 @@ logging.debug(f'CSRP start time is {csrpTime}')
 # Optional: hold_time=1.0 when_held if held for 1s
 button = Button(26,bounce_time=0.5)  # Debounce time in seconds
 
-buttonState = {'state':False,'time':None}
+buttonState = {'state':False,'datetime':None}
 # Event used to "wake up" the sleeping task
 button_event = asyncio.Event()
 
