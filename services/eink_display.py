@@ -93,8 +93,8 @@ def eventScreen(f):
     sDraw.rectangle((0,0, screenWidth,screenHeight), fill = 255)
     sDraw.text((screenWidth, 10), f'Event now!!!', font = f,  anchor="mt",fill = 0)
 
-    sDraw.rectangle((50,80,screenWidth-50,screenHeight-80), fill = 255)
-    sDraw.rectangle((50,80,screenWidth-50,screenHeight-100), fill = 0)
+    sDraw.rectangle((50,80,screenWidth-50,100), fill = 255)
+    sDraw.rectangle((53,83,screenWidth-56,94), fill = 0)
     epd.displayPartial(epd.getbuffer(sImage))
 
 def eventPausedScreen(f):
