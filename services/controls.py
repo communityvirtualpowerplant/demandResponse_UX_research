@@ -188,7 +188,7 @@ async def main():
     button_event = asyncio.Event()
     loop = asyncio.get_running_loop()
 
-    # unpause
+    # pause
     def on_press():
         buttonState['state']=True
         buttonState['datetime']=datetime.now()
@@ -202,7 +202,6 @@ async def main():
         loop.call_soon_threadsafe(button_event.set)
         logging.debug(f'Button held! {buttonState}')
 
-    # Optional: hold_time=1.0 when_held if held for 1s
     button = Button(26,hold_time=2.0,bounce_time=0.1)  # Debounce time in seconds
     button.when_pressed = on_press
     button.when_held = on_hold
@@ -214,8 +213,8 @@ async def main():
         logging.error(f"Couldn't initialize state: {e}")
         stateDict={"csrp":{"baselineW":0,"now":False,"upcoming":False},
                     "dlrp":{"baselineW":0,"now":False,"upcoming":False},
-                    "datetime":None,
-                    "eventPause":{"datetime":False, "state":False}}
+                    "datetime":datetime.now(),
+                    "eventPause":{"datetime":datetime.now(), "state":False}}
 
     while True:
         # get event status from Airtable
@@ -228,28 +227,17 @@ async def main():
             stateDict['datetime'] = datetime.now()
             stateDict['csrp']=eventCSRP
             stateDict['dlrp']=eventDLRP
+            logging.debug(stateDict)
         except Exception as e:
             logging.error(f"Couldn't check event status: {e}")
 
-        logging.debug(stateDict)
-
-        # listen for button to pause for 1 hour
-        # try:
-        #     if buttonPressed:
-        #         buttonTime = datetime.now()
-        #
-        # except Exception as e:
-        #     logging.error(f'{e}')
-        if datetime.now()-stateDict['eventPause']['datetime'] < timedelta(hours=1):
-            debug.logging('still paused')
-
-        # check if pause still in effect and reset it if so
-
-        if not buttonState['state']:
-            logging.debug("Waiting for button press...")
-            stateDict['eventPause']={'state':False,'datetime':None}
-        else:
-            stateDict['eventPause']=buttonState
+        # if paused
+        if stateDict['eventPause']['state']:
+            #if eventPause has been going on for an hour or more, unpause it
+            if datetime.now()-stateDict['eventPause']['datetime'] > timedelta(hours=1):
+                # unpause
+                stateDict['eventPause']={'state':False,'datetime':datetime.now()}
+                logging.debug(f'unpausing!: {stateDict['eventPause']}')
 
         #save state
         saveState(stateDict)
