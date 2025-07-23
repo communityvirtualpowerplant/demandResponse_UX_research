@@ -54,11 +54,12 @@ buttonState = {'state':False,'datetime':None}
 # Event used to "wake up" the sleeping task
 button_event = asyncio.Event()
 
+loop = asyncio.get_event_loop()
 def on_press():
     buttonState['state']=True
     buttonState['datetime']=datetime.now()
-    button_event.set()
-    #asyncio.sleep(1) #wait 1 second to minize double presses
+    #button_event.set()
+    loop.call_soon_threadsafe(button_event.set)
     #logging.debug(f'Button pressed! {buttonState}')
 
 button.when_pressed = on_press
@@ -128,7 +129,7 @@ async def sleeper(sec):
 
     try:
         #clear past presses
-        button_event.is_set():
+        button_event.is_set()
         #logging.debug("Already pressed")
 
         # await button_event.wait()
