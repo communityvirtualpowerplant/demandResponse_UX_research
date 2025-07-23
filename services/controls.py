@@ -182,7 +182,7 @@ async def send_get_request(ip:str='localhost', port:int=5000,endpoint:str='',typ
 ##############
 
 async def main():
-    global buttonState, button_event
+    global buttonState, button_event, stateDict
 
     # Event used to "wake up" the sleeping task
     button_event = asyncio.Event()

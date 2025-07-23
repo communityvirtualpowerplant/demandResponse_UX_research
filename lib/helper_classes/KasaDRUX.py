@@ -3,7 +3,7 @@ from kasa import Discover, Credentials
 import pandas as pd
 import logging
 
-logging.basicConfig(format='%(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',level=logging.DEBUG)
+logging.basicConfig(format='%(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',level=logging.INFO)
 
 class KasaDRUX():
     def __init__(self,un,pw):
