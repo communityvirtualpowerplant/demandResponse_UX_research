@@ -45,7 +45,7 @@ csrpTime = int(config["csrp"])
 logging.debug(f'CSRP start time is {csrpTime}')
 
 # this should be initialized with all the state data!
-#buttonState = {'state':False,'datetime':None}
+buttonState = {}#{'state':False,'datetime':None}
 
 ##########################
 #### Helper Functions ####
@@ -192,6 +192,7 @@ async def main():
     def on_press():
         buttonState['state']=True
         buttonState['datetime']=datetime.now()
+        stateDict['eventPause']=buttonState
         loop.call_soon_threadsafe(button_event.set)
         logging.debug(f'Button pressed! {buttonState}')
 
@@ -199,6 +200,7 @@ async def main():
     def on_hold():
         buttonState['state']=False
         buttonState['datetime']=datetime.now()
+        stateDict['eventPause']=buttonState
         loop.call_soon_threadsafe(button_event.set)
         logging.debug(f'Button held! {buttonState}')
 
