@@ -30,47 +30,58 @@ if not atKey:
 kD = KasaDRUX(un,pw)
 atEvents = Airtable(atKey,'apptjKq3GAr5CVOQT','events')
 
-def isCSRPEventUpcoming(df,t):
-    csrpDF = df[df['type']=='csrp']
+# returns a dictionary with either False or datetime values
+def isCSRPEventUpcoming(df,t)-> dict:
+    cState = {'now':False,'upcoming':False}
 
+    csrpDF = df[df['type']=='csrp']
     for index, row in csrpDF.iterrows():
-        csrpStartTime = row['date'].replace(hour=csrpTime)
+        csrpStartTime = row['date'].replace(hour=t)
         logging.debug(datetime.now()-csrpStartTime)
         if (datetime.now()-csrpStartTime < timedelta(hours=0)) and (datetime.now()-csrpStartTime >= timedelta(hours=-21)):
-            logging.debug('event upcoming within 21 hours')
+            logging.debug('CSRP event upcoming within 21 hours')
+            cState['upcoming'] = csrpStartTime
         elif (datetime.now()-csrpStartTime > timedelta(hours=0)) and (datetime.now()-csrpStartTime <= timedelta(hours=4)):
-            logging.debug('event ongoing')
+            logging.debug('CSRP event ongoing!')
+            cState['now'] = csrpStartTime
+    return cState
 
-def isDLRPEventUpcoming(df):
+# returns a dictionary with either False or datetime values
+def isDLRPEventUpcoming(df)-> Tuple(bool,bool):
+    dState = {'now':False,'upcoming':False}
     dlrpDF = df[df['type']=='dlrp']
     for index, row in dlrpDF.iterrows():
         dlrpStartTime = row['date'].replace(hour=int(row['time']))
-        print(datetime.now()-dlrpStartTime)
+        logging.debug(datetime.now()-dlrpStartTime)
         if (datetime.now()-dlrpStartTime < timedelta(hours=0)) and (datetime.now()-dlrpStartTime >= timedelta(hours=-2)):
-            print('event upcoming within 2 hours')
+            logging.debug('event upcoming within 2 hours')
+            dState['upcoming'] = csrpStartTime
         elif (datetime.now()-dlrpStartTime > timedelta(hours=0)) and (datetime.now()-dlrpStartTime <= timedelta(hours=4)):
-            print('event ongoing')
+            logging.debug('event ongoing')
+            dState['now'] = csrpStartTime
+
+    return dState
 
 async def main():
 
-    eventDF = atEvents.parseListToDF(await atEvents.listRecords())
-
-    #filter results
-    eventDF = eventDF[~eventDF['status'].isin(['cancelled','past'])]
-
-    csrpTime = 17 # pull this from config!
-    isCSRPEventUpcoming(eventDF,csrpTime)
-
-    isDLRPEventUpcoming(eventDF)
-
-    logging.debug(eventDF)
+    # eventDF = atEvents.parseListToDF(await atEvents.listRecords())
+    # #filter results
+    # eventDF = eventDF[~eventDF['status'].isin(['cancelled','past'])]
+    # csrpTime = 17 # pull this from config!
+    # eventCSRP = isCSRPEventUpcoming(eventDF,csrpTime)
+    # eventDLRP = isDLRPEventUpcoming(eventDF)
 
     while True:
         # get event status from Airtable
-
-        # pull dates and filter
-        # get next event
-
+        eventDF = atEvents.parseListToDF(await atEvents.listRecords())
+        #filter results
+        eventDF = eventDF[~eventDF['status'].isin(['cancelled','past'])]
+        csrpTime = 17 # pull this from config!
+        # check for events
+        eventCSRP = isCSRPEventUpcoming(eventDF,csrpTime)
+        eventDLRP = isDLRPEventUpcoming(eventDF)
+        logging.debug(eventCSRP)
+        logging.debug(eventDLRP)
         # listen for button to pause for 1 hour
         # try:
         #     if buttonPressed:
@@ -83,7 +94,8 @@ async def main():
         #     pause = True
 
         # respond to event status as needed
-        if event and not pause:
+        if False:#((eventCSRP==2) or (eventDLRP==2)) and (not pause):
+            logging.debug('EVENT NOW!')
             await kD.setEventState()
         elif eventUpcoming:
             #if true, battery can discharge during prep state (add indicator for battery ok to use)

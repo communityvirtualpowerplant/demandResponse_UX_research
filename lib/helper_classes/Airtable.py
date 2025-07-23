@@ -4,6 +4,7 @@ import asyncio
 import logging
 import requests
 from typing import Any, Dict, Optional, List
+import pandas as pd
 
 # ------------------ Airtable Class ------------------ #
 class Airtable():
