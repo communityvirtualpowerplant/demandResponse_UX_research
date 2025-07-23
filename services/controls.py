@@ -96,8 +96,6 @@ async def main():
     while True:
         # get event status from Airtable
         eventDF = atEvents.parseListToDF(await atEvents.listRecords())
-        #filter results
-        eventDF = eventDF[~eventDF['status'].isin(['cancelled','past'])]
         # check for events
         eventCSRP = isCSRPEventUpcoming(eventDF,csrpTime)
         eventDLRP = isDLRPEventUpcoming(eventDF)

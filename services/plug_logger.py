@@ -14,6 +14,8 @@ libdir = '/home/drux/demandResponse_UX_research/lib/helper_classes'
 if os.path.exists(libdir):
     sys.path.append(libdir)
 from KasaDRUX import KasaDRUX
+#from Airtable import Airtable
+
 
 # ------------------ Config ------------------ #
 logging.basicConfig(format='%(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',level=logging.DEBUG)
@@ -32,11 +34,17 @@ logging.debug(network)
 load_dotenv()
 un = os.getenv('KASA_UN')
 pw = os.getenv('KASA_PW')
+#atKey = os.getenv('AIRTABLE')
 if not un or not pw:
     logger.error("Missing KASA_UN or KASA_PW in environment.")
     raise EnvironmentError("Missing Kasa credentials")
+# if not atKey:
+#     logger.error("Missing Airtable key in environment.")
+#     raise EnvironmentError("Missing Airtable credentials")
 
 kD = KasaDRUX(un,pw)
+#atEvents = Airtable(atKey,'apptjKq3GAr5CVOQT','events')
+
 
 freq = 60 * 5
 

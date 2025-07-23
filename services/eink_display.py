@@ -161,6 +161,7 @@ async def main():
 
         power = await send_get_request(endpoint='api/data?date=now&source=plugs')
         battery = await send_get_request(endpoint='api/data?date=now&source=powerstation')
+        state = await send_get_request(endpoint='api/state')
 
         screenState = 0
 
@@ -179,7 +180,20 @@ async def main():
         while True:
             myTime = datetime.now()
             if updateScreen:
-                normalScreen(font15,power['ac-W'])
+                if not csrp['now']:
+                    if not dlrp['now']:
+                        if not csrp['upcoming']:
+                            if not dlrp['upcoming']:
+                                normalScreen(font15,power['ac-W'])
+                            else:
+                                upcomingScreen(font15)
+                        else:
+                            upcomingScreen(font15)
+                    else:
+                        eventScreen(font15)
+                else:
+                    eventScreen(font15)
+
                 updateScreen = False
                 num = num + 1
             # full refresh should be greater than 3 minutes or after 3 partial refreshes
