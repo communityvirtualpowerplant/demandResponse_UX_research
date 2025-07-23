@@ -68,9 +68,13 @@ def today():
 # upcoming and ongoing event info
 @app.route("/api/state", methods=['GET'])
 def getEventInfo():
-    return jsonify({'ongoing': 0,
-        'upcoming': 0,
-        'availableWh':0}), 200
+    try:
+        with open("state.json", "r") as jsonFile:
+        data = json.load(jsonFile)
+    except Exception as e:
+        logging.error(f'Exception reading state.json: {e}')
+
+    return jsonify(data), 200
 
 @app.route("/api/discover", methods=['GET'])
 def discover():

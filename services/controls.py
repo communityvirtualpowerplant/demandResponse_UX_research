@@ -73,6 +73,24 @@ def isDLRPEventUpcoming(df)-> dict:
 
     return dState
 
+def convert_datetimes(obj):
+    if isinstance(obj, dict):
+        return {k: convert_datetimes(v) for k, v in obj.items()}
+    elif isinstance(obj, list):
+        return [convert_datetimes(i) for i in obj]
+    elif isinstance(obj, datetime):
+        return obj.isoformat()
+    else:
+        return obj
+
+def saveState(d:dict):
+    try:
+        with open("state.json", "w") as json_file:
+            json.dump(convert_datetimes(d), json_file, indent=4)
+            logging.debug(f'State written to file. :)')
+    except Exception as e:
+        logging.error(f'Exception writing state to file: {e}')
+
 async def main():
 
     while True:
@@ -99,11 +117,7 @@ async def main():
         #     logging.error(f'{e}')
 
         #save state
-        try:
-            with open("state.json", "w") as json_file:
-                json.dump(eventDict, json_file, indent=4)
-        except Exception as e:
-            logging.error(f'Exception saving json: {e}')
+        saveState(eventDict)
 
         # respond to event status as needed
         if ((eventCSRP['now']) or (eventDLRP['now'])) and (not eventDict['eventPause']):
