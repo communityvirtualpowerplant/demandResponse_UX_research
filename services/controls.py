@@ -30,6 +30,15 @@ if not atKey:
 kD = KasaDRUX(un,pw)
 atEvents = Airtable(atKey,'apptjKq3GAr5CVOQT','events')
 
+try:
+    with open(os.path.join(repoRoot,'config.json')) as f:
+        config = json.load(f)
+except Exception as e:
+    logging.error(f"Error during reading config file: {e}")
+
+csrpTime = int(config["csrp"])
+logging.debug(f'CSRP start time is {csrpTime}')
+
 # returns a dictionary with either False or datetime values
 def isCSRPEventUpcoming(df,t)-> dict:
     cState = {'now':False,'upcoming':False}
@@ -69,12 +78,12 @@ async def main():
         eventDF = atEvents.parseListToDF(await atEvents.listRecords())
         #filter results
         eventDF = eventDF[~eventDF['status'].isin(['cancelled','past'])]
-        csrpTime = 17 # pull this from config!
         # check for events
         eventCSRP = isCSRPEventUpcoming(eventDF,csrpTime)
         eventDLRP = isDLRPEventUpcoming(eventDF)
         logging.debug(eventCSRP)
         logging.debug(eventDLRP)
+
         # listen for button to pause for 1 hour
         # try:
         #     if buttonPressed:
@@ -87,12 +96,13 @@ async def main():
         #     pause = True
 
         # respond to event status as needed
-        if ((eventCSRP.now) or (eventDLRP.now)) and (not pause):
+        if ((eventCSRP['now']) or (eventDLRP['now'])) and (not pause):
             # check that event is still going on...
             logging.debug('EVENT NOW!')
             await kD.setEventState()
-        elif ((eventCSRP.upcoming) or (eventDLRP.upcoming)) :
+        elif ((eventCSRP['upcoming']) or (eventDLRP['upcoming'])) :
             #if true, battery can discharge during prep state (add indicator for battery ok to use)
+            # keep battery charged!
             logging.debug('EVENT UPCOMING!')
             await kD.setPrepState(True)
         elif pause:
