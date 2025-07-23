@@ -47,22 +47,22 @@ logging.debug(f'CSRP start time is {csrpTime}')
 #### Button ####
 ################
 
-# Optional: hold_time=1.0 when_held if held for 1s
-button = Button(26,bounce_time=0.1)  # Debounce time in seconds
+# # Optional: hold_time=1.0 when_held if held for 1s
+# button = Button(26,bounce_time=0.1)  # Debounce time in seconds
 
 buttonState = {'state':False,'datetime':None}
-# Event used to "wake up" the sleeping task
-button_event = asyncio.Event()
+# # Event used to "wake up" the sleeping task
+# button_event = asyncio.Event()
 
-loop = asyncio.get_event_loop()
-def on_press():
-    buttonState['state']=True
-    buttonState['datetime']=datetime.now()
-    #button_event.set()
-    loop.call_soon_threadsafe(button_event.set)
-    #logging.debug(f'Button pressed! {buttonState}')
+# loop = asyncio.get_event_loop()
+# def on_press():
+#     buttonState['state']=True
+#     buttonState['datetime']=datetime.now()
+#     #button_event.set()
+#     loop.call_soon_threadsafe(button_event.set)
+#     #logging.debug(f'Button pressed! {buttonState}')
 
-button.when_pressed = on_press
+# button.when_pressed = on_press
 
 ##########################
 #### Helper Functions ####
@@ -147,6 +147,24 @@ async def sleeper(sec):
 ##############
 
 async def main():
+    global buttonState, button_event
+
+    # Event used to "wake up" the sleeping task
+    button_event = asyncio.Event()
+    loop = asyncio.get_running_loop()
+
+    def on_press():
+        buttonState['state']=True
+        buttonState['datetime']=datetime.now()
+        #button_event.set()
+        loop.call_soon_threadsafe(button_event.set)
+        logging.debug(f'Button pressed! {buttonState}')
+
+    # Optional: hold_time=1.0 when_held if held for 1s
+    button = Button(26,bounce_time=0.1)  # Debounce time in seconds
+    button.when_pressed = on_press
+
+
 
     while True:
         # get event status from Airtable
