@@ -6,6 +6,7 @@ import logging
 from datetime import datetime, timedelta
 import pandas as pd
 import json
+from gpiozero import Button
 
 logging.basicConfig(format='%(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',level=logging.DEBUG)
 
@@ -40,6 +41,28 @@ except Exception as e:
 
 csrpTime = int(config["csrp"])
 logging.debug(f'CSRP start time is {csrpTime}')
+
+################
+#### Button ####
+################
+
+button = Button(26)
+buttonState = {'state':False,'time':None}
+
+def on_press():
+    buttonState['state']=True
+    buttonState['time']=datetime.now()
+    button_event.set()
+    #logging.debug(f'Button pressed! {buttonState}')
+
+button.when_pressed = on_press
+
+# Event used to "wake up" the sleeping task
+button_event = asyncio.Event()
+
+##########################
+#### Helper Functions ####
+##########################
 
 def calcBaseline(st):
     return None
@@ -97,6 +120,22 @@ def saveState(d:dict):
     except Exception as e:
         logging.error(f'Exception writing state to file: {e}')
 
+async def sleeper(sec):
+    logging.debug(f"Sleeping until button press or until {sec} seconds")
+    # await button_event.wait()
+    # await asyncio.sleep(sec)
+    # print("Woken up!")
+    button_event.clear()
+    try:
+        await asyncio.wait_for(button_event.wait(), timeout=sec)
+        print("Woken up by button!")
+    except asyncio.TimeoutError:
+        print("Timed out — no button press.")
+
+##############
+#### Main ####
+##############
+
 async def main():
 
     while True:
@@ -117,9 +156,13 @@ async def main():
         # try:
         #     if buttonPressed:
         #         buttonTime = datetime.now()
-        #           stateDict['eventPause']=False
+        #
         # except Exception as e:
         #     logging.error(f'{e}')
+        if not buttonState['state']:
+            logging.debug("Waiting for button press...")
+        else:
+            stateDict['eventPause']=buttonState
 
         #save state
         saveState(stateDict)
@@ -145,7 +188,9 @@ async def main():
             # get energy w/ trapazoid method
             # divide by 4 hours
 
-        await asyncio.sleep(5*60)
+        button_event.clear()
+        await sleeper(5*60)
+        await asyncio.sleep(.1) # may not be necessary
 
 if __name__ == "__main__":
     try:
