@@ -7,6 +7,7 @@ from datetime import datetime, timedelta
 import pandas as pd
 import json
 from gpiozero import Button
+from gpiozero.pins.pigpio import PiGPIOFactory
 
 logging.basicConfig(format='%(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',level=logging.DEBUG)
 
@@ -46,19 +47,22 @@ logging.debug(f'CSRP start time is {csrpTime}')
 #### Button ####
 ################
 
-button = Button(26)
+button = Button(26,pin_factory=factory,
+    bounce_time=0.5  # Debounce time in seconds
+    #, hold_time=1.0     # Optional: trigger .when_held if held for 1s
+    )
 buttonState = {'state':False,'time':None}
+# Event used to "wake up" the sleeping task
+button_event = asyncio.Event()
 
 def on_press():
     buttonState['state']=True
     buttonState['time']=datetime.now()
     button_event.set()
+    #asyncio.sleep(1) #wait 1 second to minize double presses
     #logging.debug(f'Button pressed! {buttonState}')
 
 button.when_pressed = on_press
-
-# Event used to "wake up" the sleeping task
-button_event = asyncio.Event()
 
 ##########################
 #### Helper Functions ####
@@ -122,15 +126,17 @@ def saveState(d:dict):
 
 async def sleeper(sec):
     logging.debug(f"Sleeping until button press or until {sec} seconds")
+
+    #clear past presses
+    button_event.is_set()
+
     # await button_event.wait()
-    # await asyncio.sleep(sec)
-    # print("Woken up!")
     button_event.clear()
     try:
         await asyncio.wait_for(button_event.wait(), timeout=sec)
-        print("Woken up by button!")
+        logging.debug("Woken up by button!")
     except asyncio.TimeoutError:
-        print("Timed out — no button press.")
+        logging.debug("Timed out — no button press.")
 
 ##############
 #### Main ####
@@ -168,7 +174,7 @@ async def main():
         saveState(stateDict)
 
         # respond to event status as needed
-        if ((eventCSRP['now']) or (eventDLRP['now'])) and (not stateDict['eventPause']):
+        if ((eventCSRP['now']) or (eventDLRP['now'])) and (not stateDict['eventPause']['state']):
             # check that event is still going on...
             logging.debug('EVENT NOW!')
             await kD.setEventState()
@@ -177,7 +183,7 @@ async def main():
             # keep battery charged!
             logging.debug('EVENT UPCOMING!')
             await kD.setPrepState(True)
-        elif pause:
+        elif stateDict['eventPause']['state']:
             await kD.setPrepState(True) #should it be in normal state when paused?
         else:
             await kD.setNormalState()
@@ -188,7 +194,6 @@ async def main():
             # get energy w/ trapazoid method
             # divide by 4 hours
 
-        button_event.clear()
         await sleeper(5*60)
         await asyncio.sleep(.1) # may not be necessary
 
