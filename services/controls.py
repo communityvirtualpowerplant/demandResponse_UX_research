@@ -102,11 +102,12 @@ async def main():
         eventCSRP = isCSRPEventUpcoming(eventDF,csrpTime)
         eventDLRP = isDLRPEventUpcoming(eventDF)
 
-        eventDict = {'csrp':eventCSRP,
+        stateDict = {'datetime':datetime.now(),
+                    'csrp':eventCSRP,
                     'dlrp':eventDLRP,
                     'eventPause':False}
 
-        logging.debug(eventDict)
+        logging.debug(stateDict)
 
         # listen for button to pause for 1 hour
         # try:
@@ -117,7 +118,7 @@ async def main():
         #     logging.error(f'{e}')
 
         #save state
-        saveState(eventDict)
+        saveState(stateDict)
 
         # respond to event status as needed
         if ((eventCSRP['now']) or (eventDLRP['now'])) and (not eventDict['eventPause']):
