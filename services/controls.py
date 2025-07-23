@@ -125,6 +125,18 @@ async def sleeper(sec):
     except Exception as e:
         logging.debug(f'sleeper error: {e}')
 
+# Function to recursively convert "true"/"false" strings to Booleans
+def convert_bools(obj):
+    if isinstance(obj, dict):
+        return {k: convert_bools(v) for k, v in obj.items()}
+    elif isinstance(obj, list):
+        return [convert_bools(elem) for elem in obj]
+    elif obj == "true":
+        return True
+    elif obj == "false":
+        return False
+    else:
+        return obj
 
 async def send_get_request(ip:str='localhost', port:int=5000,endpoint:str='',type:str='json',timeout=1):
         """Send GET request to the IP."""
@@ -176,7 +188,7 @@ async def main():
     try:
         stateDict = await send_get_request(endpoint='api/state')
     except Exception as e:
-        debug.error(f"Couldn't initialize state: {e}")
+        logging.error(f"Couldn't initialize state: {e}")
         stateDict={"csrp":{"baselineW":0,"now":False,"upcoming":False},
                     "dlrp":{"baselineW":0,"now":False,"upcoming":False},
                     "datetime":None,
@@ -194,7 +206,7 @@ async def main():
             stateDict['csrp']=eventCSRP
             stateDict['dlrp']=eventDLRP
         except Exception as e:
-            debug.error(f"Couldn't check event status: {e}")
+            logging.error(f"Couldn't check event status: {e}")
 
         logging.debug(stateDict)
 
