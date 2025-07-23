@@ -89,6 +89,7 @@ def isDLRPEventUpcoming(df)-> dict:
     #dState['baselineW']=calcBaseline(dlrpStartTime)
     return dState
 
+# convert datetimes to iso formatted strings
 def convert_datetimes(obj):
     if isinstance(obj, dict):
         return {k: convert_datetimes(v) for k, v in obj.items()}
@@ -96,6 +97,20 @@ def convert_datetimes(obj):
         return [convert_datetimes(i) for i in obj]
     elif isinstance(obj, datetime):
         return obj.isoformat()
+    else:
+        return obj
+
+# convert to datetimes from iso formatted strings
+def parse_datetimes(obj):
+    if isinstance(obj, dict):
+        return {k: parse_datetimes(v) for k, v in obj.items()}
+    elif isinstance(obj, list):
+        return [parse_datetimes(i) for i in obj]
+    elif isinstance(obj, str):
+        try:
+            return datetime.fromisoformat(obj)
+        except ValueError:
+            return obj
     else:
         return obj
 
@@ -147,7 +162,7 @@ async def send_get_request(ip:str='localhost', port:int=5000,endpoint:str='',typ
                 response = requests.get(f"http://{ip}:{port}/{endpoint}", timeout=timeout)
                 response.raise_for_status()
                 if type == 'json':
-                    res= convert_bools(response.json())
+                    res= parse_datetimes(convert_bools(response.json()))
                 elif type == 'text':
                     res= response.text
                 else:
