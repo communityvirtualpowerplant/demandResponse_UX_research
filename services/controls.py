@@ -5,6 +5,7 @@ import sys
 import logging
 from datetime import datetime, timedelta
 import pandas as pd
+import json
 
 logging.basicConfig(format='%(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',level=logging.DEBUG)
 
@@ -31,6 +32,7 @@ kD = KasaDRUX(un,pw)
 atEvents = Airtable(atKey,'apptjKq3GAr5CVOQT','events')
 
 try:
+    repoRoot = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
     with open(os.path.join(repoRoot,'config.json')) as f:
         config = json.load(f)
 except Exception as e:
@@ -81,22 +83,30 @@ async def main():
         # check for events
         eventCSRP = isCSRPEventUpcoming(eventDF,csrpTime)
         eventDLRP = isDLRPEventUpcoming(eventDF)
-        logging.debug(eventCSRP)
-        logging.debug(eventDLRP)
+
+        eventDict = {'csrp':eventCSRP,
+                    'dlrp':eventDLRP,
+                    'eventPause':False}
+
+        logging.debug(eventDict)
 
         # listen for button to pause for 1 hour
         # try:
         #     if buttonPressed:
         #         buttonTime = datetime.now()
+        #           eventDict['eventPause']=False
         # except Exception as e:
         #     logging.error(f'{e}')
 
-        pause = False
-        # if datetime.now() - buttonTime < 1:
-        #     pause = True
+        #save state
+        try:
+            with open("state.json", "w") as json_file:
+                json.dump(eventDict, json_file, indent=4)
+        except Exception as e:
+            logging.error(f'Exception saving json: {e}')
 
         # respond to event status as needed
-        if ((eventCSRP['now']) or (eventDLRP['now'])) and (not pause):
+        if ((eventCSRP['now']) or (eventDLRP['now'])) and (not eventDict['eventPause']):
             # check that event is still going on...
             logging.debug('EVENT NOW!')
             await kD.setEventState()

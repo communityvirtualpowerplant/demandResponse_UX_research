@@ -184,7 +184,7 @@ async def main():
                 num = num + 1
             # full refresh should be greater than 3 minutes or after 3 partial refreshes
             time.sleep(1)
-            if(myTime - lastRefresh> timedelta(minutes=5)) | (num>=3):
+            if(myTime - lastRefresh> timedelta(minutes=10)) | (num>=3):
                 break
 
 try:
