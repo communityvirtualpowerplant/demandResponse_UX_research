@@ -43,26 +43,8 @@ except Exception as e:
 csrpTime = int(config["csrp"])
 logging.debug(f'CSRP start time is {csrpTime}')
 
-################
-#### Button ####
-################
-
-# # Optional: hold_time=1.0 when_held if held for 1s
-# button = Button(26,bounce_time=0.1)  # Debounce time in seconds
-
+# this should be initialized with all the state data!
 buttonState = {'state':False,'datetime':None}
-# # Event used to "wake up" the sleeping task
-# button_event = asyncio.Event()
-
-# loop = asyncio.get_event_loop()
-# def on_press():
-#     buttonState['state']=True
-#     buttonState['datetime']=datetime.now()
-#     #button_event.set()
-#     loop.call_soon_threadsafe(button_event.set)
-#     #logging.debug(f'Button pressed! {buttonState}')
-
-# button.when_pressed = on_press
 
 ##########################
 #### Helper Functions ####
@@ -142,6 +124,31 @@ async def sleeper(sec):
     except Exception as e:
         logging.debug(f'sleeper error: {e}')
 
+
+async def send_get_request(ip:str='localhost', port:int=5000,endpoint:str='',type:str='json',timeout=1):
+        """Send GET request to the IP."""
+        # get own data
+        max_tries = 3
+        for attempt in range(max_tries):
+            try:
+                response = requests.get(f"http://{ip}:{port}/{endpoint}", timeout=timeout)
+                response.raise_for_status()
+                if type == 'json':
+                    res= convert_bools(response.json())
+                elif type == 'text':
+                    res= response.text
+                else:
+                    res= response.status_code
+                break
+            except Exception as e:
+                logging.error(f'{e}')
+                if attempt == max_tries-1: # try up to 3 times
+                    return None
+                else:
+                    logging.debug('SLEEEEEEEEEEEEEEEEEPING')
+                    await asyncio.sleep(1+attempt)
+        return res
+
 ##############
 #### Main ####
 ##############
@@ -164,19 +171,29 @@ async def main():
     button = Button(26,bounce_time=0.1)  # Debounce time in seconds
     button.when_pressed = on_press
 
-
+    # initialize state
+    try:
+        stateDict = await send_get_request(endpoint='api/state')
+    except Exception as e:
+        debug.error(f"Couldn't initialize state: {e}")
+        stateDict={"csrp":{"baselineW":0,"now":False,"upcoming":False},
+                    "dlrp":{"baselineW":0,"now":False,"upcoming":False},
+                    "datetime":None,
+                    "eventPause":{"datetime":False, "state":False}}
 
     while True:
         # get event status from Airtable
-        eventDF = atEvents.parseListToDF(await atEvents.listRecords())
-        # check for events
-        eventCSRP = isCSRPEventUpcoming(eventDF,csrpTime)
-        eventDLRP = isDLRPEventUpcoming(eventDF)
+        try:
+            eventDF = atEvents.parseListToDF(await atEvents.listRecords())
+            # check for events
+            eventCSRP = isCSRPEventUpcoming(eventDF,csrpTime)
+            eventDLRP = isDLRPEventUpcoming(eventDF)
 
-        stateDict = {'datetime':datetime.now(),
-                    'csrp':eventCSRP,
-                    'dlrp':eventDLRP,
-                    'eventPause':{'state':False,'datetime':None}}
+            stateDict['datetime'] = datetime.now()
+            stateDict['csrp']=eventCSRP
+            stateDict['dlrp']=eventDLRP
+        except Exception as e:
+            debug.error(f"Couldn't check event status: {e}")
 
         logging.debug(stateDict)
 
@@ -187,8 +204,12 @@ async def main():
         #
         # except Exception as e:
         #     logging.error(f'{e}')
+
+        # check if pause still in effect and reset it if so
+
         if not buttonState['state']:
             logging.debug("Waiting for button press...")
+            stateDict['eventPause']={'state':False,'datetime':None}
         else:
             stateDict['eventPause']=buttonState
 

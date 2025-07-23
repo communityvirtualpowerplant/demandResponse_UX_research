@@ -1,4 +1,8 @@
 
+## Hardware Installation
+
+The button is on GPIO26 and GND. Bend those 2 pins forwards to be able to access them when the screen is on.
+
 ## OS and Software Installation
 
 ### Pi Imager Settings
