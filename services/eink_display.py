@@ -85,7 +85,7 @@ def eventScreen(f):
     epd.displayPartial(epd.getbuffer(sImage))
 
 def eventPausedScreen(f):
-    continue
+    return None
 
 def normalScreen(f,w):
 

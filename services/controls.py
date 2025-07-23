@@ -66,10 +66,10 @@ def isDLRPEventUpcoming(df)-> dict:
         logging.debug(datetime.now()-dlrpStartTime)
         if (datetime.now()-dlrpStartTime < timedelta(hours=0)) and (datetime.now()-dlrpStartTime >= timedelta(hours=-2)):
             logging.debug('event upcoming within 2 hours')
-            dState['upcoming'] = csrpStartTime
+            dState['upcoming'] = dlrpStartTime
         elif (datetime.now()-dlrpStartTime > timedelta(hours=0)) and (datetime.now()-dlrpStartTime <= timedelta(hours=4)):
             logging.debug('event ongoing')
-            dState['now'] = csrpStartTime
+            dState['now'] = dlrpStartTime
 
     return dState
 
