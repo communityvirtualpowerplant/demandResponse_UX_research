@@ -47,7 +47,7 @@ async def send_get_request(ip:str='localhost', port:int=5000,endpoint:str='',typ
         try:
             response = requests.get(f"http://{ip}:{port}/{endpoint}", timeout=timeout)
             if type == 'json':
-                return response.json()
+                return convert_bools(response.json())
             elif type == 'text':
                 return response.text
             else:
@@ -56,6 +56,19 @@ async def send_get_request(ip:str='localhost', port:int=5000,endpoint:str='',typ
             return e
         except Exception as e:
             return e
+
+# Function to recursively convert "true"/"false" strings to Booleans
+def convert_bools(obj):
+    if isinstance(obj, dict):
+        return {k: convert_bools(v) for k, v in obj.items()}
+    elif isinstance(obj, list):
+        return [convert_bools(elem) for elem in obj]
+    elif obj == "true":
+        return True
+    elif obj == "false":
+        return False
+    else:
+        return obj
 
 def upcomingScreen(font24):
     eTime = '4pm'
@@ -171,7 +184,6 @@ async def main():
         epd.init()
         epd.Clear(0xFF)
 
-        logging.info("4.show time...")
         time_image = Image.new('1', (epd.height, epd.width), 255)
         time_draw = ImageDraw.Draw(time_image)
         epd.displayPartBaseImage(epd.getbuffer(time_image))
