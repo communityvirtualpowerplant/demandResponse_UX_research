@@ -8,6 +8,7 @@ import pandas as pd
 import json
 from gpiozero import Button
 from gpiozero.pins.pigpio import PiGPIOFactory
+import requests
 
 logging.basicConfig(format='%(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',level=logging.DEBUG)
 
