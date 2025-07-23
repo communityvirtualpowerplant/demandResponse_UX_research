@@ -180,7 +180,7 @@ async def displayIP(font24):
     ip_draw.rectangle((50, 40, 220, 105), fill = 255)
     ip_draw.text((50, 40), f'{hostname}\n{IPAddr}', font = font24, fill = 0)
     epd.displayPartial(epd.getbuffer(ip_image))
-    asyncio.sleep(30) #needs to wait for the API to spin up before moving on
+    asyncio.sleep(15) #needs to wait for the API to spin up before moving on
 
 def fullRefresh():
     epd.init()
@@ -208,8 +208,6 @@ async def main():
     updateScreen = True
 
     while True:
-        updateScreen = False
-
         #  get most recent data
         if(datetime.now() - updateData> timedelta(minutes=5)):
             power = await send_get_request(endpoint='api/data?date=now&source=plugs')
@@ -227,38 +225,42 @@ async def main():
             num = 0
             fullrefresh()
 
-        # exit loop if state unknown
-        if not state:
-            debug.error(f'no state!')
-            normalScreen(font15)
-            num = num + 1
-            continue
-
-        myTime = datetime.now()
-        if updateScreen:
-            if not state['eventPause']['state']:
-                if not state['csrp']['now']:
-                    if not state['dlrp']['now']:
-                        if not state['csrp']['upcoming']:
-                            if not state['dlrp']['upcoming']:
-                                normalScreen(font15,power['ac-W'])
+        try:
+            if updateScreen:
+                if not state['eventPause']['state']:
+                    if not state['csrp']['now']:
+                        if not state['dlrp']['now']:
+                            if not state['csrp']['upcoming']:
+                                if not state['dlrp']['upcoming']:
+                                    normalScreen(font15,power['ac-W'])
+                                else:
+                                    upcomingScreen(font15)
                             else:
                                 upcomingScreen(font15)
                         else:
-                            upcomingScreen(font15)
+                            eventScreen(font15)
                     else:
                         eventScreen(font15)
                 else:
-                    eventScreen(font15)
-            else:
-                eventPausedScreen(font15)
+                    eventPausedScreen(font15)
 
-            updateScreen = False
-            num = num + 1
+                updateScreen = False
+                num = num + 1
+        except Exception as e:
+            try:
+                # exit loop if state unknown
+                if not state:
+                    logging.error(f'no state!')
+                    normalScreen(font15)
+                    num = num + 1
+                else:
+                    logging.error(e)
+            except Exception as e:
+                logging.error(e)
+
         # full refresh should be greater than 3 minutes or after 3 partial refreshes
+        updateScreen = False
         asyncio.sleep(1)
-        # if(myTime - lastRefresh> timedelta(minutes=10)) | (num>=3):
-        #     break
 
 try:
     #main()
