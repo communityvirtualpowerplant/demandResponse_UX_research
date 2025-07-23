@@ -60,7 +60,7 @@ async def send_get_request(ip:str='localhost', port:int=5000,endpoint:str='',typ
             except Exception as e:
                 logging.error(f'{e}')
                 if attempt == max_tries-1: # try up to 3 times
-                    return e
+                    return None
                 else:
                     logging.debug('SLEEEEEEEEEEEEEEEEEPING')
                     await asyncio.sleep(1+attempt)
@@ -109,7 +109,7 @@ def eventScreen(f):
 def eventPausedScreen(f):
     return None
 
-def normalScreen(f,w):
+def normalScreen(f,w=None):
 
     # display IP and hostname on start up
     sImage = Image.new('1', (screenWidth,screenHeight), 255)
@@ -130,32 +130,35 @@ def normalScreen(f,w):
     # bottom
     sDraw.rectangle((0,screenHeight/2,screenWidth,screenHeight), fill = 255)
 
-    hOffset = 2
-    # performance
-    avgPerf = 76
-    fs = f
-    if sDraw.textlength("Performance:", f) > screenWidth/3:
-        fontSize = 15
-        while True:
-            fontSize -= 1
-            print(fontSize)
-            fs = ImageFont.truetype(os.path.join(picdir, 'Font.ttc'), fontSize)
-            if sDraw.textlength("Performance:", fs) <= screenWidth/3:
-                break
+    if w:
+        hOffset = 2
+        # performance
+        avgPerf = 76
+        fs = f
+        if sDraw.textlength("Performance:", f) > screenWidth/3:
+            fontSize = 15
+            while True:
+                fontSize -= 1
+                print(fontSize)
+                fs = ImageFont.truetype(os.path.join(picdir, 'Font.ttc'), fontSize)
+                if sDraw.textlength("Performance:", fs) <= screenWidth/3:
+                    break
 
-    sDraw.text((hOffset, screenHeight/2), f'Average\nPerformance:\n{avgPerf}%', font = fs, anchor="la", fill = 0)
+        sDraw.text((hOffset, screenHeight/2), f'Average\nPerformance:\n{avgPerf}%', font = fs, anchor="la", fill = 0)
 
-    # baseline
-    sDraw.line([((screenWidth/3),screenHeight/2),((screenWidth/3),screenHeight)], fill=0,width=1, joint=None)
-    avgBase = 378
-    sDraw.text(((screenWidth/3)+hOffset,screenHeight/2), f'Average\nBaseline:\n{avgBase}W', font = f, anchor="la",fill = 0)
+        # baseline
+        sDraw.line([((screenWidth/3),screenHeight/2),((screenWidth/3),screenHeight)], fill=0,width=1, joint=None)
+        avgBase = 378
+        sDraw.text(((screenWidth/3)+hOffset,screenHeight/2), f'Average\nBaseline:\n{avgBase}W', font = f, anchor="la",fill = 0)
 
-    # payment
-    sDraw.line([((2*screenWidth/3),screenHeight/2),((2*screenWidth/3),screenHeight)], fill=0,width=1, joint=None)
-    estPay = 4.5
-    sDraw.text(((2*screenWidth/3)+hOffset, screenHeight/2), f'Estimated\nPayment:\n${estPay}/m', font = f, anchor="la",fill = 0)
+        # payment
+        sDraw.line([((2*screenWidth/3),screenHeight/2),((2*screenWidth/3),screenHeight)], fill=0,width=1, joint=None)
+        estPay = 4.5
+        sDraw.text(((2*screenWidth/3)+hOffset, screenHeight/2), f'Estimated\nPayment:\n${estPay}/m', font = f, anchor="la",fill = 0)
 
-    sDraw.line([(0,screenHeight/2),(screenWidth,screenHeight/2)], fill=0,width=2, joint=None)
+        sDraw.line([(0,screenHeight/2),(screenWidth,screenHeight/2)], fill=0,width=2, joint=None)
+    else:
+        sDraw.text((10, screenHeight/2), f'data missing', font = f, anchor="ma",fill = 0)
     epd.displayPartial(epd.getbuffer(sImage))
 
 async def displayIP(font24):
@@ -187,20 +190,24 @@ async def main():
         battery = await send_get_request(endpoint='api/data?date=now&source=powerstation')
         state = await send_get_request(endpoint='api/state')
 
-        screenState = 0
-
         epd.init()
         epd.Clear(0xFF)
 
-        time_image = Image.new('1', (epd.height, epd.width), 255)
-        time_draw = ImageDraw.Draw(time_image)
-        epd.displayPartBaseImage(epd.getbuffer(time_image))
+        # time_image = Image.new('1', (epd.height, epd.width), 255)
+        # time_draw = ImageDraw.Draw(time_image)
+        # epd.displayPartBaseImage(epd.getbuffer(time_image))
         num = 0 # partial refresh counter (should full refresh after every 3 partials)
         lastRefresh = datetime.now()
 
         #partical refresh loop
         updateScreen = True
         while True:
+            # exit loop if state unknown
+            if not state:
+                debug.error(f'no state!')
+                normalScreen(font15)
+                break
+
             myTime = datetime.now()
             if updateScreen:
                 if not state['eventPause']:
