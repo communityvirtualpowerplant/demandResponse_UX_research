@@ -47,7 +47,7 @@ def isCSRPEventUpcoming(df,t)-> dict:
     return cState
 
 # returns a dictionary with either False or datetime values
-def isDLRPEventUpcoming(df)-> Tuple(bool,bool):
+def isDLRPEventUpcoming(df)-> dict:
     dState = {'now':False,'upcoming':False}
     dlrpDF = df[df['type']=='dlrp']
     for index, row in dlrpDF.iterrows():
@@ -63,13 +63,6 @@ def isDLRPEventUpcoming(df)-> Tuple(bool,bool):
     return dState
 
 async def main():
-
-    # eventDF = atEvents.parseListToDF(await atEvents.listRecords())
-    # #filter results
-    # eventDF = eventDF[~eventDF['status'].isin(['cancelled','past'])]
-    # csrpTime = 17 # pull this from config!
-    # eventCSRP = isCSRPEventUpcoming(eventDF,csrpTime)
-    # eventDLRP = isDLRPEventUpcoming(eventDF)
 
     while True:
         # get event status from Airtable
@@ -94,11 +87,13 @@ async def main():
         #     pause = True
 
         # respond to event status as needed
-        if False:#((eventCSRP==2) or (eventDLRP==2)) and (not pause):
+        if ((eventCSRP.now) or (eventDLRP.now)) and (not pause):
+            # check that event is still going on...
             logging.debug('EVENT NOW!')
             await kD.setEventState()
-        elif eventUpcoming:
+        elif ((eventCSRP.upcoming) or (eventDLRP.upcoming)) :
             #if true, battery can discharge during prep state (add indicator for battery ok to use)
+            logging.debug('EVENT UPCOMING!')
             await kD.setPrepState(True)
         elif pause:
             await kD.setPrepState(True) #should it be in normal state when paused?
