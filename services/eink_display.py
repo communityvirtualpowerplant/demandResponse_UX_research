@@ -84,6 +84,9 @@ def eventScreen(f):
     sDraw.rectangle((50,80), (screenWidth-50,screenHeight-100), fill = 0)
     epd.displayPartial(epd.getbuffer(sImage))
 
+def eventPausedScreen(f):
+    continue
+
 def normalScreen(f,w):
 
     # display IP and hostname on start up
@@ -180,19 +183,22 @@ async def main():
         while True:
             myTime = datetime.now()
             if updateScreen:
-                if not csrp['now']:
-                    if not dlrp['now']:
-                        if not csrp['upcoming']:
-                            if not dlrp['upcoming']:
-                                normalScreen(font15,power['ac-W'])
+                if not state['eventPause']:
+                    if not state['csrp']['now']:
+                        if not state['dlrp']['now']:
+                            if not state['csrp']['upcoming']:
+                                if not state['dlrp']['upcoming']:
+                                    normalScreen(font15,power['ac-W'])
+                                else:
+                                    upcomingScreen(font15)
                             else:
                                 upcomingScreen(font15)
                         else:
-                            upcomingScreen(font15)
+                            eventScreen(font15)
                     else:
                         eventScreen(font15)
                 else:
-                    eventScreen(font15)
+                    eventPausedScreen(font15)
 
                 updateScreen = False
                 num = num + 1
