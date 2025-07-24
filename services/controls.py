@@ -193,36 +193,46 @@ async def main():
     # pause
     def on_press():
         global held_triggered
+        held_triggered = datetime.now()
 
-        time.sleep(button.hold_time + .05) # wait to see if button was held
-        if not held_triggered:
+        # if not held_triggered:
+        #     buttonState['state']=True
+        #     buttonState['datetime']=datetime.now()
+        #     stateDict['eventPause']=buttonState
+        #     loop.call_soon_threadsafe(button_event.set)
+        #     logging.info(f'Button pressed! {buttonState}')
+
+    # # unpause
+    # def on_hold():
+    #     global held_triggered
+    #     held_triggered = True
+
+    #     buttonState['state']=False
+    #     buttonState['datetime']=datetime.now()
+    #     stateDict['eventPause']=buttonState
+    #     loop.call_soon_threadsafe(button_event.set)
+    #     logging.info(f'Button held! {buttonState}')
+
+    def on_release():
+        global held_triggered
+        # Reset hold flag on release
+        if datetime.now() - held_triggered <= timedelta(seconds=button.hold_time):
             buttonState['state']=True
             buttonState['datetime']=datetime.now()
             stateDict['eventPause']=buttonState
             loop.call_soon_threadsafe(button_event.set)
             logging.info(f'Button pressed! {buttonState}')
-
-    # unpause
-    def on_hold():
-        global held_triggered
-        held_triggered = True
-
-        buttonState['state']=False
-        buttonState['datetime']=datetime.now()
-        stateDict['eventPause']=buttonState
-        loop.call_soon_threadsafe(button_event.set)
-        logging.info(f'Button held! {buttonState}')
-
-        held_triggered = False
-
-    # def on_release():
-    #     global held_triggered
-    #     # Reset hold flag on release
+        else:
+            buttonState['state']=False
+            buttonState['datetime']=datetime.now()
+            stateDict['eventPause']=buttonState
+            loop.call_soon_threadsafe(button_event.set)
+            logging.info(f'Button held! {buttonState}')
 
 
     button = Button(26,hold_time=2.0,bounce_time=0.1)  # Debounce time in seconds
     button.when_pressed = on_press
-    button.when_held = on_hold
+    #button.when_held = on_hold
     button.when_released = on_release
 
     # initialize state
