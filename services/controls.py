@@ -200,12 +200,15 @@ async def main():
             return True
 
         press_task = asyncio.create_task(delayed_short_press())
-        if await press_task:
-            buttonState['state']=True
-            buttonState['datetime']=datetime.now()
-            stateDict['eventPause']=buttonState
-            loop.call_soon_threadsafe(button_event.set)
-            logging.debug(f'Button pressed! {buttonState}')
+        press_task.add_done_callback(handle_press)
+
+    # all this is to deal with the button hold trigger stuff :(
+    def handle_press():
+        buttonState['state']=True
+        buttonState['datetime']=datetime.now()
+        stateDict['eventPause']=buttonState
+        loop.call_soon_threadsafe(button_event.set)
+        logging.debug(f'Button pressed! {buttonState}')
 
     # unpause
     def on_hold():
