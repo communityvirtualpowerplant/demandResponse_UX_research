@@ -227,7 +227,11 @@ async def main():
 
         try:
             if updateScreen:
-                if not state['eventPause']['state']:
+                if state['eventPause']['state']:
+                    if (not state['csrp']['now']) or (not state['dlrp']['now']):
+                        # if paused and event is ongoing
+                        eventPausedScreen(font15)
+                else:
                     if not state['csrp']['now']:
                         if not state['dlrp']['now']:
                             if not state['csrp']['upcoming']:
@@ -241,8 +245,6 @@ async def main():
                             eventScreen(font15)
                     else:
                         eventScreen(font15)
-                else:
-                    eventPausedScreen(font15)
 
                 updateScreen = False
                 num = num + 1
