@@ -22,3 +22,30 @@ The username for all devices is
 ### Kasa Smart Plugs
 
 #### User
+
+
+## To do
+
+Software
+* get performance and payment stuff
+* airtable updater
+* incorporate weather
+* health file status should be different for plugs and ps
+* local front end
+* finalize interfaces
+* can I add another URL?
+* include a script to check AT to run specific branches!
+
+System
+* plan for sms and emails
+* design and print cases
+* design supplemental materials
+	* website
+	* system manual
+	* stickers/ labels
+	* DR explainer, with value estimator
+
+Study
+* finalize goals
+* finalize questions
+* finalize changable plan

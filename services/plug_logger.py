@@ -45,41 +45,7 @@ if not un or not pw:
 kD = KasaDRUX(un,pw)
 #atEvents = Airtable(atKey,'apptjKq3GAr5CVOQT','events')
 
-
 freq = 60 * 5
-
-# # discover Kasa devices and collect power data
-# async def discoverAll():
-
-#     #discover all available devices
-#     devices = await Discover.discover(
-#         credentials=Credentials(un, pw),
-#         discovery_timeout=10
-#         )
-
-#     dataDF = pd.DataFrame(data={
-#         "datetime" : [datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")],
-#         "batteryin-W": "",
-#         "batteryout-W": "",
-#         "ac-W": ""})
-
-#     #logging.debug(len(devices))
-
-#     for ip, device in devices.items():
-#         try:
-#             await device.update()
-
-#             energy_module = device.modules.get("Energy")
-
-#             splitAlias = device.alias.split('-')
-#             dataDF[f'{splitAlias[1]}-W']=energy_module.current_consumption
-
-#             #logging.debug(energy_module.current_consumption)
-#             await device.disconnect()
-#         except Exception as e:
-#             logging.error(e)
-
-#     return dataDF
 
 async def main():
 

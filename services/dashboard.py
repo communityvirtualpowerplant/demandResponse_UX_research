@@ -191,9 +191,14 @@ def health_check():
         sdCardErrors = f"error: {str(e)}"
 
     try:
-        fileStatus = api.check_file_size_uniformity(api.dataPath)
+        fileStatusPlugs = api.check_file_size_uniformity(api.dataPath,'plugs')
     except Exception as e:
-        fileStatus = f"error: {str(e)}"
+        fileStatusPlugs = f"error: {str(e)}"
+
+    try:
+        fileStatusPowerStation = api.check_file_size_uniformity(api.dataPath,'powerstation')
+    except Exception as e:
+        fileStatusPowerStation = f"error: {str(e)}"
 
     return jsonify({
         "datetime": dt.strftime("%Y-%m-%d %H:%M:%S"),
@@ -203,7 +208,8 @@ def health_check():
         "diskUsage" : diskUsage,
         "powerIssues" : powerIssues,
         "sdCardErrors" : sdCardErrors,
-        "fileStatus":fileStatus
+        "fileStatusPlugs":fileStatusPlugs,
+        "fileStatusPowerStation":fileStatusPowerStation
     })
 
 if __name__ == "__main__":
