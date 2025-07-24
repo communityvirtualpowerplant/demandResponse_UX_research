@@ -11,7 +11,7 @@ from gpiozero import Button
 from gpiozero.pins.pigpio import PiGPIOFactory
 import requests
 
-logging.basicConfig(format='%(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',level=logging.DEBUG)
+logging.basicConfig(format='%(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',level=logging.INFO)
 
 libdir = '/home/drux/demandResponse_UX_research/lib/helper_classes'
 if os.path.exists(libdir):
@@ -200,7 +200,7 @@ async def main():
             buttonState['datetime']=datetime.now()
             stateDict['eventPause']=buttonState
             loop.call_soon_threadsafe(button_event.set)
-            logging.debug(f'Button pressed! {buttonState}')
+            logging.info(f'Button pressed! {buttonState}')
 
     # unpause
     def on_hold():
@@ -211,12 +211,14 @@ async def main():
         buttonState['datetime']=datetime.now()
         stateDict['eventPause']=buttonState
         loop.call_soon_threadsafe(button_event.set)
-        logging.debug(f'Button held! {buttonState}')
+        logging.info(f'Button held! {buttonState}')
 
-    def on_release():
-        global held_triggered
-        # Reset hold flag on release
         held_triggered = False
+
+    # def on_release():
+    #     global held_triggered
+    #     # Reset hold flag on release
+
 
     button = Button(26,hold_time=2.0,bounce_time=0.1)  # Debounce time in seconds
     button.when_pressed = on_press
