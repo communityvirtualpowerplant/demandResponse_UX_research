@@ -3,6 +3,7 @@ import asyncio
 import os
 import sys
 import logging
+import time
 from datetime import datetime, timedelta
 import pandas as pd
 import json
@@ -194,7 +195,7 @@ async def main():
         global held_triggered
 
         time.sleep(button.hold_time + .05) # wait to see if button was held
-        if held_triggered:
+        if not held_triggered:
             buttonState['state']=True
             buttonState['datetime']=datetime.now()
             stateDict['eventPause']=buttonState
