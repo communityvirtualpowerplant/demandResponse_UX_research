@@ -434,12 +434,11 @@ async def main():
 
             eventDLRP = isDLRPEventUpcoming(eventDF)
             if (eventDLRP['now']) or (eventDLRP['upcoming']):
-                if not dlrpUpdated:
-                    eventDLRP['baselineW']=await getBaseline(eventDF,eventDLRP['upcoming'].time().hour,'dlrp')
-                    dlrpUpdated = True
+                #if not dlrpUpdated:
+                eventDLRP['baselineW']=await getBaseline(eventDF,eventDLRP['upcoming'].time().hour,'dlrp')
+                    #dlrpUpdated = True
                 if (eventDLRP['now']):
                     await logPerformance(await getOngoingPerformance(eventDLRP['now'].time().hour,'dlrp',eventDLRP['baselineW']))
-
             else:
                 try:
                     eventDLRP['baselineW']=stateDict['dlrp']['baselineW']
@@ -479,7 +478,7 @@ async def main():
             stateDict['relays']= {'bat-in':True,'bat-out':True,'ac':True}
         elif stateDict['eventPause']['state']:
             await kD.setPauseState(True) #should it be in normal state when paused?
-            stateDict['relays']= {'bat-in':False,'bat-out':True,'ac':False}
+            stateDict['relays']= {'bat-in':False,'bat-out':True,'ac':True}
         else:
             await kD.setNormalState()
             stateDict['relays']= {'bat-in':True,'bat-out':True,'ac':True}
