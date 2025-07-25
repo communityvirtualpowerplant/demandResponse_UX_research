@@ -309,9 +309,10 @@ async def getOngoingPerformance(eTime:float,eType:str,eBaseline:float,eDate=None
 
     hourlyEnergy = []
     for inc in incs:
-        hourlyEnergy.append(getWh(inc['ac-W'],inc['increments']))
-        if (math.isnan(hourlyEnergy[-1])):
-            hourlyEnergy[-1] = 0.0
+        resWh = getWh(inc['ac-W'],inc['increments'])
+        if (not resWh) or (math.isnan(resWh)):
+            resWh = 0.0
+        hourlyEnergy.append(resWh)
 
     hourlyEnergy = [float(h) for h in hourlyEnergy]
 

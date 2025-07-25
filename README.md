@@ -34,7 +34,8 @@ Software
 * finalize interfaces
 * include a script to check AT to run specific branches!
 * add in a battery cutoff below 20%
-* performance log should overwrite previous pieces from that event
+* get actual baseline rules
+* fix performance calculator!
 
 System
 * plan for sms and emails
