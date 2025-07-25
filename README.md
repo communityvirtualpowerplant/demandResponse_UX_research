@@ -32,9 +32,9 @@ Software
 * incorporate weather
 * local front end
 * finalize interfaces
-* can I add another URL?
 * include a script to check AT to run specific branches!
 * add in a battery cutoff below 20%
+* performance log should overwrite previous pieces from that event
 
 System
 * plan for sms and emails

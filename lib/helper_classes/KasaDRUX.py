@@ -134,7 +134,7 @@ class KasaDRUX():
 
                 # turn AC off
                 if 'ac' in device.alias:
-                    await self.setState(device,False)
+                    await self.setState(device,True)
                 # turn battery input off
                 elif 'batteryin' in device.alias:
                     await self.setState(device,b)

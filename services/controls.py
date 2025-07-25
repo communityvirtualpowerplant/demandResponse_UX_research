@@ -480,6 +480,8 @@ async def main():
                 logging.debug(f"unpausing!: {stateDict['eventPause']}")
 
 
+        #save state before
+        #await saveState(stateDict)
 
         # respond to event status as needed
         if ((eventCSRP['now']) or (eventDLRP['now'])) and (not stateDict['eventPause']['state']):
