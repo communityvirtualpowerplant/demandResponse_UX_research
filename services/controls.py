@@ -375,14 +375,19 @@ def getWh(p:list[float],t:list[datetime])->float:
 
 async def logPerformance(d:dict):
     try:
-        with open(os.path.join(repoRoot,'data/performance.json'), "r") as json_file_r:
-            lp = json.load(json_file_r)
-            cd = convert_datetimes(d)
-            lp[cd['datetime']] = cd
-            # json.dump(convert_datetimes(d), json_file, indent=4)
-            # logging.debug(f'Performance written to file. :)')
+        try:
+            with open(os.path.join(repoRoot,'data/performance.json'), "r") as json_file_r:
+                lp = json.load(json_file_r)
+        except FileNotFoundError:
+            lp = {}
+        except json.JSONDecodeError:
+            lp = {}
+        d['modified']= datetime.now()
+        cd = convert_datetimes(d)
+        lp[cd['datetime']] = cd
         with open(os.path.join(repoRoot,'data/performance.json'), 'w') as json_file_w:
             json.dump(lp, json_file_w, indent=4)
+            logging.info(f'Performance written to file. :)')
     except Exception as e:
         logging.error(f'Exception writing performance to file: {e}')
 
