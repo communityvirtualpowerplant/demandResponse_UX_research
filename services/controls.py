@@ -315,8 +315,14 @@ async def getOngoingPerformance(eTime:float,eType:str,eBaseline:float,eDate=None
     if len(hourlyEnergy) == 0:
         hourlyEnergy = 0
 
+    try:
+        perfPerc = 1- (mean(hourlyEnergy)/ eBaseline)
+    except Exception as e:
+        logging.error(e)
+        perfPerc = 0
+
     perf = {'datetime':formattedStartTime,
-            'performancePerc':1- (mean(hourlyEnergy)/ eBaseline),
+            'performancePerc':perfPerc,
             'loadWh_hourly':hourlyEnergy,
             'loadWh_avg':mean(hourlyEnergy),
             'flexW_avg':eBaseline-mean(hourlyEnergy),
