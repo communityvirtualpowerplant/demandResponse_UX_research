@@ -435,11 +435,13 @@ async def main():
                 await logPerformance(await getOngoingPerformance(csrpTime,'csrp',eventCSRP['baselineW']))
 
             eventDLRP = isDLRPEventUpcoming(eventDF)
-            if (eventDLRP['now']) or (eventDLRP['upcoming']):
+            if (eventDLRP['upcoming']):
                 #if not dlrpUpdated:
+
                 eventDLRP['baselineW']=await getBaseline(eventDF,eventDLRP['upcoming'].time().hour,'dlrp')
                     #dlrpUpdated = True
-                if (eventDLRP['now']):
+            elif (eventDLRP['now']):
+                    eventDLRP['baselineW']=await getBaseline(eventDF,eventDLRP['now'].time().hour,'dlrp')
                     await logPerformance(await getOngoingPerformance(eventDLRP['now'].time().hour,'dlrp',eventDLRP['baselineW']))
             else:
                 try:
