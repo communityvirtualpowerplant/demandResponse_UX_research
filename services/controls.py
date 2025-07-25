@@ -115,7 +115,7 @@ def parse_datetimes(obj):
     else:
         return obj
 
-def saveState(d:dict):
+async def saveState(d:dict):
     try:
         with open(os.path.join(repoRoot,'services/state.json'), "w") as json_file:
             json.dump(convert_datetimes(d), json_file, indent=4)
@@ -179,12 +179,10 @@ async def send_get_request(ip:str='localhost', port:int=5000,endpoint:str='',typ
         return res
 
 ####################
-### get baseline ###
+### DR Metrics ###
 ####################
 
-# currently only works with eTime as ints (whole hours)
-#args: event type, event log df
-async def getBaseline(eType:str,eDF:pd.DataFrame,eTime:float):
+async def prepDRData(eDF:pd.DataFrame,eTime:float,eType:str):
     # drop unnecessary columns
     eDF = eDF.drop(columns=['modified','notes','network'])
 
@@ -212,6 +210,14 @@ async def getBaseline(eType:str,eDF:pd.DataFrame,eTime:float):
         tempDF = pd.read_csv(StringIO(d))
         tempDF['datetime'] = pd.to_datetime(tempDF['datetime'])
         parsedData.append(tempDF)
+
+    return parsedData
+
+# currently only works with eTime as ints (whole hours)
+#args: event type, event log df
+async def getBaseline(eDF:pd.DataFrame,eTime:float,eType:str,eDate=None):
+
+    parsedData = prepDRData(eDF,eTime,eType)
 
     logging.debug(f'length of parsed response: {len(parsedData)}')
 
@@ -265,6 +271,51 @@ async def getBaseline(eType:str,eDF:pd.DataFrame,eTime:float):
     logging.debug(mean(dailyWindowAvgW))
     return mean(dailyWindowAvgW)
 
+async def getOngoingPerformance(eTime:float,eType:str,eBaseline:float,eDate=None):
+    # get today's file
+    today = datetime.now().date() #- timedelta(days=1) uncomment to test or pass it in as eDate
+    if eDate:
+        today = eDate
+
+    r = await send_get_request(endpoint=f'api/data?source=plugs&date={today.strftime("%Y-%m-%d")}',type='text')
+    if type(r) == tuple:
+        r = r[0]
+    data=r
+
+    tempDF = pd.read_csv(StringIO(data))
+    tempDF['datetime'] = pd.to_datetime(tempDF['datetime'])
+    parsedData = tempDF
+
+    # get event window
+    eventWindow = parsedData[[(d > d.replace(hour=eTime,minute=0,second=0,microsecond=0)) and (d <= d.replace(hour=eTime+4,minute=0,second=0,microsecond=0)) for d in parsedData['datetime']]]
+
+    formattedStartTime = (datetime.now()- timedelta(days=1)).replace(hour=eTime,minute=0,second=0,microsecond=0)
+
+    # create hourly buckets for each day
+    hourly = hourlyBuckets(eventWindow,formattedStartTime)
+    # the increments function adds a column for the increment of a specific datapoint
+    incs = []
+    for i,h in enumerate(hourly):
+        incs.append(increments(h,formattedStartTime+timedelta(hours=i)))
+
+    hourlyEnergy = []
+    for inc in incs:
+        hourlyEnergy.append(getWh(inc['ac-W'],inc['increments']))
+        if (math.isnan(hourlyEnergy[-1])):
+            hourlyEnergy[-1] = 0.0
+
+    hourlyEnergy = [float(h) for h in hourlyEnergy]
+
+    perf = {'datetime':formattedStartTime,
+            'performancePerc':1- (mean(hourlyEnergy)/ eBaseline),
+            'loadWh_hourly':hourlyEnergy,
+            'loadWh_avg':mean(hourlyEnergy),
+            'flexW_avg':eBaseline-mean(hourlyEnergy),
+            'baselineW':eBaseline,
+            'event':eType}
+
+    return perf
+
 # buckets df with datetime within an event window into hourly buckets
 # args: a dataframe with datetimes
 def hourlyBuckets(tempDF, tempStartTime:float, eventDuration:float=4) -> list[pd.DataFrame]:
@@ -300,6 +351,15 @@ def increments(df,fm=0)->pd.DataFrame:
 def getWh(p:list[float],t:list[datetime])->float:
     e = trapezoid(y=p, x=t)
     return e
+
+async def logPerformance(perf:dict):
+
+    try:
+        with open(os.path.join(repoRoot,'data/performance.json'), "w") as json_file:
+            json.dump(convert_datetimes(d), json_file, indent=4)
+            logging.debug(f'Performance written to file. :)')
+    except Exception as e:
+        logging.error(f'Exception writing performance to file: {e}')
 
 ##############
 #### Main ####
@@ -343,14 +403,15 @@ async def main():
         stateDict = await send_get_request(endpoint='api/state')
     except Exception as e:
         logging.error(f"Couldn't initialize state: {e}")
-        stateDict={"csrp":{"baselineW":0,"now":False,"upcoming":False},
-                    "dlrp":{"baselineW":0,"now":False,"upcoming":False},
+        stateDict={"csrp":{"baselineW":0,"now":False,"upcoming":False,"avgPerf":100},
+                    "dlrp":{"baselineW":0,"now":False,"upcoming":False,"avgPerf":100},
                     "datetime":datetime.now(),
-                    "eventPause":{"datetime":datetime.now(), "state":False}}
+                    "eventPause":{"datetime":datetime.now(), "state":False},
+                    "relays":{'bat-in':True,'bat-out':True,'ac':True}}
 
     try:
         eventDF = atEvents.parseListToDF(await atEvents.listRecords())
-        csrpBaseline=await getBaseline('CSRP',eventDF,csrpTime)
+        csrpBaseline=await getBaseline(eventDF,csrpTime,'csrp')
     except Exception as e:
         try:
             csrpBaseline = stateDict['csrp']['baselineW']
@@ -368,12 +429,17 @@ async def main():
             # check for events
             eventCSRP = isCSRPEventUpcoming(eventDF,csrpTime)
             eventCSRP['baselineW']=csrpBaseline
+            if (eventCSRP['now']):
+                await logPerformance(await getOngoingPerformance(csrpTime,'csrp',eventCSRP['baselineW']))
 
             eventDLRP = isDLRPEventUpcoming(eventDF)
             if (eventDLRP['now']) or (eventDLRP['upcoming']):
                 if not dlrpUpdated:
-                    eventDLRP['baselineW']=await getBaseline('DLRP',eventDF,eventDLRP['upcoming'].time().hour)
+                    eventDLRP['baselineW']=await getBaseline(eventDF,eventDLRP['upcoming'].time().hour,'dlrp')
                     dlrpUpdated = True
+                if (eventDLRP['now']):
+                    await logPerformance(await getOngoingPerformance(eventDLRP['now'].time().hour,'dlrp',eventDLRP['baselineW']))
+
             else:
                 try:
                     eventDLRP['baselineW']=stateDict['dlrp']['baselineW']
@@ -397,29 +463,29 @@ async def main():
                 stateDict['eventPause']={'state':False,'datetime':datetime.now()}
                 logging.debug(f"unpausing!: {stateDict['eventPause']}")
 
-        #save state
-        saveState(stateDict)
+
 
         # respond to event status as needed
         if ((eventCSRP['now']) or (eventDLRP['now'])) and (not stateDict['eventPause']['state']):
             # check that event is still going on...
             logging.debug('EVENT NOW!')
             await kD.setEventState()
+            stateDict['relays']= {'bat-in':False,'bat-out':True,'ac':False}
         elif ((eventCSRP['upcoming']) or (eventDLRP['upcoming'])) :
             #if true, battery can discharge during prep state (add indicator for battery ok to use)
             # keep battery charged!
             logging.debug('EVENT UPCOMING!')
             await kD.setPrepState(True)
+            stateDict['relays']= {'bat-in':True,'bat-out':True,'ac':True}
         elif stateDict['eventPause']['state']:
-            await kD.setPrepState(True) #should it be in normal state when paused?
+            await kD.setPauseState(True) #should it be in normal state when paused?
+            stateDict['relays']= {'bat-in':False,'bat-out':True,'ac':False}
         else:
             await kD.setNormalState()
+            stateDict['relays']= {'bat-in':True,'bat-out':True,'ac':True}
 
-        # periodically (once a day?) estimate baseline
-            # read AC power data for required period
-            # filter to event window
-            # get energy w/ trapazoid method
-            # divide by 4 hours
+        #save state
+        await saveState(stateDict)
 
         await sleeper(5*60)
         await asyncio.sleep(.1) # may not be necessary

@@ -64,7 +64,6 @@ def today():
         rows = []
     return render_template('data.html', cols = cols, data=rows)
 
-# untested!
 # upcoming and ongoing event info
 @app.route("/api/state", methods=['GET'])
 def getState():
@@ -74,6 +73,17 @@ def getState():
             return jsonify(data), 200
     except Exception as e:
         logging.error(f'Exception reading state.json: {e}')
+        return jsonify({'error': str(e)}), 500
+
+# upcoming and ongoing event info
+@app.route("/api/performance", methods=['GET'])
+def getState():
+    try:
+        with open(os.path.join(repoRoot,'data/performance.json'), "r") as jsonFile:
+            data = json.load(jsonFile)
+            return jsonify(data), 200
+    except Exception as e:
+        logging.error(f'Exception reading performance.json: {e}')
         return jsonify({'error': str(e)}), 500
 
 @app.route("/api/discover", methods=['GET'])

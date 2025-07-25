@@ -1,5 +1,8 @@
 {
 	"participant":0,
 	"network":"crown heights",
-	"csrp":14
+	"csrp":14,
+	"csrpRatekW":18,
+	"dlrpRatekW":18,
+	"paymentStartDate":"2025-07-21"
 }

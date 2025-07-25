@@ -124,6 +124,28 @@ class KasaDRUX():
             except Exception as e:
                 logging.error(e)
 
+    #b determines if battery output should be on at this time
+    async def setPauseState(self,b=True):
+        devices = await self.discoverAll()
+
+        for ip, device in devices.items():
+            try:
+                await device.update()
+
+                # turn AC off
+                if 'ac' in device.alias:
+                    await self.setState(device,False)
+                # turn battery input off
+                elif 'batteryin' in device.alias:
+                    await self.setState(device,b)
+                # turn battery output on
+                elif 'batteryout' in device.alias:
+                    await self.setState(device,True)
+
+                await device.disconnect()
+            except Exception as e:
+                logging.error(e)
+
     # turn all relays on
     async def setNormalState(self):
         devices = await self.discoverAll()

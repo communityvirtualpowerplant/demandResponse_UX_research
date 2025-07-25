@@ -40,7 +40,17 @@ print(f'W={screenWidth}, H={screenHeight}')
 hostname = socket.gethostname()
 IPAddr = socket.gethostbyname(hostname)
 #IPAddr = socket.gethostbyname(socket.getfqdn())
-print(IPAddr)
+logging.debug(IPAddr)
+
+try:
+    repoRoot = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+    with open(os.path.join(repoRoot,'config.json')) as f:
+        config = json.load(f)
+except Exception as e:
+    logging.error(f"Error during reading config file: {e}")
+
+csrpRate = config['csrpRatekW']
+dlrpRate = config['dlrpRatekW']
 
 async def send_get_request(ip:str='localhost', port:int=5000,endpoint:str='',type:str='json',timeout=1):
         """Send GET request to the IP."""
