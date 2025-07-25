@@ -214,10 +214,10 @@ async def send_get_request(ip:str='localhost', port:int=5000,endpoint:str='',typ
 #args: event type, event log df
 async def getBaseline(eType:str,eDF:pd.DataFrame,eTime:float):
     # drop unnecessary columns
-    eType = eType.drop(columns=['modified','notes','network'])
+    eDF = eDF.drop(columns=['modified','notes','network'])
 
     # filter to only past events
-    pastEventsDF=eType[eType['date']<datetime.now().replace(hour=0,minute=0,second=0,microsecond=0)]
+    pastEventsDF=eDF[eDF['date']<datetime.now().replace(hour=0,minute=0,second=0,microsecond=0)]
 
     # get file list
     fileList = await send_get_request(endpoint='api/files?source=plugs')
@@ -384,8 +384,8 @@ async def main():
     while True:
         # get event status from Airtable
         try:
-            if not eventDF:# conditional only needed to not call this twice at the start of the program
-                eventDF = atEvents.parseListToDF(await atEvents.listRecords())
+            #if not eventDF:# conditional only needed to not call this twice at the start of the program
+            eventDF = atEvents.parseListToDF(await atEvents.listRecords())
             # check for events
             eventCSRP = isCSRPEventUpcoming(eventDF,csrpTime)
 
@@ -399,7 +399,7 @@ async def main():
             logging.debug(stateDict)
 
             # reset eventDF
-            eventDF = None
+            #eventDF = None
         except Exception as e:
             logging.error(f"Couldn't check event status: {e}")
 
