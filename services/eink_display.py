@@ -13,6 +13,7 @@ import requests
 from datetime import datetime, timedelta
 from PIL import Image,ImageDraw,ImageFont
 import asyncio
+import json
 
 # picdir = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), 'assets')
 # libdir = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), 'lib')

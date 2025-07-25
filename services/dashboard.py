@@ -77,7 +77,7 @@ def getState():
 
 # upcoming and ongoing event info
 @app.route("/api/performance", methods=['GET'])
-def getState():
+def getPerformance():
     try:
         with open(os.path.join(repoRoot,'data/performance.json'), "r") as jsonFile:
             data = json.load(jsonFile)
