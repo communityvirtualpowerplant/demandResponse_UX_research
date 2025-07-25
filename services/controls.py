@@ -211,13 +211,15 @@ async def prepBaselineData(eDF:pd.DataFrame,eTime:float,eType:str):
         tempDF['datetime'] = pd.to_datetime(tempDF['datetime'])
         parsedData.append(tempDF)
 
-    return parsedData
+    return (parsedData,pastEventsDF)
 
 # currently only works with eTime as ints (whole hours)
 #args: event type, event log df
 async def getBaseline(eDF:pd.DataFrame,eTime:float,eType:str,eDate=None):
 
-    parsedData = await prepBaselineData(eDF,eTime,eType)
+    prepTuple = await prepBaselineData(eDF,eTime,eType)
+    parsedData = prepTuple[0]
+    pastEventsDF = prepTuple[1]
 
     logging.debug(f'length of parsed response: {len(parsedData)}')
 
