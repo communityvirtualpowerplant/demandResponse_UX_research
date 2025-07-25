@@ -212,7 +212,7 @@ async def send_get_request(ip:str='localhost', port:int=5000,endpoint:str='',typ
 
 # currently only works with eTime as ints (whole hours)
 #args: event type, event log df
-await def getBaseline(eType:str,eDF:pd.DataFrame,eTime:float):
+async def getBaseline(eType:str,eDF:pd.DataFrame,eTime:float):
     # drop unnecessary columns
     eType = eType.drop(columns=['modified','notes','network'])
 
@@ -375,12 +375,17 @@ async def main():
                     "datetime":datetime.now(),
                     "eventPause":{"datetime":datetime.now(), "state":False}}
 
-    stateDict['csrp']['baselineW']=await getBaseline('CSRP',eventDF,csrpTime)
+    try:
+        eventDF = atEvents.parseListToDF(await atEvents.listRecords())
+        stateDict['csrp']['baselineW']=await getBaseline('CSRP',eventDF,csrpTime)
+    except Exception as e:
+        logging.error(e)
 
     while True:
         # get event status from Airtable
         try:
-            eventDF = atEvents.parseListToDF(await atEvents.listRecords())
+            if not eventDF:# conditional only needed to not call this twice at the start of the program
+                eventDF = atEvents.parseListToDF(await atEvents.listRecords())
             # check for events
             eventCSRP = isCSRPEventUpcoming(eventDF,csrpTime)
 
@@ -392,6 +397,9 @@ async def main():
             stateDict['csrp']=eventCSRP
             stateDict['dlrp']=eventDLRP
             logging.debug(stateDict)
+
+            # reset eventDF
+            eventDF = None
         except Exception as e:
             logging.error(f"Couldn't check event status: {e}")
 
