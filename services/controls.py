@@ -367,7 +367,7 @@ def getWh(p:list[float],t:list[datetime])->float:
     e = trapezoid(y=p, x=t)
     return e
 
-async def logPerformance(perf:dict):
+async def logPerformance(d:dict):
 
     try:
         with open(os.path.join(repoRoot,'data/performance.json'), "w") as json_file:
