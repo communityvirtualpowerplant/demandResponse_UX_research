@@ -273,7 +273,10 @@ async def getBaseline(eDF:pd.DataFrame,eTime:float,eType:str,eDate=None):
         logging.debug(mean(dailyWindowAvgW))
         return mean(dailyWindowAvgW)
     except Exception as e:
-        logging.error(e)
+        if e == 'mean requires at least one data point':
+            logging.error(f'likely missing past data: {e}')
+        else:
+            logging.error(e)
         return 0
 
 
@@ -318,7 +321,10 @@ async def getOngoingPerformance(eTime:float,eType:str,eBaseline:float,eDate=None
     try:
         perfPerc = 1- (mean(hourlyEnergy)/ eBaseline)
     except Exception as e:
-        logging.error(e)
+        if e == 'float division by zero':
+            logging.error(f'likely missing past data: {e}')
+        else:
+            logging.error(e)
         perfPerc = 0
 
     perf = {'datetime':formattedStartTime,
@@ -368,11 +374,15 @@ def getWh(p:list[float],t:list[datetime])->float:
     return e
 
 async def logPerformance(d:dict):
-
     try:
-        with open(os.path.join(repoRoot,'data/performance.json'), "w") as json_file:
-            json.dump(convert_datetimes(d), json_file, indent=4)
-            logging.debug(f'Performance written to file. :)')
+        with open(os.path.join(repoRoot,'data/performance.json'), "r") as json_file_r:
+            lp = json.load(json_file_r)
+            cd = convert_datetimes(d)
+            lp[cd['datetime']] = cd
+            # json.dump(convert_datetimes(d), json_file, indent=4)
+            # logging.debug(f'Performance written to file. :)')
+        with open(os.path.join(repoRoot,'data/performance.json'), 'w') as json_file_w:
+            json.dump(lp, json_file_w, indent=4)
     except Exception as e:
         logging.error(f'Exception writing performance to file: {e}')
 
