@@ -15,7 +15,7 @@ from io import StringIO
 import math
 from statistics import mean
 
-logging.basicConfig(format='%(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',level=logging.DEBUG)
+logging.basicConfig(format='%(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',level=logging.INFO)
 
 libdir = '/home/drux/demandResponse_UX_research/lib/helper_classes'
 if os.path.exists(libdir):
@@ -216,62 +216,66 @@ async def prepBaselineData(eDF:pd.DataFrame,eTime:float,eType:str):
 # currently only works with eTime as ints (whole hours)
 #args: event type, event log df
 async def getBaseline(eDF:pd.DataFrame,eTime:float,eType:str,eDate=None):
+    try:
+        prepTuple = await prepBaselineData(eDF,eTime,eType)
+        parsedData = prepTuple[0]
+        pastEventsDF = prepTuple[1]
 
-    prepTuple = await prepBaselineData(eDF,eTime,eType)
-    parsedData = prepTuple[0]
-    pastEventsDF = prepTuple[1]
+        logging.debug(f'length of parsed response: {len(parsedData)}')
 
-    logging.debug(f'length of parsed response: {len(parsedData)}')
+        #update with actual baseline requirements
 
-    #update with actual baseline requirements
+        # filter out event dates
+        pastEvents_type = pastEventsDF[pastEventsDF['type']==eType]
+        pastEventDates = [d.date() for d in list(pastEvents_type['date'])]
+        logging.debug(f'past events: {pastEventDates}')
 
-    # filter out event dates
-    pastEvents_type = pastEventsDF[pastEventsDF['type']==eType]
-    pastEventDates = [d.date() for d in list(pastEvents_type['date'])]
-    logging.debug(f'past events: {pastEventDates}')
+        filteredData = []
+        for d in parsedData:
+            #ignore days with past events (should this ignore those days regardless of type?
+            if list(d['datetime'])[0].date() not in pastEventDates:
+                if list(d['datetime'])[0].date().weekday() <=4: # filter out weekends
+                    filteredData.append(d)
 
-    filteredData = []
-    for d in parsedData:
-        #ignore days with past events (should this ignore those days regardless of type?
-        if list(d['datetime'])[0].date() not in pastEventDates:
-            if list(d['datetime'])[0].date().weekday() <=4: # filter out weekends
-                filteredData.append(d)
+        # get event windows
+        eventWindows = []
+        for d in filteredData:
+            #get on timestamps between event start and end times
+            eventWindows.append(d[[(d > d.replace(hour=eTime,minute=0,second=0,microsecond=0)) and (d <= d.replace(hour=eTime+4,minute=0,second=0,microsecond=0)) for d in d['datetime']]])
 
-    # get event windows
-    eventWindows = []
-    for d in filteredData:
-        #get on timestamps between event start and end times
-        eventWindows.append(d[[(d > d.replace(hour=eTime,minute=0,second=0,microsecond=0)) and (d <= d.replace(hour=eTime+4,minute=0,second=0,microsecond=0)) for d in d['datetime']]])
+        dailyWindowAvgW = []
+        # eventLength = 4
+        for i, d in enumerate(eventWindows):
+            if len(d['datetime']) == 0:
+                continue
 
-    dailyWindowAvgW = []
-    # eventLength = 4
-    for i, d in enumerate(eventWindows):
-        if len(d['datetime']) == 0:
-            continue
+            formattedStartTime = d['datetime'].iloc[0].replace(hour=eTime,minute=0,second=0,microsecond=0)
 
-        formattedStartTime = d['datetime'].iloc[0].replace(hour=eTime,minute=0,second=0,microsecond=0)
+            # create hourly buckets for each day
+            hourly = hourlyBuckets(d,formattedStartTime)
 
-        # create hourly buckets for each day
-        hourly = hourlyBuckets(d,formattedStartTime)
+            # add increments within each hour
+            incs = []
+            for ih,h in enumerate(hourly):
+                # the increments function adds a column for the increment of a specific datapoint
+                incs.append(increments(h,formattedStartTime+timedelta(hours=ih)))
 
-        # add increments within each hour
-        incs = []
-        for ih,h in enumerate(hourly):
-            # the increments function adds a column for the increment of a specific datapoint
-            incs.append(increments(h,formattedStartTime+timedelta(hours=ih)))
+            #print(incs)
 
-        #print(incs)
+            hourlyEnergy = []
+            for inc in incs:
+                hourlyEnergy.append(getWh(inc['ac-W'],inc['increments']))
+                if (math.isnan(hourlyEnergy[-1])):
+                    hourlyEnergy[-1] = 0.0
 
-        hourlyEnergy = []
-        for inc in incs:
-            hourlyEnergy.append(getWh(inc['ac-W'],inc['increments']))
-            if (math.isnan(hourlyEnergy[-1])):
-                hourlyEnergy[-1] = 0.0
+            dailyWindowAvgW.append(mean(hourlyEnergy))
 
-        dailyWindowAvgW.append(mean(hourlyEnergy))
+        logging.debug(mean(dailyWindowAvgW))
+        return mean(dailyWindowAvgW)
+    except Exception as e:
+        logging.error(e)
+        return 0
 
-    logging.debug(mean(dailyWindowAvgW))
-    return mean(dailyWindowAvgW)
 
 async def getOngoingPerformance(eTime:float,eType:str,eBaseline:float,eDate=None):
     # get today's file
@@ -307,6 +311,9 @@ async def getOngoingPerformance(eTime:float,eType:str,eBaseline:float,eDate=None
             hourlyEnergy[-1] = 0.0
 
     hourlyEnergy = [float(h) for h in hourlyEnergy]
+
+    if len(hourlyEnergy) == 0:
+        hourlyEnergy = 0
 
     perf = {'datetime':formattedStartTime,
             'performancePerc':1- (mean(hourlyEnergy)/ eBaseline),
