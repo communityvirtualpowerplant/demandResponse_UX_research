@@ -352,7 +352,13 @@ async def main():
         eventDF = atEvents.parseListToDF(await atEvents.listRecords())
         csrpBaseline=await getBaseline('CSRP',eventDF,csrpTime)
     except Exception as e:
+        try:
+            csrpBaseline = stateDict['csrp']['baselineW']
+        except:
+            csrpBaseline = 0
         logging.error(e)
+
+    dlrpUpdated = False
 
     while True:
         # get event status from Airtable
@@ -365,8 +371,14 @@ async def main():
 
             eventDLRP = isDLRPEventUpcoming(eventDF)
             if (eventDLRP['now']) or (eventDLRP['upcoming']):
-                eventDLRP['baselineW']=await getBaseline('DLRP',eventDF,eventDLRP['upcoming'].time().hour)
-
+                if not dlrpUpdated:
+                    eventDLRP['baselineW']=await getBaseline('DLRP',eventDF,eventDLRP['upcoming'].time().hour)
+                    dlrpUpdated = True
+            else:
+                try:
+                    eventDLRP['baselineW']=stateDict['dlrp']['baselineW']
+                except:
+                    eventDLRP['baselineW']=0
             stateDict['datetime'] = datetime.now()
             stateDict['csrp']=eventCSRP
             stateDict['dlrp']=eventDLRP
