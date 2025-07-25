@@ -212,7 +212,7 @@ async def send_get_request(ip:str='localhost', port:int=5000,endpoint:str='',typ
 
 # currently only works with eTime as ints (whole hours)
 #args: event type, event log df
-def getBaseline(eType:str,eDF:pd.DataFrame,eTime:float):
+await def getBaseline(eType:str,eDF:pd.DataFrame,eTime:float):
     # drop unnecessary columns
     eType = eType.drop(columns=['modified','notes','network'])
 
@@ -375,7 +375,7 @@ async def main():
                     "datetime":datetime.now(),
                     "eventPause":{"datetime":datetime.now(), "state":False}}
 
-    stateDict['csrp']['baselineW']=getBaseline('CSRP',eventDF,csrpTime)
+    stateDict['csrp']['baselineW']=await getBaseline('CSRP',eventDF,csrpTime)
 
     while True:
         # get event status from Airtable
@@ -386,7 +386,7 @@ async def main():
 
             eventDLRP = isDLRPEventUpcoming(eventDF)
             if (eventDLRP['now']) or (eventDLRP['upcoming']):
-                stateDict['dlrp']['baselineW']=getBaseline('DLRP',eventDF,eventDLRP['upcoming'].time().hour)
+                stateDict['dlrp']['baselineW']=await getBaseline('DLRP',eventDF,eventDLRP['upcoming'].time().hour)
 
             stateDict['datetime'] = datetime.now()
             stateDict['csrp']=eventCSRP
