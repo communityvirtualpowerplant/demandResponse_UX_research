@@ -15,7 +15,7 @@ from io import StringIO
 import math
 from statistics import mean
 
-logging.basicConfig(format='%(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',level=logging.INFO)
+logging.basicConfig(format='%(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',level=logging.DEBUG)
 
 libdir = '/home/drux/demandResponse_UX_research/lib/helper_classes'
 if os.path.exists(libdir):
@@ -57,9 +57,6 @@ held_triggered = False
 #### Helper Functions ####
 ##########################
 
-def calcBaseline(st):
-    return None
-
 # returns a dictionary with either False or datetime values
 def isCSRPEventUpcoming(df,t)-> dict:
     cState = {'now':False,'upcoming':False,'baselineW':0}
@@ -75,7 +72,6 @@ def isCSRPEventUpcoming(df,t)-> dict:
             logging.debug('CSRP event ongoing!')
             cState['now'] = csrpStartTime
 
-    #cState['baselineW']=calcBaseline(csrpStartTime)
     return cState
 
 # returns a dictionary with either False or datetime values
@@ -92,7 +88,6 @@ def isDLRPEventUpcoming(df)-> dict:
             logging.debug('event ongoing')
             dState['now'] = dlrpStartTime
 
-    #dState['baselineW']=calcBaseline(dlrpStartTime)
     return dState
 
 # convert datetimes to iso formatted strings
@@ -183,29 +178,6 @@ async def send_get_request(ip:str='localhost', port:int=5000,endpoint:str='',typ
                     await asyncio.sleep(1+attempt)
         return res
 
-# # its dumb to have both of these request functions!
-# async def send_secure_get_request(url:str,key:str=None,type:str='json',timeout=2):
-#     """Send GET request to the IP."""
-#     try:
-#         headers = {"Content-Type": "application/json; charset=utf-8"}
-
-#         if key:
-#             headers = {"Authorization": f"Bearer {key}"}
-#         else:
-#             heads = {}
-
-#         response = requests.get(url, headers=headers, timeout=timeout)
-#         if type == 'json':
-#             return response.json()
-#         elif type == 'text':
-#             return (response.text, response.status_code)
-#         else:
-#             return response.status_code
-#     except requests.Timeout as e:
-#         return e
-#     except Exception as e:
-#         return e
-
 ####################
 ### get baseline ###
 ####################
@@ -241,17 +213,18 @@ async def getBaseline(eType:str,eDF:pd.DataFrame,eTime:float):
         tempDF['datetime'] = pd.to_datetime(tempDF['datetime'])
         parsedData.append(tempDF)
 
+    logging.debug(f'length of parsed response: {len(parsedData)}')
+
     #update with actual baseline requirements
 
     # filter out event dates
     pastEvents_type = pastEventsDF[pastEventsDF['type']==eType]
     pastEventDates = [d.date() for d in list(pastEvents_type['date'])]
-    print(pastEventDates)
+    logging.debug(f'past events: {pastEventDates}')
 
     filteredData = []
     for d in parsedData:
         #ignore days with past events (should this ignore those days regardless of type?
-        print(d['datetime'][0])
         if list(d['datetime'])[0].date() not in pastEventDates:
             if list(d['datetime'])[0].date().weekday() <=4: # filter out weekends
                 filteredData.append(d)
