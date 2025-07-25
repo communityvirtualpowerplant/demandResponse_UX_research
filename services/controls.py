@@ -182,7 +182,7 @@ async def send_get_request(ip:str='localhost', port:int=5000,endpoint:str='',typ
 ### DR Metrics ###
 ####################
 
-async def prepDRData(eDF:pd.DataFrame,eTime:float,eType:str):
+async def prepBaselineData(eDF:pd.DataFrame,eTime:float,eType:str):
     # drop unnecessary columns
     eDF = eDF.drop(columns=['modified','notes','network'])
 
@@ -217,7 +217,7 @@ async def prepDRData(eDF:pd.DataFrame,eTime:float,eType:str):
 #args: event type, event log df
 async def getBaseline(eDF:pd.DataFrame,eTime:float,eType:str,eDate=None):
 
-    parsedData = prepDRData(eDF,eTime,eType)
+    parsedData = await prepBaselineData(eDF,eTime,eType)
 
     logging.debug(f'length of parsed response: {len(parsedData)}')
 
