@@ -10,6 +10,10 @@ import json
 from gpiozero import Button
 from gpiozero.pins.pigpio import PiGPIOFactory
 import requests
+from scipy.integrate import trapezoid
+from io import StringIO
+import math
+from statistics import mean
 
 logging.basicConfig(format='%(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',level=logging.INFO)
 
@@ -179,6 +183,151 @@ async def send_get_request(ip:str='localhost', port:int=5000,endpoint:str='',typ
                     await asyncio.sleep(1+attempt)
         return res
 
+# # its dumb to have both of these request functions!
+# async def send_secure_get_request(url:str,key:str=None,type:str='json',timeout=2):
+#     """Send GET request to the IP."""
+#     try:
+#         headers = {"Content-Type": "application/json; charset=utf-8"}
+
+#         if key:
+#             headers = {"Authorization": f"Bearer {key}"}
+#         else:
+#             heads = {}
+
+#         response = requests.get(url, headers=headers, timeout=timeout)
+#         if type == 'json':
+#             return response.json()
+#         elif type == 'text':
+#             return (response.text, response.status_code)
+#         else:
+#             return response.status_code
+#     except requests.Timeout as e:
+#         return e
+#     except Exception as e:
+#         return e
+
+####################
+### get baseline ###
+####################
+
+# currently only works with eTime as ints (whole hours)
+#args: event type, event log df
+def getBaseline(eType:str,eDF:pd.DataFrame,eTime:float):
+    # drop unnecessary columns
+    eType = eType.drop(columns=['modified','notes','network'])
+
+    # filter to only past events
+    pastEventsDF=eType[eType['date']<datetime.now().replace(hour=0,minute=0,second=0,microsecond=0)]
+
+    # get file list
+    fileList = await send_get_request(endpoint='api/files?source=plugs')
+    logging.debug(fileList)
+
+    # retrieve files
+    data = []
+    for f in fileList:
+        if datetime.now().date().strftime("%Y-%m-%d")  not in f:
+            d = f.replace('.csv','').replace('plugs_','')
+
+            r = await send_get_request(endpoint=f'api/data?source=plugs&date={d}',type='text')
+            if type(r) == tuple:
+                r = r[0]
+            data.append(r)
+
+    #parse response
+    parsedData = []
+    for d in data:
+        tempDF = pd.read_csv(StringIO(d))
+        tempDF['datetime'] = pd.to_datetime(tempDF['datetime'])
+        parsedData.append(tempDF)
+
+    #update with actual baseline requirements
+
+    # filter out event dates
+    pastEvents_type = pastEventsDF[pastEventsDF['type']==eType]
+    pastEventDates = [d.date() for d in list(pastEvents_type['date'])]
+    print(pastEventDates)
+
+    filteredData = []
+    for d in parsedData:
+        #ignore days with past events (should this ignore those days regardless of type?
+        print(d['datetime'][0])
+        if list(d['datetime'])[0].date() not in pastEventDates:
+            if list(d['datetime'])[0].date().weekday() <=4: # filter out weekends
+                filteredData.append(d)
+
+    # get event windows
+    eventWindows = []
+    for d in filteredData:
+        #get on timestamps between event start and end times
+        eventWindows.append(d[[(d > d.replace(hour=eTime,minute=0,second=0,microsecond=0)) and (d <= d.replace(hour=eTime+4,minute=0,second=0,microsecond=0)) for d in d['datetime']]])
+
+    dailyWindowAvgW = []
+    # eventLength = 4
+    for i, d in enumerate(eventWindows):
+        if len(d['datetime']) == 0:
+            continue
+
+        formattedStartTime = d['datetime'].iloc[0].replace(hour=eTime,minute=0,second=0,microsecond=0)
+
+        # create hourly buckets for each day
+        hourly = hourlyBuckets(d,formattedStartTime)
+
+        # add increments within each hour
+        incs = []
+        for ih,h in enumerate(hourly):
+            # the increments function adds a column for the increment of a specific datapoint
+            incs.append(increments(h,formattedStartTime+timedelta(hours=ih)))
+
+        #print(incs)
+
+        hourlyEnergy = []
+        for inc in incs:
+            hourlyEnergy.append(getWh(inc['ac-W'],inc['increments']))
+            if (math.isnan(hourlyEnergy[-1])):
+                hourlyEnergy[-1] = 0.0
+
+        dailyWindowAvgW.append(mean(hourlyEnergy))
+
+    logging.debug(mean(dailyWindowAvgW))
+    return mean(dailyWindowAvgW)
+
+# buckets df with datetime within an event window into hourly buckets
+# args: a dataframe with datetimes
+def hourlyBuckets(tempDF, tempStartTime:float, eventDuration:float=4) -> list[pd.DataFrame]:
+    hourlyPower = []
+    for h in range(eventDuration):
+        #print(tempDF['datetime'])
+        ts = tempStartTime + timedelta(hours=h)
+        te = tempStartTime + timedelta(hours=h + 1)
+        filteredTempDF = (tempDF[(tempDF['datetime']> ts) & (tempDF['datetime']<= te)]).copy() #data within the hour
+        #filteredTempDF = increments(filteredTempDF,ts)
+        hourlyPower.append(filteredTempDF)
+    return hourlyPower
+
+
+#args: a dataframe with datetime column
+# returns df with added increments column based on an hour
+def increments(df,fm=0)->pd.DataFrame:
+    if fm==0:
+        firstMeasurement = df['datetime'].min()
+    else:
+        firstMeasurement = fm
+
+    #print(firstMeasurement)
+    incList = []
+    for r in range(len(df['datetime'])):
+        incSec = (df['datetime'].iloc[r] - firstMeasurement).total_seconds()/60/60 #must convert back from seconds
+        incList.append(incSec)
+    df['increments'] = incList
+    return df
+
+#args: power and time increments (relative to the hour) for a given hour
+# returns the energy (Wh) for the hour
+def getWh(p:list[float],t:list[datetime])->float:
+    e = trapezoid(y=p, x=t)
+    return e
+
 ##############
 #### Main ####
 ##############
@@ -226,13 +375,18 @@ async def main():
                     "datetime":datetime.now(),
                     "eventPause":{"datetime":datetime.now(), "state":False}}
 
+    stateDict['csrp']['baselineW']=getBaseline('CSRP',eventDF,csrpTime)
+
     while True:
         # get event status from Airtable
         try:
             eventDF = atEvents.parseListToDF(await atEvents.listRecords())
             # check for events
             eventCSRP = isCSRPEventUpcoming(eventDF,csrpTime)
+
             eventDLRP = isDLRPEventUpcoming(eventDF)
+            if (eventDLRP['now']) or (eventDLRP['upcoming']):
+                stateDict['dlrp']['baselineW']=getBaseline('DLRP',eventDF,eventDLRP['upcoming'].time().hour)
 
             stateDict['datetime'] = datetime.now()
             stateDict['csrp']=eventCSRP

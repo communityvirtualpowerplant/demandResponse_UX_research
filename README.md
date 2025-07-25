@@ -30,11 +30,11 @@ Software
 * get performance and payment stuff
 * airtable updater
 * incorporate weather
-* health file status should be different for plugs and ps
 * local front end
 * finalize interfaces
 * can I add another URL?
 * include a script to check AT to run specific branches!
+* add in a battery cutoff below 20%
 
 System
 * plan for sms and emails

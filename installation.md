@@ -69,6 +69,9 @@ Create data directory if not present
 `systemctl enable plug_logger.service`
 `systemctl start plug_logger.service`
 
+Reboot at midnight with cron: `sudo crontab -e`
+* add this line to bottom of file: `@midnight sudo reboot`
+
 # Smart Plug Installation
 
 1) Connect device to Wifi
