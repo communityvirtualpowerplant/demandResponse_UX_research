@@ -59,7 +59,7 @@ held_triggered = False
 
 # returns a dictionary with either False or datetime values
 def isCSRPEventUpcoming(df,t)-> dict:
-    cState = {'now':False,'upcoming':False,'baselineW':0}
+    cState = {'now':False,'upcoming':False}
 
     csrpDF = df[df['type']=='csrp']
     for index, row in csrpDF.iterrows():
@@ -76,7 +76,7 @@ def isCSRPEventUpcoming(df,t)-> dict:
 
 # returns a dictionary with either False or datetime values
 def isDLRPEventUpcoming(df)-> dict:
-    dState = {'now':False,'upcoming':False,'baselineW':0}
+    dState = {'now':False,'upcoming':False}
     dlrpDF = df[df['type']=='dlrp']
     for index, row in dlrpDF.iterrows():
         dlrpStartTime = row['date'].replace(hour=int(row['time']))
@@ -350,7 +350,7 @@ async def main():
 
     try:
         eventDF = atEvents.parseListToDF(await atEvents.listRecords())
-        stateDict['csrp']['baselineW']=await getBaseline('CSRP',eventDF,csrpTime)
+        csrpBaseline=await getBaseline('CSRP',eventDF,csrpTime)
     except Exception as e:
         logging.error(e)
 
@@ -361,10 +361,11 @@ async def main():
             eventDF = atEvents.parseListToDF(await atEvents.listRecords())
             # check for events
             eventCSRP = isCSRPEventUpcoming(eventDF,csrpTime)
+            eventCSRP['baselineW']=csrpBaseline
 
             eventDLRP = isDLRPEventUpcoming(eventDF)
             if (eventDLRP['now']) or (eventDLRP['upcoming']):
-                stateDict['dlrp']['baselineW']=await getBaseline('DLRP',eventDF,eventDLRP['upcoming'].time().hour)
+                eventDLRP['baselineW']=await getBaseline('DLRP',eventDF,eventDLRP['upcoming'].time().hour)
 
             stateDict['datetime'] = datetime.now()
             stateDict['csrp']=eventCSRP
