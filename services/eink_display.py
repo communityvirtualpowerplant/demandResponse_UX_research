@@ -153,7 +153,7 @@ def eventPausedScreen(f,s,p):
     et = datetime.now() - p['datetime']  #elapsed  time
     percT = (et.seconds/60)/ (4*60)
 
-    circRad = screenHeight/3
+    circRad = screenHeight/4
     centerY = screenHeight - (screenHeight/3)-10
 
     logging.debug(type(s['eventPause']['datetime']))
@@ -172,16 +172,19 @@ def eventPausedScreen(f,s,p):
     centerX = screenWidth/4
     sDraw.circle((centerX,centerY),circRad,fill=255, outline=0,width=1)
     sDraw.pieslice((centerX-circRad,centerY-circRad,centerX+circRad,centerY+circRad), 0, int(360*perc),fill=0)
+    sDraw.text((centerX,centerY+circRad+1), f"$", font = f,  anchor="mt",fill = 0)
 
     # time
     centerX = 2*screenWidth/4
     sDraw.circle((centerX,centerY),circRad,fill=255, outline=0,width=1)
     sDraw.pieslice((centerX-circRad,centerY-circRad,centerX+circRad,centerY+circRad), 0, int(360*percT),fill=0)
+    sDraw.text((centerX,centerY+circRad+1), f"T", font = f,  anchor="mt",fill = 0)
 
     # performance
     centerX = 3*screenWidth/4
     sDraw.circle((centerX,centerY),circRad,fill=255, outline=0,width=1)
     sDraw.pieslice((centerX-circRad,centerY-circRad,centerX+circRad,centerY+circRad), 0, int(360*perc),fill=0)
+    sDraw.text((centerX,centerY+circRad+1), f"P", font = f,  anchor="mt",fill = 0)
 
     epd.displayPartial(epd.getbuffer(sImage))
 
