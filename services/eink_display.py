@@ -316,6 +316,7 @@ async def main():
     battery = await send_get_request(endpoint='api/data?date=now&source=powerstation')
     state = await send_get_request(endpoint='api/state')
 
+    # this should be in the loop, if an event is going on...
     performance = await send_get_request(endpoint='api/performance')
 
     # check for today's performance
@@ -327,12 +328,6 @@ async def main():
     updateScreen = True
 
     while True:
-        #  get most recent data
-        if(datetime.now() - updateData> timedelta(minutes=5)):
-            power = await send_get_request(endpoint='api/data?date=now&source=plugs')
-            battery = await send_get_request(endpoint='api/data?date=now&source=powerstation')
-            updateScreen = True
-            updateData = datetime.now()
         if(datetime.now() - updateState> timedelta(seconds=10)): #check state every 10 seconds
             oldState = state
             state = await send_get_request(endpoint='api/state')
@@ -340,12 +335,24 @@ async def main():
             # update the screen if event status changes
             updateScreen = updateState(oldState,state)
 
+        #  get most recent data
+        if(datetime.now() - updateData> timedelta(minutes=5)):
+            power = await send_get_request(endpoint='api/data?date=now&source=plugs')
+            battery = await send_get_request(endpoint='api/data?date=now&source=powerstation')
+            updateScreen = True
+            updateData = datetime.now()
+            state = await send_get_request(endpoint='api/state')
+            updateState = datetime.now()
+
+
         if num >= 3:
             num = 0
             fullRefresh()
 
         try:
             if updateScreen:
+                logging.debug('updating screen!')
+
                 if state['eventPause']['state']:
                     if (not state['csrp']['now']) or (not state['dlrp']['now']):
                         # if paused and event is ongoing
