@@ -134,7 +134,7 @@ def eventScreen(f,s, p):
     rStartY = (screenHeight/2)
     sDraw.text((rStartX+ rWidthBorder+2, rStartY), f'Time', font = f,  anchor="lt",fill = 0)
     sDraw.rectangle((rStartX,rStartY,rStartX+ rWidthBorder,rStartY+rHeight), fill = 255, outline=0)
-    sDraw.rectangle((rStartX+rMargin,rStartY+rMargin,rStartX+rWidthProgress,rStartY+rHeight-rMargin), fill = 0)
+    sDraw.rectangle((rStartX+rMargin,rStartY+rMargin,rStartX+rMargin+rWidthProgress,rStartY+rHeight-rMargin), fill = 0)
 
     # time bar
     #et = + timedelta(hours=4) #event end time
@@ -149,7 +149,7 @@ def eventScreen(f,s, p):
     rStartY = (screenHeight/2) +(2* rMargin) + rHeight
     sDraw.text((rStartX+ rWidthBorder+2, rStartY), f'Time', font = f,  anchor="lt",fill = 0)
     sDraw.rectangle((rStartX,rStartY,rStartX+ rWidthBorder,rStartY+rHeight), fill = 255, outline=0)
-    sDraw.rectangle((rStartX+rMargin,rStartY+rMargin,rStartX+rWidthProgress,rStartY+rHeight-rMargin), fill = 0)
+    sDraw.rectangle((rStartX+rMargin,rStartY+rMargin,rStartX+rMargin+rWidthProgress,rStartY+rHeight-rMargin), fill = 0)
 
     epd.displayPartial(epd.getbuffer(sImage))
 
