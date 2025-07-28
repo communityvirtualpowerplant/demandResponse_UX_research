@@ -122,7 +122,7 @@ def eventScreen(f,s, p):
     # money bar
     rStartX = 5
     rMargin = 3
-    rWidthBorder = screenWidth - rStartX - (2 * rMargin) - 15
+    rWidthBorder = screenWidth - rStartX - (2 * rMargin) #- 15
     rHeight = 20
 
     if p:
@@ -178,10 +178,11 @@ def eventPausedScreen(f,s,p):
 
     # money
     centerX = (screenWidth/3) - (screenWidth/6)
-    sDraw.circle((centerX,centerY),circRad,fill=255, outline=0,width=1)
-    sDraw.pieslice((centerX-circRad,centerY-circRad,centerX+circRad,centerY+circRad), 0-90, int(360*perc)-90,fill=0)
-    sDraw.circle((centerX,centerY),circRad*.33,fill=255, outline=0,width=1)
-    sDraw.text((centerX,centerY), f"$", font = f,  anchor="mm",fill = 0)
+    # sDraw.circle((centerX,centerY),circRad,fill=255, outline=0,width=1)
+    # sDraw.pieslice((centerX-circRad,centerY-circRad,centerX+circRad,centerY+circRad), 0-90, int(360*perc)-90,fill=0)
+    # sDraw.circle((centerX,centerY),circRad*.33,fill=255, outline=0,width=1)
+    cash = 18.65
+    sDraw.text((centerX,centerY), f"${cash}/\nmonth", font = f,  anchor="mm",fill = 0)
 
     # time
     centerX = 2*screenWidth/3  - (screenWidth/6)
