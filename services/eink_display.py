@@ -152,10 +152,6 @@ def eventPausedScreen(f,s,p):
 
     epd.displayPartial(epd.getbuffer(sImage))
 
-
-def progressBar():
-
-
 def normalScreen(f,w=None):
 
     # display IP and hostname on start up
