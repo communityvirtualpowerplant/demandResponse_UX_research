@@ -282,7 +282,7 @@ async def getBaseline(eDF:pd.DataFrame,eTime:float,eType:str,eDate=None):
         return 0
 
 
-async def getOngoingPerformance(eTime:float,eType:str,eBaseline:float,pauseTS=[0]):
+async def getOngoingPerformance(eTime:float,eType:str,eBaseline:float,buttonTracker={'onPause':[0],'offPause':[0]}):
     # get today's file
     today = datetime.now().date() #- timedelta(days=1) uncomment to test (also add it to formattedStartTime)
 
@@ -335,7 +335,7 @@ async def getOngoingPerformance(eTime:float,eType:str,eBaseline:float,pauseTS=[0
             'flexW_avg':eBaseline-mean(hourlyEnergy),
             'baselineW':eBaseline,
             'event':eType,
-            'pauses':pauseTS}
+            'button':buttonTracker}
 
     return perf
 
@@ -398,10 +398,11 @@ async def logPerformance(d:dict):
 ##############
 
 async def main():
-    global buttonState, button_event, stateDict, pauses
+    global buttonState, button_event, stateDict, shortpresses,longpresses
 
     #track button presses
-    pauses = []
+    shortpresses = []
+    longpresses = []
 
     # Event used to "wake up" the sleeping task
     button_event = asyncio.Event()
@@ -419,13 +420,14 @@ async def main():
             buttonState['state']=True
             buttonState['datetime']=datetime.now()
             stateDict['eventPause']=buttonState
-            pauses.append(datetime.now())
+            shortpresses.append(datetime.now())
             loop.call_soon_threadsafe(button_event.set)
             logging.info(f'Button pressed! {buttonState}')
         else:
             buttonState['state']=False
             buttonState['datetime']=datetime.now()
             stateDict['eventPause']=buttonState
+            longpresses.append(datetime.now())
             loop.call_soon_threadsafe(button_event.set)
             logging.info(f'Button held! {buttonState}')
 
@@ -459,6 +461,8 @@ async def main():
     dlrpUpdated = False
 
     while True:
+        buttonTracker={'onPause':shortpresses,'offPause':longpresses}
+
         # get event status from Airtable
         try:
             #if not eventDF:# conditional only needed to not call this twice at the start of the program
@@ -467,7 +471,7 @@ async def main():
             eventCSRP = isCSRPEventUpcoming(eventDF,csrpTime)
             eventCSRP['baselineW']=csrpBaseline
             if (eventCSRP['now']):
-                await logPerformance(await getOngoingPerformance(csrpTime,'csrp',eventCSRP['baselineW']))
+                await logPerformance(await getOngoingPerformance(csrpTime,'csrp',eventCSRP['baselineW'],buttonTracker))
 
             eventDLRP = isDLRPEventUpcoming(eventDF)
             if (eventDLRP['upcoming']):
@@ -477,7 +481,7 @@ async def main():
                     #dlrpUpdated = True
             elif (eventDLRP['now']):
                     eventDLRP['baselineW']=await getBaseline(eventDF,eventDLRP['now'].time().hour,'dlrp')
-                    await logPerformance(await getOngoingPerformance(eventDLRP['now'].time().hour,'dlrp',eventDLRP['baselineW']))
+                    await logPerformance(await getOngoingPerformance(eventDLRP['now'].time().hour,'dlrp',eventDLRP['baselineW'],buttonTracker))
             else:
                 try:
                     eventDLRP['baselineW']=stateDict['dlrp']['baselineW']
