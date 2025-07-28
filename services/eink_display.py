@@ -111,22 +111,23 @@ def eventScreen(f,s, p):
     epd.displayPartBaseImage(epd.getbuffer(sImage))
 
     sDraw.rectangle((0,0, screenWidth,screenHeight), fill = 255)
-    sDraw.text((screenWidth, 10), f'Event now!!!', font = f,  anchor="mt",fill = 0)
+    sDraw.text((screenWidth/2, 10), f'Event now!!!', font = f,  anchor="mt",fill = 0)
 
     # money bar
     rStartX = 10
-    rStartY = screenHeight/2
     rMargin = 3
     if p:
         perc = p['performancePerc']
     else:
         perc = 0
 
-    rWidth = (screenWidth - 2 * rStartX) * perc
+    rWidthBorder = screenWidth - rStartX - (2 * rMargin) #* rStartX) * perc
+    rWidthProgress = (rWidthBorder - 2 * rMargin) * perc
     rHeight = 20
-    sDraw.text((rStartX+ rWidth+3, rStartY), f'Perf %', font = f,  anchor="lt",fill = 0)
-    sDraw.rectangle((rStartX,rStartY,rStartX+ rWidth,rStartY+rHeight), fill = 255, outline=0)
-    sDraw.rectangle((rStartX+rMargin,rStartY+rMargin,rStartX+(rWidth-2*rMargin),rStartY+(rHeight-2*rMargin)), fill = 0)
+    rStartY = (screenHeight/2)
+    sDraw.text((rStartX+ rWidth+3, rStartY), f'Time', font = f,  anchor="lt",fill = 0)
+    sDraw.rectangle((rStartX,rStartY,rStartX+ rWidthBorder,rStartY+rHeight), fill = 255, outline=0)
+    sDraw.rectangle((rStartX+rMargin,rStartY+rMargin,rStartX+rWidthProgress,rStartY+rHeight-(2*rMargin)), fill = 0)
 
     # time bar
     rStartX = 10
@@ -136,7 +137,7 @@ def eventScreen(f,s, p):
     else:
         perc = 0
 
-    rWidthBorder = screenWidth - 2 * rMargin #* rStartX) * perc
+    rWidthBorder = screenWidth - rStartX - (2 * rMargin) #* rStartX) * perc
     rWidthProgress = (rWidthBorder - 2 * rMargin) * perc
     rHeight = 20
     rStartY = (screenHeight/2) +(2* rMargin) + rHeight
@@ -165,7 +166,7 @@ def eventPausedScreen(f,s,p):
     # sDraw.rectangle((rStartX+rMargin,rStartY+rMargin,(rStartX+rWidth)-2*rMargin,(rStartY+rHeight)-2*rMargin), fill = 0)
     arcRad = screenHeight/6
     circRad = arcRad + 6
-    sDraw.circle(((screenWidth/3)-circRad,screenWidth/4,(screenWidth/3)-circRad,((screenWidth/4)+(circRad*2))),fill=255, outline=0,width=1)
+    sDraw.circle((screenWidth/3,screenWidth/4),circRad,fill=255, outline=0,width=1)
     sDraw.arc(((screenWidth/3)-arcRad,screenWidth/4,(screenWidth/3)-arcRad,((screenWidth/4)+(arcRad*2))), 0, 83,fill=0)
     # time bar
 
