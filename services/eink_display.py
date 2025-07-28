@@ -124,9 +124,24 @@ def eventScreen(f,s, p):
 
     rWidth = (screenWidth - 2 * rStartX) * perc
     rHeight = 20
-    sDraw.text((3, rStartY-10), f'Performance', font = f,  anchor="lb",fill = 0)
+    sDraw.text((rStartX+ rWidth+3, rStartY), f'Perf', font = f,  anchor="lt",fill = 0)
     sDraw.rectangle((rStartX,rStartY,rStartX+ rWidth,rStartY+rHeight), fill = 255, outline=0)
-    sDraw.rectangle((rStartX+rMargin,rStartY+rMargin,(rStartX+rWidth)-2*rMargin,(rStartY+rHeight)-2*rMargin), fill = 0)
+    sDraw.rectangle((rStartX+rMargin,rStartY+rMargin,rStartX+(rWidth-2*rMargin),rStartY+(rHeight-2*rMargin)), fill = 0)
+
+    # time bar
+    rStartX = 10
+    rMargin = 3
+    if p:
+        perc = p['performancePerc']
+    else:
+        perc = 0
+
+    rWidth = (screenWidth - 2 * rStartX) * perc
+    rHeight = 20
+    rStartY = (screenHeight/2) +rMargin + rHeight
+    sDraw.text((rStartX+ rWidth+3, rStartY), f'Time', font = f,  anchor="lt",fill = 0)
+    sDraw.rectangle((rStartX,rStartY,rStartX+ rWidth,rStartY+rHeight), fill = 255, outline=0)
+    sDraw.rectangle((rStartX+rMargin,rStartY+rMargin,rStartX+(rWidth-2*rMargin),rStartY+(rHeight-2*rMargin)), fill = 0)
 
     epd.displayPartial(epd.getbuffer(sImage))
 
