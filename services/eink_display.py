@@ -126,9 +126,22 @@ def eventPausedScreen(f):
     sDraw.rectangle((0,0, screenWidth,screenHeight), fill = 255)
     sDraw.text((screenWidth, 10), f'Event paused until...!!!', font = f,  anchor="mt",fill = 0)
 
-    sDraw.rectangle((50,80,screenWidth-50,100), fill = 255)
-    sDraw.rectangle((53,83,screenWidth-56,94), fill = 0)
+    # money bar
+    rStartX = 10
+    rStartY = screenHeight/2
+    rMargin = 3
+    rWidth = screenWidth - 2 * rStartX
+    rHeight = 20
+    sDraw.rectangle((rStartX,rStartY,rStartX+ rWidth,rStartY+rHeight), fill = 255, outline=0)
+    sDraw.rectangle((rStartX+rMargin,rStartY+rMargin,(rStartX+rWidth)-2*rMargin,(rStartY+rHeight)-2*rMargin), fill = 0)
+
+    # time bar
+
     epd.displayPartial(epd.getbuffer(sImage))
+
+
+def progressBar():
+
 
 def normalScreen(f,w=None):
 
@@ -216,6 +229,8 @@ async def main():
     power = await send_get_request(endpoint='api/data?date=now&source=plugs')
     battery = await send_get_request(endpoint='api/data?date=now&source=powerstation')
     state = await send_get_request(endpoint='api/state')
+    performance = await send_get_request(endpoint='api/performance')
+
     updateScreen = True
 
     while True:
@@ -253,9 +268,9 @@ async def main():
                             else:
                                 upcomingScreen(font15)
                         else:
-                            eventScreen(font15)
+                            eventScreen(font15,state,performance)
                     else:
-                        eventScreen(font15)
+                        eventScreen(font15,state,performance)
 
                 updateScreen = False
                 num = num + 1
