@@ -53,6 +53,8 @@ except Exception as e:
 csrpRate = config['csrpRatekW']
 dlrpRate = config['dlrpRatekW']
 
+dayNames = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+
 async def send_get_request(ip:str='localhost', port:int=5000,endpoint:str='',type:str='json',timeout=1):
         """Send GET request to the IP."""
         # get own data
@@ -91,16 +93,20 @@ def convert_bools(obj):
         return obj
 
 def upcomingScreen(f,s=None,p=None):
-    eTime = '4pm'
-    eDate = 'August 1'
+    if s['csrp']['upcoming']:
+        eTime = s['csrp']['upcoming']#.strftime("%I:%M %p")
+    elif s['dlrp']['upcoming']:
+        eTime = s['dlrp']['upcoming']#.strftime("%I:%M %p")
+
+    eDate = dayNames[eTime.weekday()]
 
     # display IP and hostname on start up
     sImage = Image.new('1', (screenWidth,screenHeight), 255)
     sDraw = ImageDraw.Draw(sImage)
     epd.displayPartBaseImage(epd.getbuffer(sImage))
 
-    sDraw.rectangle((50, 40, 220, 105), fill = 255)
-    sDraw.text((50, 40), f'Event upcoming at {eTime} on {eDate}!', font = f, fill = 0)
+    sDraw.rectangle((0,0,screenWidth,screenHeight), fill = 255)
+    sDraw.text((screenWidth/2, 40), f'Event upcoming at {eTime.strftime("%I:%M %p")} on {eDate}!', anchor='mt',font = f, fill = 0)
     epd.displayPartial(epd.getbuffer(sImage))
 
 def eventScreen(f,s, p):
@@ -148,12 +154,14 @@ def eventScreen(f,s, p):
     epd.displayPartial(epd.getbuffer(sImage))
 
 def eventPausedScreen(f,s,p):
+    # performance percentage
     perc = p['performancePerc']
 
+    # elapsed time percentage
     et = datetime.now() - p['datetime']  #elapsed  time
     percT = (et.seconds/60)/ (4*60)
 
-    circRad = screenHeight/4
+    circRad = screenHeight/3
     centerY = screenHeight - (screenHeight/3)-10
 
     logging.debug(type(s['eventPause']['datetime']))
@@ -169,22 +177,22 @@ def eventPausedScreen(f,s,p):
     sDraw.text((screenWidth/2, 10), f"Event paused until {endPauseStr}!", font = f,  anchor="mt",fill = 0)
 
     # money
-    centerX = screenWidth/4
+    centerX = (screenWidth/3) + (screenWidth/6)
     sDraw.circle((centerX,centerY),circRad,fill=255, outline=0,width=1)
     sDraw.pieslice((centerX-circRad,centerY-circRad,centerX+circRad,centerY+circRad), 0, int(360*perc),fill=0)
-    sDraw.text((centerX,centerY+circRad+1), f"$", font = f,  anchor="mt",fill = 0)
+    sDraw.text((centerX,centerY+circRad+2), f"$", font = f,  anchor="mt",fill = 0)
 
     # time
-    centerX = 2*screenWidth/4
+    centerX = 2*screenWidth/3  + (screenWidth/6)
     sDraw.circle((centerX,centerY),circRad,fill=255, outline=0,width=1)
     sDraw.pieslice((centerX-circRad,centerY-circRad,centerX+circRad,centerY+circRad), 0, int(360*percT),fill=0)
-    sDraw.text((centerX,centerY+circRad+1), f"T", font = f,  anchor="mt",fill = 0)
+    sDraw.text((centerX,centerY+circRad+2), f"T", font = f,  anchor="mt",fill = 0)
 
     # performance
-    centerX = 3*screenWidth/4
+    centerX = 3*screenWidth/3 + (screenWidth/6)
     sDraw.circle((centerX,centerY),circRad,fill=255, outline=0,width=1)
     sDraw.pieslice((centerX-circRad,centerY-circRad,centerX+circRad,centerY+circRad), 0, int(360*perc),fill=0)
-    sDraw.text((centerX,centerY+circRad+1), f"P", font = f,  anchor="mt",fill = 0)
+    sDraw.text((centerX,centerY+circRad+2), f"P", font = f,  anchor="mt",fill = 0)
 
     epd.displayPartial(epd.getbuffer(sImage))
 

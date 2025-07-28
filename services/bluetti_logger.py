@@ -36,7 +36,7 @@ from SmartPowerStation import SmartPowerStation
 
 bluettiSTR = ['AC180','AC2']
 
-logging.basicConfig(format='%(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',level=logging.DEBUG)
+logging.basicConfig(format='%(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',level=logging.INFO)
 
 freq = 60 * 5
 

@@ -8,7 +8,7 @@ import logging
 import datetime
 from datetime import timedelta
 
-logging.basicConfig(format='%(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',level=logging.DEBUG)
+logging.basicConfig(format='%(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',level=logging.INFO)
 
 class API():
     def __init__(self,dd:str):

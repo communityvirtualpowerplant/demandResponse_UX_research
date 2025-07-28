@@ -18,7 +18,7 @@ from KasaDRUX import KasaDRUX
 
 
 # ------------------ Config ------------------ #
-logging.basicConfig(format='%(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',level=logging.DEBUG)
+logging.basicConfig(format='%(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',level=logging.INFO)
 
 repoRoot = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 logging.debug(repoRoot)
