@@ -150,7 +150,8 @@ def eventScreen(f,s, p):
 def eventPausedScreen(f,s,p):
     perc = p['performancePerc']
 
-    endPauseStr = (s['eventPause']['datetime']+timedelta(hours=1)).strftime("%I:%M %p")
+    endPause = s['eventPause']['datetime']+timedelta(hours=1)
+    endPauseStr = endPause.strftime("%I:%M %p")
 
     # display IP and hostname on start up
     sImage = Image.new('1', (screenWidth,screenHeight), 255)
