@@ -282,11 +282,9 @@ async def getBaseline(eDF:pd.DataFrame,eTime:float,eType:str,eDate=None):
         return 0
 
 
-async def getOngoingPerformance(eTime:float,eType:str,eBaseline:float,eDate=None):
+async def getOngoingPerformance(eTime:float,eType:str,eBaseline:float):
     # get today's file
-    today = datetime.now().date() #- timedelta(days=1) uncomment to test or pass it in as eDate
-    if eDate:
-        today = eDate
+    today = datetime.now().date() #- timedelta(days=1) uncomment to test (also add it to formattedStartTime)
 
     r = await send_get_request(endpoint=f'api/data?source=plugs&date={today.strftime("%Y-%m-%d")}',type='text')
     if type(r) == tuple:
@@ -300,7 +298,7 @@ async def getOngoingPerformance(eTime:float,eType:str,eBaseline:float,eDate=None
     # get event window
     eventWindow = parsedData[[(d > d.replace(hour=eTime,minute=0,second=0,microsecond=0)) and (d <= d.replace(hour=eTime+4,minute=0,second=0,microsecond=0)) for d in parsedData['datetime']]]
 
-    formattedStartTime = (datetime.now()- timedelta(days=1)).replace(hour=eTime,minute=0,second=0,microsecond=0)
+    formattedStartTime = (datetime.now()).replace(hour=eTime,minute=0,second=0,microsecond=0)
 
     # create hourly buckets for each day
     hourly = hourlyBuckets(eventWindow,formattedStartTime)
