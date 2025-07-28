@@ -177,22 +177,25 @@ def eventPausedScreen(f,s,p):
     sDraw.text((screenWidth/2, 5), f"Event paused until {endPauseStr}!", font = f,  anchor="mt",fill = 0)
 
     # money
-    centerX = (screenWidth/3) + (screenWidth/6)
+    centerX = (screenWidth/3) - (screenWidth/6)
     sDraw.circle((centerX,centerY),circRad,fill=255, outline=0,width=1)
     sDraw.pieslice((centerX-circRad,centerY-circRad,centerX+circRad,centerY+circRad), 0, int(360*perc),fill=0)
-    sDraw.text((centerX,centerY+circRad+2), f"$", font = f,  anchor="mt",fill = 0)
+    sDraw.circle((centerX,centerY),circRad*.25,fill=255, outline=0,width=1)
+    sDraw.text((centerX,centerY), f"$", font = f,  anchor="mt",fill = 0)
 
     # time
-    centerX = 2*screenWidth/3  + (screenWidth/6)
+    centerX = 2*screenWidth/3  - (screenWidth/6)
     sDraw.circle((centerX,centerY),circRad,fill=255, outline=0,width=1)
     sDraw.pieslice((centerX-circRad,centerY-circRad,centerX+circRad,centerY+circRad), 0, int(360*percT),fill=0)
-    sDraw.text((centerX,centerY+circRad+2), f"T", font = f,  anchor="mt",fill = 0)
+    sDraw.circle((centerX,centerY),circRad*.25,fill=255, outline=0,width=1)
+    sDraw.text((centerX,centerY), f"T", font = f,  anchor="mt",fill = 0)
 
     # performance
-    centerX = 3*screenWidth/3 + (screenWidth/6)
+    centerX = 3*screenWidth/3 - (screenWidth/6)
     sDraw.circle((centerX,centerY),circRad,fill=255, outline=0,width=1)
     sDraw.pieslice((centerX-circRad,centerY-circRad,centerX+circRad,centerY+circRad), 0, int(360*perc),fill=0)
-    sDraw.text((centerX,centerY+circRad+2), f"P", font = f,  anchor="mt",fill = 0)
+    sDraw.circle((centerX,centerY),circRad*.25,fill=255, outline=0,width=1)
+    sDraw.text((centerX,centerY), f"P", font = f,  anchor="mt",fill = 0)
 
     epd.displayPartial(epd.getbuffer(sImage))
 
