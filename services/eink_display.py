@@ -179,23 +179,23 @@ def eventPausedScreen(f,s,p):
     # money
     centerX = (screenWidth/3) - (screenWidth/6)
     sDraw.circle((centerX,centerY),circRad,fill=255, outline=0,width=1)
-    sDraw.pieslice((centerX-circRad,centerY-circRad,centerX+circRad,centerY+circRad), 0, int(360*perc),fill=0)
-    sDraw.circle((centerX,centerY),circRad*.25,fill=255, outline=0,width=1)
-    sDraw.text((centerX,centerY), f"$", font = f,  anchor="mt",fill = 0)
+    sDraw.pieslice((centerX-circRad,centerY-circRad,centerX+circRad,centerY+circRad), 0-90, int(360*perc)-90,fill=0)
+    sDraw.circle((centerX,centerY),circRad*.33,fill=255, outline=0,width=1)
+    sDraw.text((centerX,centerY), f"$", font = f,  anchor="mm",fill = 0)
 
     # time
     centerX = 2*screenWidth/3  - (screenWidth/6)
     sDraw.circle((centerX,centerY),circRad,fill=255, outline=0,width=1)
-    sDraw.pieslice((centerX-circRad,centerY-circRad,centerX+circRad,centerY+circRad), 0, int(360*percT),fill=0)
-    sDraw.circle((centerX,centerY),circRad*.25,fill=255, outline=0,width=1)
-    sDraw.text((centerX,centerY), f"T", font = f,  anchor="mt",fill = 0)
+    sDraw.pieslice((centerX-circRad,centerY-circRad,centerX+circRad,centerY+circRad), 0-90, int(360*percT)-90,fill=0)
+    sDraw.circle((centerX,centerY),circRad*.33,fill=255, outline=0,width=1)
+    sDraw.text((centerX,centerY), f"T", font = f,  anchor="mm",fill = 0)
 
     # performance
     centerX = 3*screenWidth/3 - (screenWidth/6)
     sDraw.circle((centerX,centerY),circRad,fill=255, outline=0,width=1)
-    sDraw.pieslice((centerX-circRad,centerY-circRad,centerX+circRad,centerY+circRad), 0, int(360*perc),fill=0)
-    sDraw.circle((centerX,centerY),circRad*.25,fill=255, outline=0,width=1)
-    sDraw.text((centerX,centerY), f"P", font = f,  anchor="mt",fill = 0)
+    sDraw.pieslice((centerX-circRad,centerY-circRad,centerX+circRad,centerY+circRad), -90, int(360*perc)-90,fill=0)
+    sDraw.circle((centerX,centerY),circRad*.33,fill=255, outline=0,width=1)
+    sDraw.text((centerX,centerY), f"%", font = f,  anchor="mm",fill = 0)
 
     epd.displayPartial(epd.getbuffer(sImage))
 
@@ -280,6 +280,22 @@ def parse_datetimes(obj):
     else:
         return obj
 
+# args: old state, new state
+def stateUpdate(o, n)-> bool:
+    u = False
+
+    if o['csrp']['now'] != n['csrp']['now']:
+        return True
+    if o['dlrp']['now'] != n['dlrp']['now']:
+        return True
+    if o['csrp']['upcoming'] != n['csrp']['upcoming']:
+        return True
+    if o['dlrp']['upcoming'] != n['dlrp']['upcoming']:
+        return True
+    if o['eventPause']['state'] != n['eventPause']['state']:
+        return True
+    return u
+
 async def main():
 
     logging.info("init and Clear")
@@ -317,12 +333,12 @@ async def main():
             battery = await send_get_request(endpoint='api/data?date=now&source=powerstation')
             updateScreen = True
             updateData = datetime.now()
-        if(datetime.now() - updateState> timedelta(seconds=10)):
+        if(datetime.now() - updateState> timedelta(seconds=10)): #check state every 10 seconds
             oldState = state
             state = await send_get_request(endpoint='api/state')
             updateState = datetime.now()
-            if oldState != state:
-                updateScreen = True
+            # update the screen if event status changes
+            updateScreen = updateState(oldState,state)
 
         if num >= 3:
             num = 0
