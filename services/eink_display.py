@@ -148,10 +148,9 @@ def eventScreen(f,s, p):
     epd.displayPartial(epd.getbuffer(sImage))
 
 def eventPausedScreen(f,s,p):
-    if p:
-        perc = p['performancePerc']
-    else:
-        perc = 0
+    perc = p['performancePerc']
+
+    endPauseStr = (s['eventPause']['datetime']+timedelta(hours=1)).strftime("%I:%M %p")
 
     # display IP and hostname on start up
     sImage = Image.new('1', (screenWidth,screenHeight), 255)
@@ -159,23 +158,28 @@ def eventPausedScreen(f,s,p):
     epd.displayPartBaseImage(epd.getbuffer(sImage))
 
     sDraw.rectangle((0,0, screenWidth,screenHeight), fill = 255)
-    sDraw.text((screenWidth/2, 10), f'Event paused until...!!!', font = f,  anchor="mt",fill = 0)
+    sDraw.text((screenWidth/2, 10), f'Event paused until {endPauseStr}!', font = f,  anchor="mt",fill = 0)
 
     # money bar
-    # rStartX = 10
-    # rStartY = screenHeight/2
-    # rMargin = 3
-    # rWidth = screenWidth - 2 * rStartX
-    # rHeight = 20
-    # sDraw.rectangle((rStartX,rStartY,rStartX+ rWidth,rStartY+rHeight), fill = 255, outline=0)
-    # sDraw.rectangle((rStartX+rMargin,rStartY+rMargin,(rStartX+rWidth)-2*rMargin,(rStartY+rHeight)-2*rMargin), fill = 0)
-    arcRad = screenHeight/5
-    circRad = arcRad + 2
-    centerX = screenWidth/2
-    centerY = screenWidth/3
+    circRad = screenHeight/3
+    centerX = screenWidth/4
+    centerY = (screenWidth/2)+circRad
     sDraw.circle((centerX,centerY),circRad,fill=255, outline=0,width=1)
-    sDraw.pieslice((centerX-arcRad,centerY-arcRad,centerX+arcRad,centerY+arcRad), 0, int(360*perc),fill=0)
+    sDraw.pieslice((centerX-circRad,centerY-circRad,centerX+circRad,centerY+circRad), 0, int(360*perc),fill=0)
+
     # time bar
+    circRad = 2* screenHeight/3
+    centerX = 2*screenWidth/4
+    centerY = (screenWidth/2)+circRad
+    sDraw.circle((centerX,centerY),circRad,fill=255, outline=0,width=1)
+    sDraw.pieslice((centerX-circRad,centerY-circRad,centerX+circRad,centerY+circRad), 0, int(360*perc),fill=0)
+
+    # performance
+    circRad = screenHeight/3
+    centerX = 3*screenWidth/4
+    centerY = (screenWidth/2)+circRad
+    sDraw.circle((centerX,centerY),circRad,fill=255, outline=0,width=1)
+    sDraw.pieslice((centerX-circRad,centerY-circRad,centerX+circRad,centerY+circRad), 0, int(360*perc),fill=0)
 
     epd.displayPartial(epd.getbuffer(sImage))
 
@@ -246,6 +250,20 @@ def fullRefresh():
     epd.init()
     epd.Clear(0xFF)
 
+# convert to datetimes from iso formatted strings
+def parse_datetimes(obj):
+    if isinstance(obj, dict):
+        return {k: parse_datetimes(v) for k, v in obj.items()}
+    elif isinstance(obj, list):
+        return [parse_datetimes(i) for i in obj]
+    elif isinstance(obj, str):
+        try:
+            return datetime.fromisoformat(obj)
+        except ValueError:
+            return obj
+    else:
+        return obj
+
 async def main():
 
     logging.info("init and Clear")
@@ -262,18 +280,18 @@ async def main():
     updateData = datetime.now() # will get updated every 5 minutes
     updateState = datetime.now() # will get updated every 30 seconds
 
-    power = await send_get_request(endpoint='api/data?date=now&source=plugs')
-    battery = await send_get_request(endpoint='api/data?date=now&source=powerstation')
-    state = await send_get_request(endpoint='api/state')
+    power = parse_datetimes(await send_get_request(endpoint='api/data?date=now&source=plugs'))
+    battery = parse_datetimes(await send_get_request(endpoint='api/data?date=now&source=powerstation'))
+    state = parse_datetimes(await send_get_request(endpoint='api/state'))
 
     # if (state['csrp']['now']) or (state['csrp']['now']):
     #     logging.debug('event is ongoing!')
-    performance = await send_get_request(endpoint='api/performance')
+    performance = parse_datetimes(await send_get_request(endpoint='api/performance'))
 
     # check for today's performance
     todaysPerformance = None
     for k in performance.keys():
-        if datetime.today().strftime("%Y-%m-%d") in k:
+        if datetime.today().strftime("%Y-%m-%d") == k.strftime("%Y-%m-%d"):
             todaysPerformance = performance[k]
 
     updateScreen = True
