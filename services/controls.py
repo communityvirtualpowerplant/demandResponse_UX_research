@@ -322,7 +322,7 @@ async def getOngoingPerformance(eTime:float,eType:str,eBaseline:float,buttonTrac
     try:
         perfPerc = 1- (mean(hourlyEnergy)/ eBaseline)
     except Exception as e:
-        if e == 'float division by zero':
+        if 'float division by zero' in e:
             logging.error(f'likely missing past data: {e}')
         else:
             logging.error(e)

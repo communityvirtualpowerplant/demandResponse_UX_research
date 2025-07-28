@@ -130,15 +130,15 @@ def eventScreen(f,s, p):
     sDraw.rectangle((rStartX+rMargin,rStartY+rMargin,rStartX+rWidthProgress,rStartY+rHeight-rMargin), fill = 0)
 
     # time bar
-    rStartX = 10
-    rMargin = 3
-    if p:
-        perc = p['performancePerc']
-    else:
-        perc = 0
+    #et = + timedelta(hours=4) #event end time
+    et = datetime.now() - p['datetime']  #elapsed  time
+    try:
+        percT = (et.seconds/60)/ (4*60)
+    except:
+        percT = 0
 
     rWidthBorder = screenWidth - rStartX - (2 * rMargin) #* rStartX) * perc
-    rWidthProgress = (rWidthBorder - 2 * rMargin) * perc
+    rWidthProgress = (rWidthBorder - 2 * rMargin) * percT
     rHeight = 20
     rStartY = (screenHeight/2) +(2* rMargin) + rHeight
     sDraw.text((rStartX+ rWidthBorder+2, rStartY), f'Time', font = f,  anchor="lt",fill = 0)
