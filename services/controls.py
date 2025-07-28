@@ -439,7 +439,6 @@ async def main():
     # initialize state
     try:
         stateDict = await send_get_request(endpoint='api/state')
-        stateDict.raise_for_status() # is the redundant?
     except Exception as e:
         logging.error(f"Couldn't initialize state: {e}")
         stateDict={"csrp":{"baselineW":0,"now":False,"upcoming":False,"avgPerf":100},

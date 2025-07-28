@@ -143,7 +143,7 @@ def eventScreen(f,s, p):
     rStartY = (screenHeight/2) +(2* rMargin) + rHeight
     sDraw.text((rStartX+ rWidthBorder+2, rStartY), f'Time', font = f,  anchor="lt",fill = 0)
     sDraw.rectangle((rStartX,rStartY,rStartX+ rWidthBorder,rStartY+rHeight), fill = 255, outline=0)
-    sDraw.rectangle((rStartX+rMargin,rStartY+rMargin,rStartX+rWidthProgress,rStartY+rHeight-(2*rMargin)), fill = 0)
+    sDraw.rectangle((rStartX+rMargin,rStartY+rMargin,rStartX+rWidthProgress,rStartY+rHeight-rMargin), fill = 0)
 
     epd.displayPartial(epd.getbuffer(sImage))
 
@@ -165,21 +165,21 @@ def eventPausedScreen(f,s,p):
     # money bar
     circRad = screenHeight/3
     centerX = screenWidth/4
-    centerY = (screenWidth/2)+circRad
+    centerY = (screenHeight/2)+circRad
     sDraw.circle((centerX,centerY),circRad,fill=255, outline=0,width=1)
     sDraw.pieslice((centerX-circRad,centerY-circRad,centerX+circRad,centerY+circRad), 0, int(360*perc),fill=0)
 
     # time bar
     circRad = 2* screenHeight/3
     centerX = 2*screenWidth/4
-    centerY = (screenWidth/2)+circRad
+    centerY = (screenHeight/2)+circRad
     sDraw.circle((centerX,centerY),circRad,fill=255, outline=0,width=1)
     sDraw.pieslice((centerX-circRad,centerY-circRad,centerX+circRad,centerY+circRad), 0, int(360*perc),fill=0)
 
     # performance
     circRad = screenHeight/3
     centerX = 3*screenWidth/4
-    centerY = (screenWidth/2)+circRad
+    centerY = (screenHeight/2)+circRad
     sDraw.circle((centerX,centerY),circRad,fill=255, outline=0,width=1)
     sDraw.pieslice((centerX-circRad,centerY-circRad,centerX+circRad,centerY+circRad), 0, int(360*perc),fill=0)
 
