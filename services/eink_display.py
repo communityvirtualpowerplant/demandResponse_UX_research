@@ -114,7 +114,7 @@ def eventScreen(f,s, p):
     sDraw.text((screenWidth/2, 10), f'Event now!!!', font = f,  anchor="mt",fill = 0)
 
     # money bar
-    rStartX = 10
+    rStartX = 5
     rMargin = 3
     if p:
         perc = p['performancePerc']
@@ -127,7 +127,7 @@ def eventScreen(f,s, p):
     rStartY = (screenHeight/2)
     sDraw.text((rStartX+ rWidthBorder+2, rStartY), f'Time', font = f,  anchor="lt",fill = 0)
     sDraw.rectangle((rStartX,rStartY,rStartX+ rWidthBorder,rStartY+rHeight), fill = 255, outline=0)
-    sDraw.rectangle((rStartX+rMargin,rStartY+rMargin,rStartX+rWidthProgress,rStartY+rHeight-(2*rMargin)), fill = 0)
+    sDraw.rectangle((rStartX+rMargin,rStartY+rMargin,rStartX+rWidthProgress,rStartY+rHeight-rMargin), fill = 0)
 
     # time bar
     rStartX = 10
@@ -148,13 +148,18 @@ def eventScreen(f,s, p):
     epd.displayPartial(epd.getbuffer(sImage))
 
 def eventPausedScreen(f,s,p):
+    if p:
+        perc = p['performancePerc']
+    else:
+        perc = 0
+
     # display IP and hostname on start up
     sImage = Image.new('1', (screenWidth,screenHeight), 255)
     sDraw = ImageDraw.Draw(sImage)
     epd.displayPartBaseImage(epd.getbuffer(sImage))
 
     sDraw.rectangle((0,0, screenWidth,screenHeight), fill = 255)
-    sDraw.text((screenWidth, 10), f'Event paused until...!!!', font = f,  anchor="mt",fill = 0)
+    sDraw.text((screenWidth/2, 10), f'Event paused until...!!!', font = f,  anchor="mt",fill = 0)
 
     # money bar
     # rStartX = 10
@@ -166,8 +171,10 @@ def eventPausedScreen(f,s,p):
     # sDraw.rectangle((rStartX+rMargin,rStartY+rMargin,(rStartX+rWidth)-2*rMargin,(rStartY+rHeight)-2*rMargin), fill = 0)
     arcRad = screenHeight/6
     circRad = arcRad + 6
-    sDraw.circle((screenWidth/3,screenWidth/4),circRad,fill=255, outline=0,width=1)
-    sDraw.arc(((screenWidth/3)-arcRad,screenWidth/4,(screenWidth/3)-arcRad,((screenWidth/4)+(arcRad*2))), 0, 83,fill=0)
+    centerX = screenWidth/3
+    centerY = screenWidth/4
+    sDraw.circle((centerX,centerY),circRad,fill=255, outline=0,width=1)
+    sDraw.arc((centerX-arcRad,centerY-arcRad,centerX+arcRad,centerY+arcRad), 0, int(360*p),fill=0)
     # time bar
 
     epd.displayPartial(epd.getbuffer(sImage))
