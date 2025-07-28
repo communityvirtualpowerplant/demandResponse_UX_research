@@ -150,36 +150,36 @@ def eventScreen(f,s, p):
 def eventPausedScreen(f,s,p):
     perc = p['performancePerc']
 
+    et = datetime.now() - p['datetime']  #elapsed  time
+    percT = (et.seconds/60)/ (4*60)
+
+    circRad = screenHeight/3
+    centerY = screenHeight - (screenHeight/3)-10
+
     logging.debug(type(s['eventPause']['datetime']))
     endPause = s['eventPause']['datetime']+timedelta(hours=1)
     endPauseStr = endPause.strftime("%I:%M %p")
 
-    # display IP and hostname on start up
     sImage = Image.new('1', (screenWidth,screenHeight), 255)
     sDraw = ImageDraw.Draw(sImage)
     epd.displayPartBaseImage(epd.getbuffer(sImage))
 
+    # reset screen
     sDraw.rectangle((0,0, screenWidth,screenHeight), fill = 255)
     sDraw.text((screenWidth/2, 10), f"Event paused until {endPauseStr}!", font = f,  anchor="mt",fill = 0)
 
-    # money bar
-    circRad = screenHeight/3
+    # money
     centerX = screenWidth/4
-    centerY = (screenHeight/2)+circRad
     sDraw.circle((centerX,centerY),circRad,fill=255, outline=0,width=1)
     sDraw.pieslice((centerX-circRad,centerY-circRad,centerX+circRad,centerY+circRad), 0, int(360*perc),fill=0)
 
-    # time bar
-    circRad = 2* screenHeight/3
+    # time
     centerX = 2*screenWidth/4
-    centerY = (screenHeight/2)+circRad
     sDraw.circle((centerX,centerY),circRad,fill=255, outline=0,width=1)
-    sDraw.pieslice((centerX-circRad,centerY-circRad,centerX+circRad,centerY+circRad), 0, int(360*perc),fill=0)
+    sDraw.pieslice((centerX-circRad,centerY-circRad,centerX+circRad,centerY+circRad), 0, int(360*percT),fill=0)
 
     # performance
-    circRad = screenHeight/3
     centerX = 3*screenWidth/4
-    centerY = (screenHeight/2)+circRad
     sDraw.circle((centerX,centerY),circRad,fill=255, outline=0,width=1)
     sDraw.pieslice((centerX-circRad,centerY-circRad,centerX+circRad,centerY+circRad), 0, int(360*perc),fill=0)
 
