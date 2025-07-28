@@ -12,6 +12,10 @@ __pycache__/*
 data/*
 !data/README.md
 
+state.json
+performance.json
+config.json
+
 venv/*
 
 .env

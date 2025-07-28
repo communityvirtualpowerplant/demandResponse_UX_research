@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, send_file, abort, jsonify
+from flask import Flask, render_template, request, send_file, abort, jsonify, make_response
 from flask_cors import CORS
 import csv
 import datetime
@@ -105,7 +105,7 @@ def get_csv_for_date():
         try:
             df = api.getMostRecent(api.dataPath,filePrefix)[0]
             last_row = df.iloc[-1].to_dict()
-            return jsonify(last_row)
+            return jsonify(last_row), 200
         except FileNotFoundError:
             return jsonify({'error': 'CSV file not found'}), 404
         except Exception as e:
@@ -117,7 +117,7 @@ def get_csv_for_date():
             files = sorted(glob.glob(file_pattern))
             fileName = files[-1]
             dn = fileName.split('/')[-1]
-            return send_file(os.path.abspath(fileName), as_attachment=True, download_name=dn, mimetype='text/csv')
+            return send_file(os.path.abspath(fileName), as_attachment=True, download_name=dn, mimetype='text/csv'), 200
 
         except FileNotFoundError:
             return jsonify({'error': 'CSV file not found'}), 404
@@ -132,7 +132,7 @@ def get_csv_for_date():
 
             for f in files:
                 if fileName in f:
-                    return send_file(os.path.abspath(f), as_attachment=True, download_name=fileName, mimetype='text/csv')
+                    return send_file(os.path.abspath(f), as_attachment=True, download_name=fileName, mimetype='text/csv'),200
         except FileNotFoundError:
             return jsonify({'error': 'CSV file not found'}), 404
         except Exception as e:
@@ -152,7 +152,7 @@ def list_csv_files():
     # Return just the filenames (without full paths)
     filenames = [os.path.basename(f) for f in files]
 
-    return jsonify(filenames)
+    return jsonify(filenames), 200
 
 @app.route("/api/health")
 def health_check():
@@ -220,7 +220,7 @@ def health_check():
         "sdCardErrors" : sdCardErrors,
         "fileStatusPlugs":fileStatusPlugs,
         "fileStatusPowerStation":fileStatusPowerStation
-    })
+    }), 200
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=False)

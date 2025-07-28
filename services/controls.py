@@ -169,6 +169,8 @@ async def send_get_request(ip:str='localhost', port:int=5000,endpoint:str='',typ
                 else:
                     res= response.status_code
                 break
+            except requests.exceptions.HTTPError as e:
+                logging.error(f"HTTP error occurred: {e}")
             except Exception as e:
                 logging.error(f'{e}')
                 if attempt == max_tries-1: # try up to 3 times
@@ -432,6 +434,7 @@ async def main():
     # initialize state
     try:
         stateDict = await send_get_request(endpoint='api/state')
+        stateDict.raise_for_status() # is the redundant?
     except Exception as e:
         logging.error(f"Couldn't initialize state: {e}")
         stateDict={"csrp":{"baselineW":0,"now":False,"upcoming":False,"avgPerf":100},
