@@ -125,7 +125,7 @@ def eventScreen(f,s, p):
     rWidthProgress = (rWidthBorder - 2 * rMargin) * perc
     rHeight = 20
     rStartY = (screenHeight/2)
-    sDraw.text((rStartX+ rWidth+3, rStartY), f'Time', font = f,  anchor="lt",fill = 0)
+    sDraw.text((rStartX+ rWidthBorder+2, rStartY), f'Time', font = f,  anchor="lt",fill = 0)
     sDraw.rectangle((rStartX,rStartY,rStartX+ rWidthBorder,rStartY+rHeight), fill = 255, outline=0)
     sDraw.rectangle((rStartX+rMargin,rStartY+rMargin,rStartX+rWidthProgress,rStartY+rHeight-(2*rMargin)), fill = 0)
 
@@ -141,7 +141,7 @@ def eventScreen(f,s, p):
     rWidthProgress = (rWidthBorder - 2 * rMargin) * perc
     rHeight = 20
     rStartY = (screenHeight/2) +(2* rMargin) + rHeight
-    sDraw.text((rStartX+ rWidth+3, rStartY), f'Time', font = f,  anchor="lt",fill = 0)
+    sDraw.text((rStartX+ rWidthBorder+2, rStartY), f'Time', font = f,  anchor="lt",fill = 0)
     sDraw.rectangle((rStartX,rStartY,rStartX+ rWidthBorder,rStartY+rHeight), fill = 255, outline=0)
     sDraw.rectangle((rStartX+rMargin,rStartY+rMargin,rStartX+rWidthProgress,rStartY+rHeight-(2*rMargin)), fill = 0)
 
