@@ -150,8 +150,9 @@ def eventScreen(f,s, p):
 def eventPausedScreen(f,s,p):
     perc = p['performancePerc']
 
+    logging.debug(type(s['eventPause']['datetime']))
     endPause = s['eventPause']['datetime']+timedelta(hours=1)
-    endPauseStr = str(endPause.strftime("%I:%M %p"))
+    endPauseStr = endPause.strftime("%I:%M %p")
 
     # display IP and hostname on start up
     sImage = Image.new('1', (screenWidth,screenHeight), 255)
@@ -159,7 +160,7 @@ def eventPausedScreen(f,s,p):
     epd.displayPartBaseImage(epd.getbuffer(sImage))
 
     sDraw.rectangle((0,0, screenWidth,screenHeight), fill = 255)
-    sDraw.text((screenWidth/2, 10), f'Event paused until {endPauseStr}!', font = f,  anchor="mt",fill = 0)
+    sDraw.text((screenWidth/2, 10), f"Event paused until {endPauseStr}!", font = f,  anchor="mt",fill = 0)
 
     # money bar
     circRad = screenHeight/3
