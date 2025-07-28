@@ -349,6 +349,7 @@ async def main():
         if num >= 3:
             num = 0
             fullRefresh()
+            updateScreen = True
 
         try:
             if updateScreen:
