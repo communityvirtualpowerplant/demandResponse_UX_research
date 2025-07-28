@@ -287,7 +287,7 @@ async def main():
 
         if num >= 3:
             num = 0
-            fullrefresh()
+            fullRefresh()
 
         try:
             if updateScreen:
