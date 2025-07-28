@@ -62,7 +62,7 @@ async def send_get_request(ip:str='localhost', port:int=5000,endpoint:str='',typ
                 response = requests.get(f"http://{ip}:{port}/{endpoint}", timeout=timeout)
                 response.raise_for_status()
                 if type == 'json':
-                    res= convert_bools(response.json())
+                    res= parse_datetimes(convert_bools(response.json()))
                 elif type == 'text':
                     res= response.text
                 else:
@@ -282,13 +282,11 @@ async def main():
     updateData = datetime.now() # will get updated every 5 minutes
     updateState = datetime.now() # will get updated every 30 seconds
 
-    power = parse_datetimes(await send_get_request(endpoint='api/data?date=now&source=plugs'))
-    battery = parse_datetimes(await send_get_request(endpoint='api/data?date=now&source=powerstation'))
-    state = parse_datetimes(await send_get_request(endpoint='api/state'))
+    power = await send_get_request(endpoint='api/data?date=now&source=plugs')
+    battery = await send_get_request(endpoint='api/data?date=now&source=powerstation')
+    state = await send_get_request(endpoint='api/state')
 
-    # if (state['csrp']['now']) or (state['csrp']['now']):
-    #     logging.debug('event is ongoing!')
-    performance = parse_datetimes(await send_get_request(endpoint='api/performance'))
+    performance = await send_get_request(endpoint='api/performance')
 
     # check for today's performance
     todaysPerformance = None

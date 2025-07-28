@@ -282,7 +282,7 @@ async def getBaseline(eDF:pd.DataFrame,eTime:float,eType:str,eDate=None):
         return 0
 
 
-async def getOngoingPerformance(eTime:float,eType:str,eBaseline:float):
+async def getOngoingPerformance(eTime:float,eType:str,eBaseline:float,pauseTS=[0]):
     # get today's file
     today = datetime.now().date() #- timedelta(days=1) uncomment to test (also add it to formattedStartTime)
 
@@ -334,7 +334,8 @@ async def getOngoingPerformance(eTime:float,eType:str,eBaseline:float):
             'loadWh_avg':mean(hourlyEnergy),
             'flexW_avg':eBaseline-mean(hourlyEnergy),
             'baselineW':eBaseline,
-            'event':eType}
+            'event':eType,
+            'pauses':pauseTS}
 
     return perf
 
@@ -397,7 +398,10 @@ async def logPerformance(d:dict):
 ##############
 
 async def main():
-    global buttonState, button_event, stateDict
+    global buttonState, button_event, stateDict, pauses
+
+    #track button presses
+    pauses = []
 
     # Event used to "wake up" the sleeping task
     button_event = asyncio.Event()
@@ -415,6 +419,7 @@ async def main():
             buttonState['state']=True
             buttonState['datetime']=datetime.now()
             stateDict['eventPause']=buttonState
+            pauses.append(datetime.now())
             loop.call_soon_threadsafe(button_event.set)
             logging.info(f'Button pressed! {buttonState}')
         else:
