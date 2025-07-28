@@ -333,7 +333,7 @@ async def main():
             state = await send_get_request(endpoint='api/state')
             updateState = datetime.now()
             # update the screen if event status changes
-            updateScreen = updateState(oldState,state)
+            updateScreen = stateUpdate(oldState,state)
 
         #  get most recent data
         if(datetime.now() - updateData> timedelta(minutes=5)):
