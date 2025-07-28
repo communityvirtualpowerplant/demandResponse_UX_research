@@ -137,7 +137,7 @@ def eventScreen(f,s, p):
         perc = 0
 
     rWidthBorder = screenWidth - 2 * margin #* rStartX) * perc
-    rWidthProgress = (rWidthBorder - 2 * margin) * perc
+    rWidthProgress = (rWidthBorder - 2 * rMargin) * perc
     rHeight = 20
     rStartY = (screenHeight/2) +(2* rMargin) + rHeight
     sDraw.text((rStartX+ rWidth+3, rStartY), f'Time', font = f,  anchor="lt",fill = 0)
@@ -322,7 +322,7 @@ async def main():
 
         # full refresh should be greater than 3 minutes or after 3 partial refreshes
         updateScreen = False
-        asyncio.sleep(1)
+        await asyncio.sleep(1)
 
 try:
     #main()
