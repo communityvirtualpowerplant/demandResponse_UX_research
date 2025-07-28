@@ -174,7 +174,7 @@ def eventPausedScreen(f,s,p):
     centerX = screenWidth/3
     centerY = screenWidth/4
     sDraw.circle((centerX,centerY),circRad,fill=255, outline=0,width=1)
-    sDraw.arc((centerX-arcRad,centerY-arcRad,centerX+arcRad,centerY+arcRad), 0, int(360*p),fill=0)
+    sDraw.arc((centerX-arcRad,centerY-arcRad,centerX+arcRad,centerY+arcRad), 0, int(360*perc),fill=0)
     # time bar
 
     epd.displayPartial(epd.getbuffer(sImage))
