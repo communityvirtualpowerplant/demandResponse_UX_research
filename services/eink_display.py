@@ -90,7 +90,7 @@ def convert_bools(obj):
     else:
         return obj
 
-def upcomingScreen(font24):
+def upcomingScreen(f,s=None,p=None):
     eTime = '4pm'
     eDate = 'August 1'
 
@@ -100,7 +100,7 @@ def upcomingScreen(font24):
     epd.displayPartBaseImage(epd.getbuffer(sImage))
 
     sDraw.rectangle((50, 40, 220, 105), fill = 255)
-    sDraw.text((50, 40), f'Event upcoming at {eTime} on {eDate}!', font = font24, fill = 0)
+    sDraw.text((50, 40), f'Event upcoming at {eTime} on {eDate}!', font = f, fill = 0)
     epd.displayPartial(epd.getbuffer(sImage))
 
 def eventScreen(f,s, p):
@@ -171,7 +171,7 @@ def eventPausedScreen(f,s,p):
 
     epd.displayPartial(epd.getbuffer(sImage))
 
-def normalScreen(f,w=None):
+def normalScreen(f,w=None,s=None,p=None):
 
     # display IP and hostname on start up
     sImage = Image.new('1', (screenWidth,screenHeight), 255)
@@ -232,7 +232,7 @@ async def displayIP(font24):
     ip_draw.rectangle((50, 40, 220, 105), fill = 255)
     ip_draw.text((50, 40), f'{hostname}\n{IPAddr}', font = font24, fill = 0)
     epd.displayPartial(epd.getbuffer(ip_image))
-    asyncio.sleep(15) #needs to wait for the API to spin up before moving on
+    await asyncio.sleep(15) #needs to wait for the API to spin up before moving on
 
 def fullRefresh():
     epd.init()
@@ -293,7 +293,7 @@ async def main():
                 if state['eventPause']['state']:
                     if (not state['csrp']['now']) or (not state['dlrp']['now']):
                         # if paused and event is ongoing
-                        eventPausedScreen(font15)
+                        eventPausedScreen(font15,state,todaysPerformance)
                 else:
                     if not state['csrp']['now']:
                         if not state['dlrp']['now']:
@@ -301,9 +301,9 @@ async def main():
                                 if not state['dlrp']['upcoming']:
                                     normalScreen(font15,power['ac-W'])
                                 else:
-                                    upcomingScreen(font15)
+                                    upcomingScreen(font15,state,todaysPerformance)
                             else:
-                                upcomingScreen(font15)
+                                upcomingScreen(font15,state,todaysPerformance)
                         else:
                             eventScreen(font15,state,todaysPerformance)
                     else:
@@ -316,7 +316,7 @@ async def main():
                 # exit loop if state unknown
                 if not state:
                     logging.error(f'no state!')
-                    normalScreen(font15)
+                    normalScreen(font15,power['ac-W'])
                     num = num + 1
                 else:
                     logging.error(e)
