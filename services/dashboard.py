@@ -68,7 +68,7 @@ def today():
 @app.route("/api/state", methods=['GET'])
 def getState():
     try:
-        with open(os.path.join(repoRoot,'services/state.json'), "r") as jsonFile:
+        with open(os.path.join(repoRoot,'data/state.json'), "r") as jsonFile:
             data = json.load(jsonFile)
             return jsonify(data), 200
     except Exception as e:

@@ -27,15 +27,23 @@ The username for all devices is
 ## To do
 
 Software
+
+display
 * get performance and payment stuff
+* finalize interfaces
+
+backend
 * airtable updater
 * incorporate weather
 * local front end
-* finalize interfaces
 * include a script to check AT to run specific branches!
-* add in a battery cutoff below 20%
 * get actual baseline rules
-* fix performance calculator!
+* fix performance calculator! - issue with hourlyWh maybe?
+
+misc
+* add in a battery cutoff below 20%
+
+* move state.json to data directory?
 
 System
 * plan for sms and emails
