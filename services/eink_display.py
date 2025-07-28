@@ -103,7 +103,7 @@ def upcomingScreen(font24):
     sDraw.text((50, 40), f'Event upcoming at {eTime} on {eDate}!', font = font24, fill = 0)
     epd.displayPartial(epd.getbuffer(sImage))
 
-def eventScreen(f):
+def eventScreen(f,s, p):
 
     # display IP and hostname on start up
     sImage = Image.new('1', (screenWidth,screenHeight), 255)
@@ -113,11 +113,24 @@ def eventScreen(f):
     sDraw.rectangle((0,0, screenWidth,screenHeight), fill = 255)
     sDraw.text((screenWidth, 10), f'Event now!!!', font = f,  anchor="mt",fill = 0)
 
-    sDraw.rectangle((50,80,screenWidth-50,100), fill = 255)
-    sDraw.rectangle((53,83,screenWidth-56,94), fill = 0)
+    # money bar
+    rStartX = 10
+    rStartY = screenHeight/2
+    rMargin = 3
+    if p:
+        perc = p['performancePerc']
+    else:
+        perc = 0
+
+    rWidth = (screenWidth - 2 * rStartX) * perc
+    rHeight = 20
+    sDraw.text((3, rStartY-10), f'Performance', font = f,  anchor="lb",fill = 0)
+    sDraw.rectangle((rStartX,rStartY,rStartX+ rWidth,rStartY+rHeight), fill = 255, outline=0)
+    sDraw.rectangle((rStartX+rMargin,rStartY+rMargin,(rStartX+rWidth)-2*rMargin,(rStartY+rHeight)-2*rMargin), fill = 0)
+
     epd.displayPartial(epd.getbuffer(sImage))
 
-def eventPausedScreen(f):
+def eventPausedScreen(f,s,p):
     # display IP and hostname on start up
     sImage = Image.new('1', (screenWidth,screenHeight), 255)
     sDraw = ImageDraw.Draw(sImage)
@@ -229,7 +242,16 @@ async def main():
     power = await send_get_request(endpoint='api/data?date=now&source=plugs')
     battery = await send_get_request(endpoint='api/data?date=now&source=powerstation')
     state = await send_get_request(endpoint='api/state')
+
+    # if (state['csrp']['now']) or (state['csrp']['now']):
+    #     logging.debug('event is ongoing!')
     performance = await send_get_request(endpoint='api/performance')
+
+    # check for today's performance
+    todaysPerformance = None
+    for k in performance.keys():
+        if datetime.today().strftime("%Y-%m-%d") in k:
+            todaysPerformance = performance[todaysKey]
 
     updateScreen = True
 
@@ -268,9 +290,9 @@ async def main():
                             else:
                                 upcomingScreen(font15)
                         else:
-                            eventScreen(font15,state,performance)
+                            eventScreen(font15,state,todaysPerformance)
                     else:
-                        eventScreen(font15,state,performance)
+                        eventScreen(font15,state,todaysPerformance)
 
                 updateScreen = False
                 num = num + 1
