@@ -106,7 +106,7 @@ def upcomingScreen(f,s=None,p=None):
     epd.displayPartBaseImage(epd.getbuffer(sImage))
 
     sDraw.rectangle((0,0,screenWidth,screenHeight), fill = 255)
-    sDraw.text((screenWidth/2, 40), f'Event upcoming at {eTime.strftime("%I:%M %p")} on {eDate}!', anchor='mt',font = f, fill = 0)
+    sDraw.text((screenWidth/2, 5), f'Event upcoming at\n{eTime.strftime("%I:%M %p")} on {eDate}!', anchor='mt',font = f, fill = 0)
     epd.displayPartial(epd.getbuffer(sImage))
 
 def eventScreen(f,s, p):
@@ -122,14 +122,15 @@ def eventScreen(f,s, p):
     # money bar
     rStartX = 5
     rMargin = 3
+    rWidthBorder = screenWidth - rStartX - (2 * rMargin) - 15
+    rHeight = 20
+
     if p:
-        perc = p['performancePerc']
+        perc = min(1.0,p['performancePerc'])
     else:
         perc = 0
 
-    rWidthBorder = screenWidth - rStartX - (2 * rMargin) #* rStartX) * perc
     rWidthProgress = (rWidthBorder - 2 * rMargin) * perc
-    rHeight = 20
     rStartY = (screenHeight/2)
     sDraw.text((rStartX+ rWidthBorder+2, rStartY), f'Time', font = f,  anchor="lt",fill = 0)
     sDraw.rectangle((rStartX,rStartY,rStartX+ rWidthBorder,rStartY+rHeight), fill = 255, outline=0)
@@ -139,13 +140,12 @@ def eventScreen(f,s, p):
     #et = + timedelta(hours=4) #event end time
     et = datetime.now() - p['datetime']  #elapsed  time
     try:
-        percT = (et.seconds/60)/ (4*60)
+        percT = min(1.0,(et.seconds/60)/ (4*60))
     except:
         percT = 0
 
-    rWidthBorder = screenWidth - rStartX - (2 * rMargin) #* rStartX) * perc
+    #rWidthBorder = screenWidth - rStartX - (2 * rMargin) #* rStartX) * perc
     rWidthProgress = (rWidthBorder - 2 * rMargin) * percT
-    rHeight = 20
     rStartY = (screenHeight/2) +(2* rMargin) + rHeight
     sDraw.text((rStartX+ rWidthBorder+2, rStartY), f'Time', font = f,  anchor="lt",fill = 0)
     sDraw.rectangle((rStartX,rStartY,rStartX+ rWidthBorder,rStartY+rHeight), fill = 255, outline=0)
@@ -155,13 +155,13 @@ def eventScreen(f,s, p):
 
 def eventPausedScreen(f,s,p):
     # performance percentage
-    perc = p['performancePerc']
+    perc = min(1,p['performancePerc'])
 
     # elapsed time percentage
     et = datetime.now() - p['datetime']  #elapsed  time
-    percT = (et.seconds/60)/ (4*60)
+    percT = min(1,(et.seconds/60)/ (4*60))
 
-    circRad = screenHeight/3
+    circRad = .9 * screenHeight/3
     centerY = screenHeight - (screenHeight/3)-10
 
     logging.debug(type(s['eventPause']['datetime']))
@@ -174,7 +174,7 @@ def eventPausedScreen(f,s,p):
 
     # reset screen
     sDraw.rectangle((0,0, screenWidth,screenHeight), fill = 255)
-    sDraw.text((screenWidth/2, 10), f"Event paused until {endPauseStr}!", font = f,  anchor="mt",fill = 0)
+    sDraw.text((screenWidth/2, 5), f"Event paused until {endPauseStr}!", font = f,  anchor="mt",fill = 0)
 
     # money
     centerX = (screenWidth/3) + (screenWidth/6)
