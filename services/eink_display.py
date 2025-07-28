@@ -124,7 +124,7 @@ def eventScreen(f,s, p):
 
     rWidth = (screenWidth - 2 * rStartX) * perc
     rHeight = 20
-    sDraw.text((rStartX+ rWidth+3, rStartY), f'Perf', font = f,  anchor="lt",fill = 0)
+    sDraw.text((rStartX+ rWidth+3, rStartY), f'Perf %', font = f,  anchor="lt",fill = 0)
     sDraw.rectangle((rStartX,rStartY,rStartX+ rWidth,rStartY+rHeight), fill = 255, outline=0)
     sDraw.rectangle((rStartX+rMargin,rStartY+rMargin,rStartX+(rWidth-2*rMargin),rStartY+(rHeight-2*rMargin)), fill = 0)
 
@@ -136,12 +136,13 @@ def eventScreen(f,s, p):
     else:
         perc = 0
 
-    rWidth = (screenWidth - 2 * rStartX) * perc
+    rWidthBorder = screenWidth - 2 * margin #* rStartX) * perc
+    rWidthProgress = (rWidthBorder - 2 * margin) * perc
     rHeight = 20
-    rStartY = (screenHeight/2) +rMargin + rHeight
+    rStartY = (screenHeight/2) +(2* rMargin) + rHeight
     sDraw.text((rStartX+ rWidth+3, rStartY), f'Time', font = f,  anchor="lt",fill = 0)
-    sDraw.rectangle((rStartX,rStartY,rStartX+ rWidth,rStartY+rHeight), fill = 255, outline=0)
-    sDraw.rectangle((rStartX+rMargin,rStartY+rMargin,rStartX+(rWidth-2*rMargin),rStartY+(rHeight-2*rMargin)), fill = 0)
+    sDraw.rectangle((rStartX,rStartY,rStartX+ rWidthBorder,rStartY+rHeight), fill = 255, outline=0)
+    sDraw.rectangle((rStartX+rMargin,rStartY+rMargin,rStartX+rWidthProgress,rStartY+rHeight-(2*rMargin)), fill = 0)
 
     epd.displayPartial(epd.getbuffer(sImage))
 
