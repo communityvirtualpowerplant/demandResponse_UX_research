@@ -106,7 +106,7 @@ def upcomingScreen(f,s=None,p=None):
     epd.displayPartBaseImage(epd.getbuffer(sImage))
 
     sDraw.rectangle((0,0,screenWidth,screenHeight), fill = 255)
-    sDraw.text((screenWidth/2, 5), f'Event upcoming at\n{eTime.strftime("%I:%M %p")} on {eDate}!', anchor='mt',font = f, fill = 0)
+    sDraw.text((screenWidth/2, 5), f'Event upcoming at\n{eTime.strftime("%I:%M %p")} on {eDate}!', anchor='ma',font = f, fill = 0)
     epd.displayPartial(epd.getbuffer(sImage))
 
 def eventScreen(f,s, p):
