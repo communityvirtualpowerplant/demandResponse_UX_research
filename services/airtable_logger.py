@@ -33,6 +33,7 @@ except Exception as e:
 participantNumber = int(config["participant"])
 
 AT = Airtable(key,'appqYfVvpJR5kBATE')
+AT.names = [f'participant{participantNumber}']
 
 FREQ_SECONDS = 60
 
@@ -104,11 +105,9 @@ async def send_get_request(ip:str='localhost', port:int=5000,endpoint:str='',typ
         return res
 
 async def main():
-    AT = Airtable(key,'live')
 
     # update state
     # get record IDs once at start to minimize API calls
-    AT.names = [f'participant{participantNumber}']
 
     AT.IDs = await AT.getRecordIDbyName(AT.names,table='state')
     logging.debug(AT.IDs)
