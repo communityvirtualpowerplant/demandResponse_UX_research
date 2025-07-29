@@ -37,34 +37,6 @@ AT.names = [f'participant{participantNumber}']
 
 FREQ_SECONDS = 60
 
-# async def send_get_request(url,type:str,timeout=1) -> Any:
-#     """Send GET request to the IP."""
-
-#     # get own data
-#     max_tries = 3
-#     for attempt in range(max_tries):
-#         logging.debug(f'Attempt #{attempt+1}')
-#         try:
-#             response = requests.get(f"{url}", timeout=timeout)
-#             response.raise_for_status()
-#             if type == 'json':
-#                 res = response.json()
-#             elif type == 'text':
-#                 res = response.text
-#             else:
-#                 res = response.status_code
-#             break
-#         except Exception as e:
-#             logging.error(f'{e}')
-#             if attempt == max_tries-1: # try up to 3 times
-#                 res = {}
-#                 logging.debug('FAILED!!!')
-#             else:
-#                 logging.debug('SLEEEEEEEEEEEEEEEEEPING')
-#                 await asyncio.sleep(1)
-
-#     return res
-
 # Function to recursively convert "true"/"false" strings to Booleans
 def convert_bools(obj):
     if isinstance(obj, dict):
@@ -133,6 +105,24 @@ async def main():
         ###################
         ### PERFORMANCE ###
         ###################
+
+        performance = []
+
+        perf = await send_get_request('localhost',endpoint='api/performance')
+
+        for k in perf.keys()
+            performance.append(perf[k])
+            logging.debug(perf[k])
+
+        try:
+            pIDs = await AT.getRecordIDbyName(perf.keys(),table=f'perf_participant{participantNumber}')
+            logging.debug(pIDs)
+
+            await AT.updateBatch(perf.keys(),pIDs,performance,table=f'perf_participant{participantNumber}')
+        except Exception as e:
+            logging.error(e)
+
+        logging.debug(f'Sleeping for {FREQ_SECONDS/60} minutes.')
 
         # # if event is happening update every 5 minutes, else update every half-hour
         # if (state['csrp']['now']) or (state['dlrp']['now']):
