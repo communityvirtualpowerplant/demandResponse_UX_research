@@ -1,5 +1,3 @@
-import sys
-import os
 import datetime
 import json
 import asyncio
