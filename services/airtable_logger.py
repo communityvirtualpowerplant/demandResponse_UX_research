@@ -106,29 +106,30 @@ async def main():
         ### PERFORMANCE ###
         ###################
 
-        performance = []
+        # performance = []
 
-        perf = await send_get_request('localhost',endpoint='api/performance')
+        # perf = await send_get_request('localhost',endpoint='api/performance')
 
-        for k in perf.keys()
-            performance.append(perf[k])
-            logging.debug(perf[k])
+        # for k in perf.keys():
+        #     performance.append(perf[k])
+        #     logging.debug(perf[k])
 
-        try:
-            pIDs = await AT.getRecordIDbyName(perf.keys(),table=f'perf_participant{participantNumber}')
-            logging.debug(pIDs)
+        # try:
+        #     pIDs = await AT.getRecordIDbyName(perf.keys(),table=f'perf_participant{participantNumber}')
+        #     logging.debug(pIDs)
 
-            await AT.updateBatch(perf.keys(),pIDs,performance,table=f'perf_participant{participantNumber}')
-        except Exception as e:
-            logging.error(e)
+        #     await AT.updateBatch(perf.keys(),pIDs,performance,table=f'perf_participant{participantNumber}')
+        # except Exception as e:
+        #     logging.error(e)
+
+
+        # if event is happening update every 5 minutes, else update every half-hour
+        if (state['csrp']['now']) or (state['dlrp']['now']):
+            FREQ_SECONDS = 60 * 5
+        else:
+            FREQ_SECONDS = 60 * 30
 
         logging.debug(f'Sleeping for {FREQ_SECONDS/60} minutes.')
-
-        # # if event is happening update every 5 minutes, else update every half-hour
-        # if (state['csrp']['now']) or (state['dlrp']['now']):
-        #     FREQ_SECONDS = 60 * 5
-        # else:
-        #     FREQ_SECONDS = 60 * 30
 
         await asyncio.sleep(FREQ_SECONDS)
 
