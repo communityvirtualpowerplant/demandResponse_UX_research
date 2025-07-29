@@ -110,7 +110,7 @@ async def main():
     # get record IDs once at start to minimize API calls
     AT.names = [f'participant{participantNumber}']
 
-    AT.IDs = await AT.getRecordID(AT.names,table='state')
+    AT.IDs = await AT.getRecordIDbyName(AT.names,table='state')
     logging.debug(AT.IDs)
 
     while True:
