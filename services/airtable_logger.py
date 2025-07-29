@@ -32,7 +32,7 @@ except Exception as e:
 
 participantNumber = int(config["participant"])
 
-AT = Airtable(atKey,'appqYfVvpJR5kBATE')
+AT = Airtable(key,'appqYfVvpJR5kBATE')
 
 FREQ_SECONDS = 60
 
