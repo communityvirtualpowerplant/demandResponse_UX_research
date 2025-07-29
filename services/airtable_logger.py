@@ -6,11 +6,15 @@ import asyncio
 import logging
 import requests
 from typing import Any, Dict, Optional, List
-from airtable import Airtable
 
 # ------------------ Config ------------------ #
-logging.basicConfig(level=logging.DEBUG)
-#LOG_FILENAME = "kasa_log.log"
+logging.basicConfig(format='%(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',level=logging.DEBUG)
+
+libdir = '/home/drux/demandResponse_UX_research/lib/helper_classes'
+if os.path.exists(libdir):
+    sys.path.append(libdir)
+
+from Airtable import Airtable
 
 load_dotenv()
 key = os.getenv('AIRTABLE')
@@ -18,21 +22,18 @@ if not key:
     logger.error("Missing AIRTABLE in environment.")
     raise EnvironmentError("Missing Airtable credentials")
 
-# if true collect Kasa data
-includeKasa = True
-
 try:
-    with open("/home/case/CASE_sensor_network/rpi_zero_sensor/config.json") as f:
+    repoRoot = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+    with open(os.path.join(repoRoot,'config.json')) as f:
         config = json.load(f)
-
-    deviceNum = config["sensor"]["number"]
 except Exception as e:
-    logging.error(e)
+    logging.error(f"Error during reading config file: {e}")
 
-# mode: 1 = only individual data; 8 = all data
-MODE = 8
+participantNumber = int(config["participant"])
 
-FREQ_SECONDS = 60 * 60 * 2
+AT = Airtable(atKey,'appqYfVvpJR5kBATE')
+
+FREQ_SECONDS = 60
 
 async def send_get_request(url,type:str,timeout=1) -> Any:
     """Send GET request to the IP."""
@@ -65,53 +66,45 @@ async def send_get_request(url,type:str,timeout=1) -> Any:
 async def main():
     AT = Airtable(key,'live')
 
+    # update state
     # get record IDs once at start to minimize API calls
-    if MODE == 1:
-        AT.names = [f'sensor{deviceNum}']
-    else:
-        for n in range(8):
-            AT.names.append(f'sensor{n+1}')
+    AT.names = [f'participant{participantNumber}']
 
-        if includeKasa:
-            AT.names.append('kasa')
-
-        logging.debug(AT.names)
     AT.IDs = await AT.getRecordID(AT.names)
     logging.debug(AT.IDs)
 
     while True:
-        now = []
-        # get own data - Mode1 not tested
-        if MODE == 1:
 
-            url = f"http://{localhost}:5000/api/data?date=now"
-            now.append(await send_get_request(url,'json'))
+        #############
+        ### STATE ###
+        #############
 
-            try:
-                await AT.updateBatch(AT.names,AT.IDs,now)
-            except Exception as e:
-                logging.error(e)
+        state = []
 
-        # get everyone elses data
-        else:
-            for n in range(8):
-                url = f"http://pi{n+1}.local:5000/api/data?date=now"
-                now.append(await send_get_request(url,'json'))
+        url = f"http://{localhost}:5000/api/state"
+        state.append(await send_get_request(url,'json'))
 
-                #now.append(await getSensorData(f'pi{n+1}.local'))
-
-            if includeKasa:
-                url = f"http://kasa.local:5000/api/data?date=now"
-                now.append(await send_get_request(url,'json'))
-
-            print(now)
-            try:
-                await AT.updateBatch(AT.names,AT.IDs,now)
-            except Exception as e:
-                logging.error(e)
+        try:
+            await AT.updateBatch(AT.names,AT.IDs,state)
+        except Exception as e:
+            logging.error(e)
 
         logging.debug(f'Sleeping for {FREQ_SECONDS/60} minutes.')
+
+
+        ###################
+        ### PERFORMANCE ###
+        ###################
+
+        # # if event is happening update every 5 minutes, else update every half-hour
+        # if (state['csrp']['now']) or (state['dlrp']['now']):
+        #     FREQ_SECONDS = 60 * 5
+        # else:
+        #     FREQ_SECONDS = 60 * 30
+
         await asyncio.sleep(FREQ_SECONDS)
+
+
 
 if __name__ == "__main__":
     try:

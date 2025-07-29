@@ -24,6 +24,12 @@ The username for all devices is
 #### User
 
 
+### Additional Development Resources
+
+* https://www.waveshare.com/wiki/2.13inch_e-Paper_HAT+
+* https://pillow.readthedocs.io/en/latest/index.html
+
+
 ## To do
 
 Software
@@ -42,8 +48,6 @@ backend
 
 misc
 * add in a battery cutoff below 20%
-
-* move state.json to data directory?
 
 System
 * plan for sms and emails

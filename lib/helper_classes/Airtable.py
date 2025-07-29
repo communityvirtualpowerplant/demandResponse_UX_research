@@ -8,7 +8,7 @@ import pandas as pd
 
 # ------------------ Airtable Class ------------------ #
 class Airtable():
-    def __init__(self, key:str, base:str,table:str, name:str=''):
+    def __init__(self, key:str, base:str,table:str=None, name:str=''):
         self.key = key
         self.baseURL = 'https://api.airtable.com/v0/'
         self.base = base
@@ -16,23 +16,23 @@ class Airtable():
         self.IDs = []
         self.names=[]
 
-    async def listRecords(self):
+    async def listRecords(self,t=self.table):
         try:
-            res = await self.send_secure_get_request(f'{self.baseURL}{self.base}/{self.table}')
+            res = await self.send_secure_get_request(f'{self.baseURL}{self.base}/{t}')
             return res
         except Exception as e:
             logging.error(e)
         return None
 
     # retrieves record IDs by name column (if name column exists)
-    async def getRecordIDbyName(self,name:List)-> List:
+    async def getRecordIDbyName(self,name:List,t=self.table)-> List:
         IDlist = []
         for n in name:
             logging.debug(name)
             try:
                 # get list of records filtered by date
 
-                mURL = f'{self.url}{self.table}?maxRecords=3&view=Grid%20view&filterByFormula=name%3D%22{n}%22' #filter results by name column
+                mURL = f'{self.url}{t}?maxRecords=3&view=Grid%20view&filterByFormula=name%3D%22{n}%22' #filter results by name column
                 res = await self.send_secure_get_request(mURL)
                 logging.debug(res)
 
@@ -47,7 +47,7 @@ class Airtable():
 
     # updates up to 10 records at once
     # https://airtable.com/developers/web/api/update-multiple-records
-    async def updateBatch(self, names:List, recordIDs:List,data:List):
+    async def updateBatch(self, names:List, recordIDs:List,data:List,t=self.table):
         logging.debug(names)
 
         records = []
@@ -67,7 +67,7 @@ class Airtable():
                         }
                     })
             except Exception as e:
-                logging.error(f'Exception while formatting sensor data: {e}')
+                logging.error(f'Exception while formatting data: {e}')
 
             pData={"records": records}
 
@@ -78,7 +78,7 @@ class Airtable():
                 patch_status = 0
                 while patch_status < 3:
                     # note that patch leaves unchanged data in place, while a post would delete old data in the record even if not being updated
-                    r = await self.send_patch_request(f'{self.url}{self.table}',pData)
+                    r = await self.send_patch_request(f'{self.url}{t}',pData)
                     if r != False:
                         break
                     await asyncio.sleep(1+patch_status)
