@@ -43,7 +43,7 @@ class Airtable():
             try:
                 # get list of records filtered by date
 
-                mURL = f'{self.url}{table}?maxRecords=3&view=Grid%20view&filterByFormula=name%3D%22{n}%22' #filter results by name column
+                mURL = f'{self.baseURL}{table}?maxRecords=3&view=Grid%20view&filterByFormula=name%3D%22{n}%22' #filter results by name column
                 res = await self.send_secure_get_request(mURL)
                 logging.debug(res)
 
@@ -95,7 +95,7 @@ class Airtable():
                 patch_status = 0
                 while patch_status < 3:
                     # note that patch leaves unchanged data in place, while a post would delete old data in the record even if not being updated
-                    r = await self.send_patch_request(f'{self.url}{table}',pData)
+                    r = await self.send_patch_request(f'{self.baseURL}{table}',pData)
                     if r != False:
                         break
                     await asyncio.sleep(1+patch_status)
