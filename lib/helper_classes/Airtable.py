@@ -16,7 +16,12 @@ class Airtable():
         self.IDs = []
         self.names=[]
 
-    async def listRecords(self,table=self.table):
+    async def listRecords(self,table=None):
+        if not table:
+            if self.table:
+                table = self.table
+            else:
+                debug.error(f'missing table name')
         try:
             res = await self.send_secure_get_request(f'{self.baseURL}{self.base}/{table}')
             return res
@@ -25,7 +30,13 @@ class Airtable():
         return None
 
     # retrieves record IDs by name column (if name column exists)
-    async def getRecordIDbyName(self,name:List,table=self.table)-> List:
+    async def getRecordIDbyName(self,name:List,table=None)-> List:
+        if not table:
+            if self.table:
+                table = self.table
+            else:
+                debug.error(f'missing table name')
+
         IDlist = []
         for n in name:
             logging.debug(name)
@@ -47,7 +58,13 @@ class Airtable():
 
     # updates up to 10 records at once
     # https://airtable.com/developers/web/api/update-multiple-records
-    async def updateBatch(self, names:List, recordIDs:List,data:List,table=self.table):
+    async def updateBatch(self, names:List, recordIDs:List,data:List,table=None):
+        if not table:
+            if self.table:
+                table = self.table
+            else:
+                debug.error(f'missing table name')
+
         logging.debug(names)
 
         records = []
