@@ -35,7 +35,7 @@ participantNumber = int(config["participant"])
 AT = Airtable(key,'appqYfVvpJR5kBATE')
 AT.names = [f'participant{participantNumber}']
 
-FREQ_SECONDS = 60
+FREQ_SECONDS = 60 * 5
 
 # Function to recursively convert "true"/"false" strings to Booleans
 def convert_bools(obj):
@@ -98,9 +98,6 @@ async def main():
             await AT.updateBatch(AT.names,AT.IDs,state,table='state')
         except Exception as e:
             logging.error(e)
-
-        logging.debug(f'Sleeping for {FREQ_SECONDS/60} minutes.')
-
 
         ###################
         ### PERFORMANCE ###
