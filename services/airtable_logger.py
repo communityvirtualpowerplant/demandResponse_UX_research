@@ -36,33 +36,72 @@ AT = Airtable(atKey,'appqYfVvpJR5kBATE')
 
 FREQ_SECONDS = 60
 
-async def send_get_request(url,type:str,timeout=1) -> Any:
-    """Send GET request to the IP."""
+# async def send_get_request(url,type:str,timeout=1) -> Any:
+#     """Send GET request to the IP."""
 
-    # get own data
-    max_tries = 3
-    for attempt in range(max_tries):
-        logging.debug(f'Attempt #{attempt+1}')
-        try:
-            response = requests.get(f"{url}", timeout=timeout)
-            response.raise_for_status()
-            if type == 'json':
-                res = response.json()
-            elif type == 'text':
-                res = response.text
-            else:
-                res = response.status_code
-            break
-        except Exception as e:
-            logging.error(f'{e}')
-            if attempt == max_tries-1: # try up to 3 times
-                res = {}
-                logging.debug('FAILED!!!')
-            else:
-                logging.debug('SLEEEEEEEEEEEEEEEEEPING')
-                await asyncio.sleep(1)
+#     # get own data
+#     max_tries = 3
+#     for attempt in range(max_tries):
+#         logging.debug(f'Attempt #{attempt+1}')
+#         try:
+#             response = requests.get(f"{url}", timeout=timeout)
+#             response.raise_for_status()
+#             if type == 'json':
+#                 res = response.json()
+#             elif type == 'text':
+#                 res = response.text
+#             else:
+#                 res = response.status_code
+#             break
+#         except Exception as e:
+#             logging.error(f'{e}')
+#             if attempt == max_tries-1: # try up to 3 times
+#                 res = {}
+#                 logging.debug('FAILED!!!')
+#             else:
+#                 logging.debug('SLEEEEEEEEEEEEEEEEEPING')
+#                 await asyncio.sleep(1)
 
-    return res
+#     return res
+
+# Function to recursively convert "true"/"false" strings to Booleans
+def convert_bools(obj):
+    if isinstance(obj, dict):
+        return {k: convert_bools(v) for k, v in obj.items()}
+    elif isinstance(obj, list):
+        return [convert_bools(elem) for elem in obj]
+    elif obj == "true":
+        return True
+    elif obj == "false":
+        return False
+    else:
+        return obj
+
+async def send_get_request(ip:str='localhost', port:int=5000,endpoint:str='',type:str='json',timeout=1):
+        """Send GET request to the IP."""
+        # get own data
+        max_tries = 3
+        for attempt in range(max_tries):
+            try:
+                response = requests.get(f"http://{ip}:{port}/{endpoint}", timeout=timeout)
+                response.raise_for_status()
+                if type == 'json':
+                    res= convert_bools(response.json()) # add to parse datetimes: parse_datetimes()
+                elif type == 'text':
+                    res= response.text
+                else:
+                    res= response.status_code
+                break
+            except requests.exceptions.HTTPError as e:
+                logging.error(f"HTTP error occurred: {e}")
+            except Exception as e:
+                logging.error(f'{e}')
+                if attempt == max_tries-1: # try up to 3 times
+                    return None
+                else:
+                    logging.debug('SLEEEEEEEEEEEEEEEEEPING')
+                    await asyncio.sleep(1+attempt)
+        return res
 
 async def main():
     AT = Airtable(key,'live')
@@ -71,7 +110,7 @@ async def main():
     # get record IDs once at start to minimize API calls
     AT.names = [f'participant{participantNumber}']
 
-    AT.IDs = await AT.getRecordID(AT.names)
+    AT.IDs = await AT.getRecordID(AT.names,table='state')
     logging.debug(AT.IDs)
 
     while True:
@@ -82,11 +121,10 @@ async def main():
 
         state = []
 
-        url = f"http://{localhost}:5000/api/state"
-        state.append(await send_get_request(url,'json'))
+        state.append(await send_get_request('localhost',endpoint='api/state'))
 
         try:
-            await AT.updateBatch(AT.names,AT.IDs,state)
+            await AT.updateBatch(AT.names,AT.IDs,state,table='state')
         except Exception as e:
             logging.error(e)
 
