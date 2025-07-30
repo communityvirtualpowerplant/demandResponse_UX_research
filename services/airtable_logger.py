@@ -91,7 +91,7 @@ async def main():
         #############
 
         state = await send_get_request('localhost',endpoint='api/state')
-        logging.debug(state)
+        #logging.debug(state)
 
         try:
             await AT.updateBatch(AT.names,AT.IDs,state,table='state')
@@ -102,7 +102,7 @@ async def main():
         ### PERFORMANCE ###
         ###################
 
-        # performance = []
+        performance = []
 
         perf = await send_get_request('localhost',endpoint='api/performance')
 
