@@ -41,11 +41,11 @@ print(f'W={screenWidth}, H={screenHeight}')
 #'127.0.1.1 HOSTNAME' from /etc/hosts
 try:
     hostname = socket.gethostname()
-    IPAddr = socket.gethostbyname(hostname)
+    IPAddr = get_wlan0_ip()
+    #IPAddr = socket.gethostbyname(hostname)
     #IPAddr = socket.gethostbyname(socket.getfqdn())
 except Exception as e:
-    #IPAddr = f'IP unknown: {e}'
-    IPAddr = get_wlan0_ip()
+    IPAddr = f'IP unknown: {e}'
 logging.debug(IPAddr)
 
 try:
