@@ -102,6 +102,7 @@ async def main():
         ### PERFORMANCE ###
         ###################
 
+        '''
         performance = []
 
         perf = await send_get_request('localhost',endpoint='api/performance')
@@ -114,10 +115,12 @@ async def main():
             pIDs = await AT.getRecordIDbyName(perf.keys(),table=f'perf_participant{participantNumber}')
             logging.debug(pIDs)
 
+            # how does this deal with new additions?
             await AT.updateBatch(perf.keys(),pIDs,performance,table=f'perf_participant{participantNumber}')
         except Exception as e:
             logging.error(e)
 
+        '''
 
         # if event is happening update every 5 minutes, else update every half-hour
         if (state['csrp']['now']) or (state['dlrp']['now']):
