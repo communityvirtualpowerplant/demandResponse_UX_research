@@ -14,6 +14,7 @@ from datetime import datetime, timedelta
 from PIL import Image,ImageDraw,ImageFont
 import asyncio
 import json
+import netifaces
 
 # picdir = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), 'assets')
 # libdir = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), 'lib')
@@ -38,9 +39,13 @@ print(f'W={screenWidth}, H={screenHeight}')
 
 # either should work, but make sure to comment out the line
 #'127.0.1.1 HOSTNAME' from /etc/hosts
-hostname = socket.gethostname()
-IPAddr = socket.gethostbyname(hostname)
-#IPAddr = socket.gethostbyname(socket.getfqdn())
+try:
+    hostname = socket.gethostname()
+    IPAddr = socket.gethostbyname(hostname)
+    #IPAddr = socket.gethostbyname(socket.getfqdn())
+except Exception as e:
+    #IPAddr = f'IP unknown: {e}'
+    IPAddr = get_wlan0_ip()
 logging.debug(IPAddr)
 
 try:
@@ -78,6 +83,27 @@ async def send_get_request(ip:str='localhost', port:int=5000,endpoint:str='',typ
                     logging.debug('SLEEEEEEEEEEEEEEEEEPING')
                     await asyncio.sleep(1+attempt)
         return res
+
+
+def get_wlan0_ip():
+    try:
+        # Get addresses for the 'wlan0' interface
+        addresses = netifaces.ifaddresses('wlan0')
+
+        # Check if IPv4 addresses exist for wlan0
+        if netifaces.AF_INET in addresses:
+            # Extract the IP address from the list of IPv4 addresses
+            ipv4_addresses = addresses[netifaces.AF_INET]
+            if ipv4_addresses:
+                return ipv4_addresses[0]['addr']
+            else:
+                return "No IPv4 address found for wlan0."
+        else:
+            return "wlan0 interface found, but no IPv4 address assigned."
+    except ValueError:
+        return "wlan0 interface not found or not configured."
+    except Exception as e:
+        return f"An error occurred: {e}"
 
 # Function to recursively convert "true"/"false" strings to Booleans
 def convert_bools(obj):
