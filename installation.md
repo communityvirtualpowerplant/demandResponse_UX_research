@@ -62,12 +62,12 @@ Create data directory if not present
 
 ## Automate
 `chmod +x /home/drux/demandResponse_UX_research/services/plug_logger.py`
-`cp /home/drux/demandResponse_UX_research/services/plug_logger.service /etc/systemd/system/plug_logger.service`
+`sudo cp /home/drux/demandResponse_UX_research/services/plug_logger.service /etc/systemd/system/plug_logger.service`
 
-`systemctl daemon-reexec`
-`systemctl daemon-reload`
-`systemctl enable plug_logger.service`
-`systemctl start plug_logger.service`
+`sudo systemctl daemon-reexec`
+`sudo systemctl daemon-reload`
+`sudo systemctl enable plug_logger.service`
+`sudo systemctl start plug_logger.service`
 
 Reboot at midnight with cron: `sudo crontab -e`
 * add this line to bottom of file: `@midnight sudo reboot`

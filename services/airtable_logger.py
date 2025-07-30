@@ -90,9 +90,8 @@ async def main():
         ### STATE ###
         #############
 
-        state = []
-
-        state.append(await send_get_request('localhost',endpoint='api/state'))
+        state = await send_get_request('localhost',endpoint='api/state')
+        logging.debug(state)
 
         try:
             await AT.updateBatch(AT.names,AT.IDs,state,table='state')
@@ -105,19 +104,19 @@ async def main():
 
         # performance = []
 
-        # perf = await send_get_request('localhost',endpoint='api/performance')
+        perf = await send_get_request('localhost',endpoint='api/performance')
 
-        # for k in perf.keys():
-        #     performance.append(perf[k])
-        #     logging.debug(perf[k])
+        for k in perf.keys():
+            performance.append(perf[k])
+            logging.debug(perf[k])
 
-        # try:
-        #     pIDs = await AT.getRecordIDbyName(perf.keys(),table=f'perf_participant{participantNumber}')
-        #     logging.debug(pIDs)
+        try:
+            pIDs = await AT.getRecordIDbyName(perf.keys(),table=f'perf_participant{participantNumber}')
+            logging.debug(pIDs)
 
-        #     await AT.updateBatch(perf.keys(),pIDs,performance,table=f'perf_participant{participantNumber}')
-        # except Exception as e:
-        #     logging.error(e)
+            await AT.updateBatch(perf.keys(),pIDs,performance,table=f'perf_participant{participantNumber}')
+        except Exception as e:
+            logging.error(e)
 
 
         # if event is happening update every 5 minutes, else update every half-hour
