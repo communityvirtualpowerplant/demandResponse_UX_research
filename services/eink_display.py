@@ -136,6 +136,12 @@ def eventScreen(f,s, p):
     et = datetime.now() - p['datetime']  #elapsed  time
     percT = min(1,(et.seconds/60)/ (4*60))
 
+    eventEnd = p['datetime']+timedelta(hours=4)
+    eventEndStr = eventEnd.strftime("%I:%M %p")
+
+    tRemain = eventEnd - datetime.now()
+    tRemainStr =  f'{tRemain.hours}:{tRemain.minutes}'
+
     circRad = .9 * screenHeight/3
     centerY = screenHeight - (screenHeight/3)-22
 
@@ -143,9 +149,8 @@ def eventScreen(f,s, p):
     sDraw = ImageDraw.Draw(sImage)
     epd.displayPartBaseImage(epd.getbuffer(sImage))
 
-    # reset screen
     sDraw.rectangle((0,0, screenWidth,screenHeight), fill = 255)
-    sDraw.text((screenWidth/2, 3), f"EVENT NOW!!!", font = f,anchor="mt",fill = 0)
+    sDraw.text((screenWidth/2, 3), f"EVENT NOW!!! (ends at {eventEndStr})", font = f,anchor="mt",fill = 0)
 
     # money
     centerX = (screenWidth/3) - (screenWidth/6)
@@ -162,8 +167,8 @@ def eventScreen(f,s, p):
     sDraw.circle((centerX,centerY),circRad,fill=255, outline=0,width=1)
     sDraw.pieslice((centerX-circRad,centerY-circRad,centerX+circRad,centerY+circRad), 0-90, int(360*percT)-90,fill=0)
     sDraw.circle((centerX,centerY),circRad*.5,fill=255, outline=0,width=1)
-    sDraw.text((centerX,centerY), f"{round(percT*4,1)}", font = f,  anchor="mm",fill = 0)
-    sDraw.text((centerX,centerY+circRad+2), f"Hours Left", font = f,  anchor="ma",fill = 0)
+    sDraw.text((centerX,centerY), f"{tRemainStr}", font = f,  anchor="mm",fill = 0)
+    sDraw.text((centerX,centerY+circRad+2), f"Time Left", font = f,  anchor="ma",fill = 0)
 
     # performance
     centerX = 3*screenWidth/3 - (screenWidth/6)
