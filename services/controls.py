@@ -507,6 +507,9 @@ async def main():
                 stateDict['eventPause']={'state':False,'datetime':datetime.now()}
                 logging.debug(f"unpausing!: {stateDict['eventPause']}")
 
+            # if event no longer going on, unpause it
+            if (not stateDict['csrp']['now']) or (not stateDict['dlrp']['now']):
+                stateDict['eventPause']={'state':False,'datetime':datetime.now()}
 
         #save state before
         #await saveState(stateDict)
