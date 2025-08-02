@@ -181,7 +181,7 @@ def eventPausedScreen(f,s,p):
     percT = min(1,(et.seconds/60)/ (4*60))
 
     circRad = .9 * screenHeight/3
-    centerY = screenHeight - (screenHeight/3)-19
+    centerY = screenHeight - (screenHeight/3)-22
 
     logging.debug(type(s['eventPause']['datetime']))
     endPause = s['eventPause']['datetime']+timedelta(hours=1)
