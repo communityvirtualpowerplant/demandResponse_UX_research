@@ -181,7 +181,7 @@ def eventPausedScreen(f,s,p):
     percT = min(1,(et.seconds/60)/ (4*60))
 
     circRad = .9 * screenHeight/3
-    centerY = screenHeight - (screenHeight/3)-15
+    centerY = screenHeight - (screenHeight/3)-19
 
     logging.debug(type(s['eventPause']['datetime']))
     endPause = s['eventPause']['datetime']+timedelta(hours=1)
@@ -193,7 +193,7 @@ def eventPausedScreen(f,s,p):
 
     # reset screen
     sDraw.rectangle((0,0, screenWidth,screenHeight), fill = 255)
-    sDraw.text((screenWidth/2, 5), f"Event paused until {endPauseStr}!", font = f,  anchor="mt",fill = 0)
+    sDraw.text((screenWidth/2, 3), f"Event paused until {endPauseStr}!", font = f,  stroke_width=2,anchor="mt",fill = 0)
 
     # money
     centerX = (screenWidth/3) - (screenWidth/6)
@@ -202,21 +202,23 @@ def eventPausedScreen(f,s,p):
     # sDraw.circle((centerX,centerY),circRad*.33,fill=255, outline=0,width=1)
     cash = 18.65
     sDraw.text((centerX,centerY), f"${cash}/\nmonth", font = f,  anchor="mm",fill = 0)
+    sDraw.text((centerX,centerY+circRad+2), f"Est. Payment", font = f,  anchor="ma",fill = 0)
+
 
     # time
     centerX = 2*screenWidth/3  - (screenWidth/6)
     sDraw.circle((centerX,centerY),circRad,fill=255, outline=0,width=1)
     sDraw.pieslice((centerX-circRad,centerY-circRad,centerX+circRad,centerY+circRad), 0-90, int(360*percT)-90,fill=0)
-    sDraw.circle((centerX,centerY),circRad*.33,fill=255, outline=0,width=1)
-    sDraw.text((centerX,centerY), f"T", font = f,  anchor="mm",fill = 0)
-    sDraw.text((centerX,centerY+circRad+2), f"Time\nRemaining", font = f,  anchor="ma",fill = 0)
+    sDraw.circle((centerX,centerY),circRad*.4,fill=255, outline=0,width=1)
+    sDraw.text((centerX,centerY), f"{percT*4}H", font = f,  anchor="mm",fill = 0)
+    sDraw.text((centerX,centerY+circRad+2), f"Time Remaining", font = f,  anchor="ma",fill = 0)
 
     # performance
     centerX = 3*screenWidth/3 - (screenWidth/6)
     sDraw.circle((centerX,centerY),circRad,fill=255, outline=0,width=1)
     sDraw.pieslice((centerX-circRad,centerY-circRad,centerX+circRad,centerY+circRad), -90, int(360*perc)-90,fill=0)
-    sDraw.circle((centerX,centerY),circRad*.33,fill=255, outline=0,width=1)
-    sDraw.text((centerX,centerY), f"%", font = f,  anchor="mm",fill = 0)
+    sDraw.circle((centerX,centerY),circRad*.4,fill=255, outline=0,width=1)
+    sDraw.text((centerX,centerY), f"{perc}%", font = f,  anchor="mm",fill = 0)
     sDraw.text((centerX,centerY+circRad+2), f"Goal", font = f,  anchor="ma",fill = 0)
 
 
