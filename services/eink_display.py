@@ -151,7 +151,7 @@ def eventScreen(f,s, p):
     epd.displayPartBaseImage(epd.getbuffer(sImage))
 
     sDraw.rectangle((0,0, screenWidth,screenHeight), fill = 255)
-    sDraw.text((screenWidth/2, 3), f"EVENT NOW!!! (ends at {eventEndStr})", font = f,anchor="mt",fill = 0)
+    sDraw.text((screenWidth/2, 3), f"EVENT NOW UNTIL {eventEndStr}!!!)", font = f,anchor="mt",fill = 0)
 
     # money
     centerX = (screenWidth/3) - (screenWidth/6)
@@ -181,47 +181,6 @@ def eventScreen(f,s, p):
 
 
     epd.displayPartial(epd.getbuffer(sImage))
-    # # display IP and hostname on start up
-    # sImage = Image.new('1', (screenWidth,screenHeight), 255)
-    # sDraw = ImageDraw.Draw(sImage)
-    # epd.displayPartBaseImage(epd.getbuffer(sImage))
-
-    # sDraw.rectangle((0,0, screenWidth,screenHeight), fill = 255)
-    # sDraw.text((screenWidth/2, 10), f'Event now!!!', font = f,  anchor="mt",fill = 0)
-
-    # # money bar
-    # rStartX = 5
-    # rMargin = 3
-    # rWidthBorder = screenWidth - rStartX - (2 * rMargin) #- 15
-    # rHeight = 20
-
-    # if p:
-    #     perc = min(1.0,p['performancePerc'])
-    # else:
-    #     perc = 0
-
-    # # rWidthProgress = (rWidthBorder - 2 * rMargin) * perc
-    # # rStartY = (screenHeight/2)
-    # # sDraw.text((rStartX+ rWidthBorder+2, rStartY), f'Time', font = f,  anchor="lt",fill = 0)
-    # # sDraw.rectangle((rStartX,rStartY,rStartX+ rWidthBorder,rStartY+rHeight), fill = 255, outline=0)
-    # # sDraw.rectangle((rStartX+rMargin,rStartY+rMargin,rStartX+rMargin+rWidthProgress,rStartY+rHeight-rMargin), fill = 0)
-
-    # # time bar
-    # #et = + timedelta(hours=4) #event end time
-    # et = datetime.now() - p['datetime']  #elapsed  time
-    # try:
-    #     percT = min(1.0,(et.seconds/60)/ (4*60))
-    # except:
-    #     percT = 0
-
-    # # #rWidthBorder = screenWidth - rStartX - (2 * rMargin) #* rStartX) * perc
-    # # rWidthProgress = (rWidthBorder - 2 * rMargin) * percT
-    # # rStartY = (screenHeight/2) +(2* rMargin) + rHeight
-    # # sDraw.text((rStartX+ rWidthBorder+2, rStartY), f'Time', font = f,  anchor="lt",fill = 0)
-    # # sDraw.rectangle((rStartX,rStartY,rStartX+ rWidthBorder,rStartY+rHeight), fill = 255, outline=0)
-    # # sDraw.rectangle((rStartX+rMargin,rStartY+rMargin,rStartX+rMargin+rWidthProgress,rStartY+rHeight-rMargin), fill = 0)
-
-    # epd.displayPartial(epd.getbuffer(sImage))
 
 def eventPausedScreen(f,s,p):
     # performance percentage
@@ -230,6 +189,13 @@ def eventPausedScreen(f,s,p):
     # elapsed time percentage
     et = datetime.now() - p['datetime']  #elapsed  time
     percT = min(1,(et.seconds/60)/ (4*60))
+
+    eventEnd = p['datetime']+timedelta(hours=4)
+    eventEndStr = eventEnd.strftime("%I:%M %p")
+
+    tRemain = eventEnd - datetime.now()
+    #tRemainH, remainder = divmod(td.seconds, 3600)
+    tRemainStr =  f'{tRemain.seconds//3600}:{(tRemain.seconds//60)%60}'
 
     circRad = .9 * screenHeight/3
     centerY = screenHeight - (screenHeight/3)-22
@@ -261,8 +227,8 @@ def eventPausedScreen(f,s,p):
     sDraw.circle((centerX,centerY),circRad,fill=255, outline=0,width=1)
     sDraw.pieslice((centerX-circRad,centerY-circRad,centerX+circRad,centerY+circRad), 0-90, int(360*percT)-90,fill=0)
     sDraw.circle((centerX,centerY),circRad*.5,fill=255, outline=0,width=1)
-    sDraw.text((centerX,centerY), f"{round(percT*4,1)}", font = f,  anchor="mm",fill = 0)
-    sDraw.text((centerX,centerY+circRad+2), f"Hours Left", font = f,  anchor="ma",fill = 0)
+    sDraw.text((centerX,centerY), f"{tRemainStr}", font = f,  anchor="mm",fill = 0)
+    sDraw.text((centerX,centerY+circRad+2), f"Time Left", font = f,  anchor="ma",fill = 0)
 
     # performance
     centerX = 3*screenWidth/3 - (screenWidth/6)
