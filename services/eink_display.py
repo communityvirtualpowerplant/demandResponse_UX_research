@@ -53,9 +53,11 @@ async def send_get_request(ip:str='localhost', port:int=5000,endpoint:str='',typ
         """Send GET request to the IP."""
         # get own data
         max_tries = 3
+        fullURL = f"http://{ip}:{port}/{endpoint}"
+        logging.debug(f'full url: {fullURL}')
         for attempt in range(max_tries):
             try:
-                response = requests.get(f"http://{ip}:{port}/{endpoint}", timeout=timeout)
+                response = requests.get(fullURL, timeout=timeout)
                 response.raise_for_status()
                 if type == 'json':
                     res= parse_datetimes(convert_bools(response.json()))
@@ -313,6 +315,7 @@ def stateUpdate(o, n)-> bool:
     return u
 
 async def main():
+    global hostname, IPAddr
 
     # either should work, but make sure to comment out the line
     #'127.0.1.1 HOSTNAME' from /etc/hosts
