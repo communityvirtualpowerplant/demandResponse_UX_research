@@ -141,7 +141,7 @@ def eventScreen(f,s, p):
 
     tRemain = eventEnd - datetime.now()
     #tRemainH, remainder = divmod(td.seconds, 3600)
-    tRemainStr =  f'{tRemain.seconds//3600}:{(tRemain//60)%60}'
+    tRemainStr =  f'{tRemain.seconds//3600}:{(tRemain.seconds//60)%60}'
 
     circRad = .9 * screenHeight/3
     centerY = screenHeight - (screenHeight/3)-22
