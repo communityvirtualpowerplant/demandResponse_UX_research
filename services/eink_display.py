@@ -126,7 +126,7 @@ def timeRemainingStr(endDT):
 
     tRemainStr =  f'{tRemain.seconds//3600}:{tRminStr}'
 
-    return rRemainStr
+    return tRemainStr
 
 
 # convert to datetimes from iso formatted strings
