@@ -193,7 +193,7 @@ def eventPausedScreen(f,s,p):
 
     # reset screen
     sDraw.rectangle((0,0, screenWidth,screenHeight), fill = 255)
-    sDraw.text((screenWidth/2, 3), f"Event paused until {endPauseStr}!", font = f,  stroke_width=2,anchor="mt",fill = 0)
+    sDraw.text((screenWidth/2, 3), f"Event paused until {endPauseStr}!", font = f,  stroke_width=1,anchor="mt",fill = 0)
 
     # money
     centerX = (screenWidth/3) - (screenWidth/6)
@@ -210,15 +210,15 @@ def eventPausedScreen(f,s,p):
     sDraw.circle((centerX,centerY),circRad,fill=255, outline=0,width=1)
     sDraw.pieslice((centerX-circRad,centerY-circRad,centerX+circRad,centerY+circRad), 0-90, int(360*percT)-90,fill=0)
     sDraw.circle((centerX,centerY),circRad*.4,fill=255, outline=0,width=1)
-    sDraw.text((centerX,centerY), f"{percT*4}H", font = f,  anchor="mm",fill = 0)
-    sDraw.text((centerX,centerY+circRad+2), f"Time Remaining", font = f,  anchor="ma",fill = 0)
+    sDraw.text((centerX,centerY), f"{round(percT*4,2)}H", font = f,  anchor="mm",fill = 0)
+    sDraw.text((centerX,centerY+circRad+2), f"Time Left", font = f,  anchor="ma",fill = 0)
 
     # performance
     centerX = 3*screenWidth/3 - (screenWidth/6)
     sDraw.circle((centerX,centerY),circRad,fill=255, outline=0,width=1)
     sDraw.pieslice((centerX-circRad,centerY-circRad,centerX+circRad,centerY+circRad), -90, int(360*perc)-90,fill=0)
     sDraw.circle((centerX,centerY),circRad*.4,fill=255, outline=0,width=1)
-    sDraw.text((centerX,centerY), f"{perc}%", font = f,  anchor="mm",fill = 0)
+    sDraw.text((centerX,centerY), f"{round(perc,2)}%", font = f,  anchor="mm",fill = 0)
     sDraw.text((centerX,centerY+circRad+2), f"Goal", font = f,  anchor="ma",fill = 0)
 
 
@@ -285,7 +285,7 @@ async def displayIP(f):
     ip_draw.rectangle((10, 20, 220, 105), fill = 255)
     ip_draw.text((10, 20), f'host: {hostname}\nIP: {IPAddr}', font = f, fill = 0)
     epd.displayPartial(epd.getbuffer(ip_image))
-    await asyncio.sleep(30) #needs to wait for the API to spin up before moving on
+    await asyncio.sleep(15) #needs to wait for the API to spin up before moving on
 
 def fullRefresh():
     epd.init()
