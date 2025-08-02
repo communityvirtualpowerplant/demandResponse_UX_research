@@ -93,7 +93,7 @@ async def main():
         ### STATE ###
         #############
 
-        state = await send_get_request('localhost',endpoint='api/state')
+        state = await send_get_request(ip='localhost',endpoint='api/state')
         #logging.debug(state)
 
         try:

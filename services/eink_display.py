@@ -2,6 +2,8 @@
 
 # https://www.waveshare.com/wiki/2.13inch_e-Paper_HAT+
 # https://github.com/waveshareteam/e-Paper/tree/master/RaspberryPi_JetsonNano/python
+# pillow: https://pillow.readthedocs.io/en/latest/index.html
+# pillow text anchors:  https://pillow.readthedocs.io/en/stable/handbook/text-anchors.html
 
 import sys
 import os
@@ -54,7 +56,7 @@ async def send_get_request(ip:str='localhost', port:int=5000,endpoint:str='',typ
         # get own data
         max_tries = 3
         fullURL = f"http://{ip}:{port}/{endpoint}"
-        logging.debug(f'full url: {fullURL}')
+        #logging.debug(f'full url: {fullURL}')
         for attempt in range(max_tries):
             try:
                 response = requests.get(fullURL, timeout=timeout)
@@ -207,6 +209,7 @@ def eventPausedScreen(f,s,p):
     sDraw.pieslice((centerX-circRad,centerY-circRad,centerX+circRad,centerY+circRad), 0-90, int(360*percT)-90,fill=0)
     sDraw.circle((centerX,centerY),circRad*.33,fill=255, outline=0,width=1)
     sDraw.text((centerX,centerY), f"T", font = f,  anchor="mm",fill = 0)
+    sDraw.text((centerX,centerY+circRad+2), f"Time\nRemaining", font = f,  anchor="ma",fill = 0)
 
     # performance
     centerX = 3*screenWidth/3 - (screenWidth/6)
@@ -214,6 +217,8 @@ def eventPausedScreen(f,s,p):
     sDraw.pieslice((centerX-circRad,centerY-circRad,centerX+circRad,centerY+circRad), -90, int(360*perc)-90,fill=0)
     sDraw.circle((centerX,centerY),circRad*.33,fill=255, outline=0,width=1)
     sDraw.text((centerX,centerY), f"%", font = f,  anchor="mm",fill = 0)
+    sDraw.text((centerX,centerY+circRad+2), f"Goal", font = f,  anchor="ma",fill = 0)
+
 
     epd.displayPartial(epd.getbuffer(sImage))
 
