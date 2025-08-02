@@ -37,17 +37,6 @@ screenWidth = epd.height
 screenHeight = epd.width
 print(f'W={screenWidth}, H={screenHeight}')
 
-# either should work, but make sure to comment out the line
-#'127.0.1.1 HOSTNAME' from /etc/hosts
-try:
-    hostname = socket.gethostname()
-    IPAddr = get_wlan0_ip()
-    #IPAddr = socket.gethostbyname(hostname)
-    #IPAddr = socket.gethostbyname(socket.getfqdn())
-except Exception as e:
-    IPAddr = f'IP unknown: {e}'
-logging.debug(IPAddr)
-
 try:
     repoRoot = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
     with open(os.path.join(repoRoot,'config.json')) as f:
@@ -278,14 +267,14 @@ def normalScreen(f,w=None,s=None,p=None):
         sDraw.text((10, screenHeight/2), f'data missing', font = f, anchor="ma",fill = 0)
     epd.displayPartial(epd.getbuffer(sImage))
 
-async def displayIP(font24):
+async def displayIP(f):
     # display IP and hostname on start up
     ip_image = Image.new('1', (screenWidth,screenHeight), 255)
     ip_draw = ImageDraw.Draw(ip_image)
     epd.displayPartBaseImage(epd.getbuffer(ip_image))
 
-    ip_draw.rectangle((50, 40, 220, 105), fill = 255)
-    ip_draw.text((50, 40), f'{hostname}\n{IPAddr}', font = font24, fill = 0)
+    ip_draw.rectangle((10, 20, 220, 105), fill = 255)
+    ip_draw.text((10, 20), f'host: {hostname}\nIP: {IPAddr}', font = f, fill = 0)
     epd.displayPartial(epd.getbuffer(ip_image))
     await asyncio.sleep(30) #needs to wait for the API to spin up before moving on
 
@@ -324,6 +313,18 @@ def stateUpdate(o, n)-> bool:
     return u
 
 async def main():
+
+    # either should work, but make sure to comment out the line
+    #'127.0.1.1 HOSTNAME' from /etc/hosts
+    try:
+        hostname = socket.gethostname()
+        IPAddr = get_wlan0_ip()
+        #IPAddr = socket.gethostbyname(hostname)
+        #IPAddr = socket.gethostbyname(socket.getfqdn())
+    except Exception as e:
+        IPAddr = f'IP unknown: {e}'
+    logging.debug(IPAddr)
+
 
     logging.info("init and Clear")
     fullRefresh()
