@@ -51,6 +51,10 @@ dlrpRate = config['dlrpRatekW']
 
 dayNames = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
 
+###############
+### Helpers ###
+###############
+
 async def send_get_request(ip:str='localhost', port:int=5000,endpoint:str='',type:str='json',timeout=1):
         """Send GET request to the IP."""
         # get own data
@@ -111,6 +115,54 @@ def convert_bools(obj):
     else:
         return obj
 
+def timeRemainingStr(endDT):
+    tRemain = endDT - datetime.now()
+    #tRemainH, remainder = divmod(td.seconds, 3600)
+    tRmin = (tRemain.seconds//60)%60
+    if tRmin < 10:
+        tRminStr = f'0{tRmin}'
+    else:
+        tRminStr = f'{tRmin}'
+
+    tRemainStr =  f'{tRemain.seconds//3600}:{tRminStr}'
+
+    return rRemainStr
+
+
+# convert to datetimes from iso formatted strings
+def parse_datetimes(obj):
+    if isinstance(obj, dict):
+        return {k: parse_datetimes(v) for k, v in obj.items()}
+    elif isinstance(obj, list):
+        return [parse_datetimes(i) for i in obj]
+    elif isinstance(obj, str):
+        try:
+            return datetime.fromisoformat(obj)
+        except ValueError:
+            return obj
+    else:
+        return obj
+
+# args: old state, new state
+def stateUpdate(o, n)-> bool:
+    u = False
+
+    if o['csrp']['now'] != n['csrp']['now']:
+        return True
+    if o['dlrp']['now'] != n['dlrp']['now']:
+        return True
+    if o['csrp']['upcoming'] != n['csrp']['upcoming']:
+        return True
+    if o['dlrp']['upcoming'] != n['dlrp']['upcoming']:
+        return True
+    if o['eventPause']['state'] != n['eventPause']['state']:
+        return True
+    return u
+
+###############
+### Screens ###
+###############
+
 def upcomingScreen(f,s=None,p=None):
     if s['csrp']['upcoming']:
         eTime = s['csrp']['upcoming']#.strftime("%I:%M %p")
@@ -139,9 +191,7 @@ def eventScreen(f,s, p):
     eventEnd = p['datetime']+timedelta(hours=4)
     eventEndStr = eventEnd.strftime("%I:%M %p")
 
-    tRemain = eventEnd - datetime.now()
-    #tRemainH, remainder = divmod(td.seconds, 3600)
-    tRemainStr =  f'{tRemain.seconds//3600}:{(tRemain.seconds//60)%60}'
+    tRemainStr = timeRemainingStr(eventEnd)
 
     circRad = .9 * screenHeight/3
     centerY = screenHeight - (screenHeight/3)-22
@@ -193,9 +243,7 @@ def eventPausedScreen(f,s,p):
     eventEnd = p['datetime']+timedelta(hours=4)
     eventEndStr = eventEnd.strftime("%I:%M %p")
 
-    tRemain = eventEnd - datetime.now()
-    #tRemainH, remainder = divmod(td.seconds, 3600)
-    tRemainStr =  f'{tRemain.seconds//3600}:{(tRemain.seconds//60)%60}'
+    tRemainStr = timeRemainingStr(eventEnd)
 
     circRad = .9 * screenHeight/3
     centerY = screenHeight - (screenHeight/3)-22
@@ -307,36 +355,6 @@ async def displayIP(f):
 def fullRefresh():
     epd.init()
     epd.Clear(0xFF)
-
-# convert to datetimes from iso formatted strings
-def parse_datetimes(obj):
-    if isinstance(obj, dict):
-        return {k: parse_datetimes(v) for k, v in obj.items()}
-    elif isinstance(obj, list):
-        return [parse_datetimes(i) for i in obj]
-    elif isinstance(obj, str):
-        try:
-            return datetime.fromisoformat(obj)
-        except ValueError:
-            return obj
-    else:
-        return obj
-
-# args: old state, new state
-def stateUpdate(o, n)-> bool:
-    u = False
-
-    if o['csrp']['now'] != n['csrp']['now']:
-        return True
-    if o['dlrp']['now'] != n['dlrp']['now']:
-        return True
-    if o['csrp']['upcoming'] != n['csrp']['upcoming']:
-        return True
-    if o['dlrp']['upcoming'] != n['dlrp']['upcoming']:
-        return True
-    if o['eventPause']['state'] != n['eventPause']['state']:
-        return True
-    return u
 
 async def main():
     global hostname, IPAddr

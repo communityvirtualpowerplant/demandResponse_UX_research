@@ -37,6 +37,7 @@ Software
 display
 * get performance and payment stuff
 * finalize interfaces
+* add QR code to IP screen
 
 backend
 * airtable updater
