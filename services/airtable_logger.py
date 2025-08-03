@@ -89,6 +89,20 @@ async def main():
 
     #logging.debug(AT.IDs)
 
+    #######################################
+    ### HEALTH - only needed once a day ###
+    #######################################
+    try:
+        health = [await send_get_request(endpoint='api/health')]
+        #logging.debug(state)
+
+        try:
+            await AT.updateBatch(AT.names,AT.healthIDs,health,table='health')
+        except Exception as e:
+            logging.error(e)
+    except Exception as e:
+        logging.error(f'Error logging health: {e}')
+
     while True:
 
         #############
@@ -101,10 +115,10 @@ async def main():
             logging.debug(type(state))
 
             state["plugs"] = await send_get_request(endpoint='api/data?date=now&source=plugs')
-            logging.debug(plugs)
+            logging.debug(state["plugs"] )
 
             powerstation = await send_get_request(endpoint='api/data?date=now&source=powerstation')
-            logging.debug(plugs)
+            #logging.debug(powerstation)
 
             state["powerstation_percentage"] = powerstation['powerstation_percentage']
 
@@ -116,20 +130,6 @@ async def main():
                 logging.error(e)
         except Exception as e:
             logging.error(f'Error logging state: {e}')
-
-        ##############
-        ### HEALTH ###
-        ##############
-        try:
-            health = [await send_get_request(endpoint='api/health')]
-            #logging.debug(state)
-
-            try:
-                await AT.updateBatch(AT.names,AT.healthIDs,health,table='health')
-            except Exception as e:
-                logging.error(e)
-        except Exception as e:
-            logging.error(f'Error logging health: {e}')
 
         ###################
         ### PERFORMANCE ###
