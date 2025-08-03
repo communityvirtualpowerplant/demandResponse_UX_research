@@ -420,7 +420,7 @@ class DRUX_Baseline(Helpers):
         return totAvgFlexKW
 
     async def getPerformanceDollarValue(self,mon,cR=18,dR=18):
-        c = await getAvgReduction('csrp',mon)
-        d = await getAvgReduction('dlrp',mon)
+        c = await self.getAvgReduction('csrp',mon)
+        d = await self.getAvgReduction('dlrp',mon)
 
         return tuple(c * cR,d * dR)
