@@ -15,7 +15,7 @@ from io import StringIO
 import math
 from statistics import mean
 
-logging.basicConfig(format='%(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',level=logging.INFO)
+logging.basicConfig(format='%(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',level=logging.DEBUG)
 
 libdir = '/home/drux/demandResponse_UX_research/lib/helper_classes'
 if os.path.exists(libdir):
@@ -92,31 +92,6 @@ def isDLRPEventUpcoming(df)-> dict:
 
     return dState
 
-# # convert datetimes to iso formatted strings
-# def convert_datetimes(obj):
-#     if isinstance(obj, dict):
-#         return {k: convert_datetimes(v) for k, v in obj.items()}
-#     elif isinstance(obj, list):
-#         return [convert_datetimes(i) for i in obj]
-#     elif isinstance(obj, datetime):
-#         return obj.isoformat()
-#     else:
-#         return obj
-
-# # convert to datetimes from iso formatted strings
-# def parse_datetimes(obj):
-#     if isinstance(obj, dict):
-#         return {k: parse_datetimes(v) for k, v in obj.items()}
-#     elif isinstance(obj, list):
-#         return [parse_datetimes(i) for i in obj]
-#     elif isinstance(obj, str):
-#         try:
-#             return datetime.fromisoformat(obj)
-#         except ValueError:
-#             return obj
-#     else:
-#         return obj
-
 async def saveState(d:dict):
     try:
         with open(os.path.join(repoRoot,'data/state.json'), "w") as json_file:
@@ -142,19 +117,6 @@ async def sleeper(sec):
         logging.debug("Timed out — no button press.")
     except Exception as e:
         logging.debug(f'sleeper error: {e}')
-
-# # Function to recursively convert "true"/"false" strings to Booleans
-# def convert_bools(obj):
-#     if isinstance(obj, dict):
-#         return {k: convert_bools(v) for k, v in obj.items()}
-#     elif isinstance(obj, list):
-#         return [convert_bools(elem) for elem in obj]
-#     elif obj == "true":
-#         return True
-#     elif obj == "false":
-#         return False
-#     else:
-#         return obj
 
 async def send_get_request(ip:str='localhost', port:int=5000,endpoint:str='',type:str='json',timeout=1):
         """Send GET request to the IP."""
@@ -186,103 +148,6 @@ async def send_get_request(ip:str='localhost', port:int=5000,endpoint:str='',typ
 ### DR Metrics ###
 ####################
 
-# async def prepBaselineData(eDF:pd.DataFrame,eTime:float,eType:str):
-#     # drop unnecessary columns
-#     eDF = eDF.drop(columns=['modified','notes','network'])
-
-#     # filter to only past events
-#     pastEventsDF=eDF[eDF['date']<datetime.now().replace(hour=0,minute=0,second=0,microsecond=0)]
-
-#     # get file list
-#     fileList = await send_get_request(endpoint='api/files?source=plugs')
-#     logging.debug(fileList)
-
-#     # retrieve files
-#     data = []
-#     for f in fileList:
-#         if datetime.now().date().strftime("%Y-%m-%d")  not in f:
-#             d = f.replace('.csv','').replace('plugs_','')
-
-#             r = await send_get_request(endpoint=f'api/data?source=plugs&date={d}',type='text')
-#             if type(r) == tuple:
-#                 r = r[0]
-#             data.append(r)
-
-#     #parse response
-#     parsedData = []
-#     for d in data:
-#         tempDF = pd.read_csv(StringIO(d))
-#         tempDF['datetime'] = pd.to_datetime(tempDF['datetime'])
-#         parsedData.append(tempDF)
-
-#     return (parsedData,pastEventsDF)
-
-# currently only works with eTime as ints (whole hours)
-#args: event type, event log df
-# async def getBaseline(eDF:pd.DataFrame,eTime:float,eType:str,eDate=None):
-#     try:
-#         prepTuple = await prepBaselineData(eDF,eTime,eType)
-#         parsedData = prepTuple[0]
-#         pastEventsDF = prepTuple[1]
-
-#         logging.debug(f'length of parsed response: {len(parsedData)}')
-
-#         #update with actual baseline requirements
-
-#         # filter out event dates
-#         pastEvents_type = pastEventsDF[pastEventsDF['type']==eType]
-#         pastEventDates = [d.date() for d in list(pastEvents_type['date'])]
-#         logging.debug(f'past events: {pastEventDates}')
-
-#         filteredData = []
-#         for d in parsedData:
-#             #ignore days with past events (should this ignore those days regardless of type?
-#             if list(d['datetime'])[0].date() not in pastEventDates:
-#                 if list(d['datetime'])[0].date().weekday() <=4: # filter out weekends
-#                     filteredData.append(d)
-
-#         # get event windows
-#         eventWindows = []
-#         for d in filteredData:
-#             #get on timestamps between event start and end times
-#             eventWindows.append(d[[(d > d.replace(hour=eTime,minute=0,second=0,microsecond=0)) and (d <= d.replace(hour=eTime+4,minute=0,second=0,microsecond=0)) for d in d['datetime']]])
-
-#         dailyWindowAvgW = []
-#         # eventLength = 4
-#         for i, d in enumerate(eventWindows):
-#             if len(d['datetime']) == 0:
-#                 continue
-
-#             formattedStartTime = d['datetime'].iloc[0].replace(hour=eTime,minute=0,second=0,microsecond=0)
-
-#             # create hourly buckets for each day
-#             hourly = hourlyBuckets(d,formattedStartTime)
-
-#             # add increments within each hour
-#             incs = []
-#             for ih,h in enumerate(hourly):
-#                 # the increments function adds a column for the increment of a specific datapoint
-#                 incs.append(increments(h,formattedStartTime+timedelta(hours=ih)))
-
-#             #print(incs)
-
-#             hourlyEnergy = []
-#             for inc in incs:
-#                 hourlyEnergy.append(getWh(inc['ac-W'],inc['increments']))
-#                 if (math.isnan(hourlyEnergy[-1])):
-#                     hourlyEnergy[-1] = 0.0
-
-#             dailyWindowAvgW.append(mean(hourlyEnergy))
-
-#         logging.debug(mean(dailyWindowAvgW))
-#         return mean(dailyWindowAvgW)
-#     except Exception as e:
-#         if e == 'mean requires at least one data point':
-#             logging.error(f'likely missing past data: {e}')
-#         else:
-#             logging.error(e)
-#         return 0
-
 async def getOngoingPerformance(eTime:float,eType:str,eBaseline:list[float],buttonTracker={'onPause':[0],'offPause':[0]}):
     eBaseline = mean(eBaseline) #change this!
     # get today's file
@@ -303,15 +168,15 @@ async def getOngoingPerformance(eTime:float,eType:str,eBaseline:list[float],butt
     formattedStartTime = (datetime.now()).replace(hour=eTime,minute=0,second=0,microsecond=0)
 
     # create hourly buckets for each day
-    hourly = hourlyBuckets(eventWindow,formattedStartTime)
+    hourly = baseline.hourlyBuckets(eventWindow,formattedStartTime)
     # the increments function adds a column for the increment of a specific datapoint
     incs = []
     for i,h in enumerate(hourly):
-        incs.append(increments(h,formattedStartTime+timedelta(hours=i)))
+        incs.append(baseline.increments(h,formattedStartTime+timedelta(hours=i)))
 
     hourlyEnergy = []
     for inc in incs:
-        resWh = getWh(inc['ac-W'],inc['increments'])
+        resWh = baseline.getWh(inc['ac-W'],inc['increments'])
         if (not resWh) or (math.isnan(resWh)):
             resWh = 0.0
         hourlyEnergy.append(resWh)
@@ -343,39 +208,39 @@ async def getOngoingPerformance(eTime:float,eType:str,eBaseline:list[float],butt
 
 # buckets df with datetime within an event window into hourly buckets
 # args: a dataframe with datetimes
-def hourlyBuckets(tempDF, tempStartTime:float, eventDuration:float=4) -> list[pd.DataFrame]:
-    hourlyPower = []
-    for h in range(eventDuration):
-        #print(tempDF['datetime'])
-        ts = tempStartTime + timedelta(hours=h)
-        te = tempStartTime + timedelta(hours=h + 1)
-        filteredTempDF = (tempDF[(tempDF['datetime']> ts) & (tempDF['datetime']<= te)]).copy() #data within the hour
-        #filteredTempDF = increments(filteredTempDF,ts)
-        hourlyPower.append(filteredTempDF)
-    return hourlyPower
+# def hourlyBuckets(tempDF, tempStartTime:float, eventDuration:float=4) -> list[pd.DataFrame]:
+#     hourlyPower = []
+#     for h in range(eventDuration):
+#         #print(tempDF['datetime'])
+#         ts = tempStartTime + timedelta(hours=h)
+#         te = tempStartTime + timedelta(hours=h + 1)
+#         filteredTempDF = (tempDF[(tempDF['datetime']> ts) & (tempDF['datetime']<= te)]).copy() #data within the hour
+#         #filteredTempDF = increments(filteredTempDF,ts)
+#         hourlyPower.append(filteredTempDF)
+#     return hourlyPower
 
 
 #args: a dataframe with datetime column
 # returns df with added increments column based on an hour
-def increments(df,fm=0)->pd.DataFrame:
-    if fm==0:
-        firstMeasurement = df['datetime'].min()
-    else:
-        firstMeasurement = fm
+# def increments(df,fm=0)->pd.DataFrame:
+#     if fm==0:
+#         firstMeasurement = df['datetime'].min()
+#     else:
+#         firstMeasurement = fm
 
-    #print(firstMeasurement)
-    incList = []
-    for r in range(len(df['datetime'])):
-        incSec = (df['datetime'].iloc[r] - firstMeasurement).total_seconds()/60/60 #must convert back from seconds
-        incList.append(incSec)
-    df['increments'] = incList
-    return df
+#     #print(firstMeasurement)
+#     incList = []
+#     for r in range(len(df['datetime'])):
+#         incSec = (df['datetime'].iloc[r] - firstMeasurement).total_seconds()/60/60 #must convert back from seconds
+#         incList.append(incSec)
+#     df['increments'] = incList
+#     return df
 
 #args: power and time increments (relative to the hour) for a given hour
 # returns the energy (Wh) for the hour
-def getWh(p:list[float],t:list[datetime])->float:
-    e = trapezoid(y=p, x=t)
-    return e
+# def getWh(p:list[float],t:list[datetime])->float:
+#     e = trapezoid(y=p, x=t)
+#     return e
 
 async def logPerformance(d:dict):
     try:
