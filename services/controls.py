@@ -15,7 +15,7 @@ from io import StringIO
 import math
 from statistics import mean
 
-logging.basicConfig(format='%(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',level=logging.DEBUG)
+logging.basicConfig(format='%(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',level=logging.INFO)
 
 libdir = '/home/drux/demandResponse_UX_research/lib/helper_classes'
 if os.path.exists(libdir):

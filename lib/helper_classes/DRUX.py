@@ -8,7 +8,7 @@ from statistics import mean
 from io import StringIO
 import logging
 
-logging.basicConfig(format='%(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',level=logging.DEBUG)
+logging.basicConfig(format='%(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',level=logging.INFO)
 
 class Helpers():
     async def send_get_request(self,url:str='http://localhost:5000/',endpoint:str='',type:str='json',key=None,timeout=1):
@@ -340,11 +340,13 @@ class DRUX_Baseline(Helpers):
         hourlyEnergy = []
         for inc in incs:
             resW = self.getWh(inc['ac-W'],inc['increments'])
+            print(resW)
             if (not resW) or (math.isnan(resW)):
                 resW = -1 #indicates no data without breaking it
             # else:
             #     loadW = resW
             hourlyEnergy.append(resW)
+            print(hourlyEnergy)
 
         hourlyEnergy = [float(h) for h in hourlyEnergy]
 
