@@ -50,13 +50,13 @@ def convert_bools(obj):
     else:
         return obj
 
-async def send_get_request(ip:str='localhost', port:int=5000,endpoint:str='',type:str='json',timeout=1):
+async def send_get_request(url:str='http://localhost:5000/',endpoint:str='',type:str='json',timeout=1):
         """Send GET request to the IP."""
         # get own data
         max_tries = 3
         for attempt in range(max_tries):
             try:
-                response = requests.get(f"http://{ip}:{port}/{endpoint}", timeout=timeout)
+                response = requests.get(f"{url}{endpoint}", timeout=timeout)
                 response.raise_for_status()
                 if type == 'json':
                     res= convert_bools(response.json()) # add to parse datetimes: parse_datetimes()
