@@ -153,7 +153,7 @@ class DRUX_Baseline():
 
             hourlyEnergy = []
             for inc in incs:
-                hourlyEnergy.append(getWh(inc['ac-W'],inc['increments']))
+                hourlyEnergy.append(self.getWh(inc['ac-W'],inc['increments']))
                 if (math.isnan(hourlyEnergy[-1])):
                     hourlyEnergy[-1] = 0.0
 
