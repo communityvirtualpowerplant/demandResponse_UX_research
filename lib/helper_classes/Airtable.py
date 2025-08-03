@@ -6,6 +6,8 @@ import requests
 from typing import Any, Dict, Optional, List
 import pandas as pd
 
+logging.basicConfig(format='%(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',level=logging.DEBUG)
+
 # ------------------ Airtable Class ------------------ #
 class Airtable():
     def __init__(self, key:str, base:str,table:str=None, name:str=''):
@@ -30,12 +32,7 @@ class Airtable():
         return None
 
     # retrieves record IDs by name column (if name column exists)
-    async def getRecordIDbyName(self,name:List,table=None)-> List:
-        if not table:
-            if self.table:
-                table = self.table
-            else:
-                debug.error(f'missing table name')
+    async def getRecordIDbyName(self,name:List,table)-> List:
 
         IDlist = []
         for n in name:
@@ -44,6 +41,8 @@ class Airtable():
                 # get list of records filtered by date
 
                 mURL = f'{self.baseURL}{self.base}/{table}?maxRecords=3&view=Grid%20view&filterByFormula=name%3D%22{n}%22' #filter results by name column
+                logging.debug(mURL)
+
                 res = await self.send_secure_get_request(mURL)
                 logging.debug(res)
 

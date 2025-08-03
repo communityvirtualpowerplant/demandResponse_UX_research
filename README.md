@@ -35,7 +35,6 @@ The username for all devices is
 Software
 
 biggest today:
-* get actual baseline rules
 * fix ongoing performance to handle 4 values of baseline
 * get performance and payment stuff
 
@@ -62,6 +61,6 @@ Study
 * finalize changable plan
 
 Stretch:
-* add QR code to IP screen
+* add QR code to case
 * incorporate weather
 * add in a battery cutoff below 20%

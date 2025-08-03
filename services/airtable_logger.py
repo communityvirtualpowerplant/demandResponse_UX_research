@@ -101,6 +101,18 @@ async def main():
         except Exception as e:
             logging.error(e)
 
+        ##############
+        ### HEALTH ###
+        ##############
+
+        health = await send_get_request(ip='localhost',endpoint='api/health')
+        #logging.debug(state)
+
+        try:
+            await AT.updateBatch(AT.names,AT.IDs,health,table='health')
+        except Exception as e:
+            logging.error(e)
+
         ###################
         ### PERFORMANCE ###
         ###################
