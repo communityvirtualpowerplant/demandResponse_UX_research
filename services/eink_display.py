@@ -48,7 +48,7 @@ except Exception as e:
 
 csrpRate = config['csrpRatekW']
 dlrpRate = config['dlrpRatekW']
-pledge = config['pledge']
+pledge = config['pledgekW']
 
 dayNames = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
 
