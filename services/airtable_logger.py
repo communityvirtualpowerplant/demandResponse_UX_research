@@ -84,8 +84,10 @@ async def main():
     # update state
     # get record IDs once at start to minimize API calls
 
-    AT.IDs = await AT.getRecordIDbyName(AT.names,table='state')
-    logging.debug(AT.IDs)
+    AT.stateIDs = await AT.getRecordIDbyName(AT.names,table='state')
+    AT.healthIDs = await AT.getRecordIDbyName(AT.names,table='health')
+
+    #logging.debug(AT.IDs)
 
     while True:
 
@@ -93,25 +95,30 @@ async def main():
         ### STATE ###
         #############
 
-        state = [await send_get_request(endpoint='api/state')]
-        logging.debug(state)
-
         try:
-            await AT.updateBatch(AT.names,AT.IDs,state,table='state')
+            state = [await send_get_request(endpoint='api/state')]
+            logging.debug(state)
+
+            try:
+                await AT.updateBatch(AT.names,AT.stateIDs,state,table='state')
+            except Exception as e:
+                logging.error(e)
         except Exception as e:
-            logging.error(e)
+            logging.error(f'Error logging state: {e}')
 
         ##############
         ### HEALTH ###
         ##############
-
-        health = [await send_get_request(endpoint='api/health')]
-        #logging.debug(state)
-
         try:
-            await AT.updateBatch(AT.names,AT.IDs,health,table='health')
+            health = [await send_get_request(endpoint='api/health')]
+            #logging.debug(state)
+
+            try:
+                await AT.updateBatch(AT.names,AT.healthIDs,health,table='health')
+            except Exception as e:
+                logging.error(e)
         except Exception as e:
-            logging.error(e)
+            logging.error(f'Error logging health: {e}')
 
         ###################
         ### PERFORMANCE ###

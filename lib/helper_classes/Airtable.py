@@ -16,6 +16,8 @@ class Airtable():
         self.base = base
         self.table = table
         self.IDs = []
+        self.stateIDs = []
+        self.healthIDs = []
         self.names=[]
 
     async def listRecords(self,table=None):
