@@ -317,7 +317,7 @@ class DRUX_Baseline(Helpers):
         # get today's file
         today = datetime.now().date()
 
-        r = await self.send_get_request(f'api/data?source=plugs&date={today.strftime("%Y-%m-%d")}',type='text')
+        r = await self.send_get_request(f'http://localhost:5000/api/data?source=plugs&date={today.strftime("%Y-%m-%d")}',type='text')
         if type(r) == tuple:
             r = r[0]
         data=r
