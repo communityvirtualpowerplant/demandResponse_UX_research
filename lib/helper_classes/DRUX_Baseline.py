@@ -165,13 +165,13 @@ class DRUX_Baseline():
                 peakLoad = max(peakLoad,h)
 
         filteredBuckets = {}
-        pastEventPriorDates = [d - timedelta(days=1) for d in pastEventDates]
+        pastEventPriorDates = [d - timedelta(days=1) for d in self.pastEventDates]
         for k,v in windowDictBuckets.items():
             kDT = datetime.strptime(k, "%Y-%m-%d")
             #drop holidays
             if not (k in self.holidays):
                 #drop DR event days
-                if not (kDT.date() in pastEventDates):
+                if not (kDT.date() in self.pastEventDates):
                     #drop DR event prior days
                     if not (kDT.date() in pastEventPriorDates):
                         # drop weekends
