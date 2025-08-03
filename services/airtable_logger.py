@@ -98,14 +98,15 @@ async def main():
         try:
             state = await send_get_request(endpoint='api/state')
             logging.debug(state)
+            logging.debug(type(state))
 
-            state['plugs'] = await send_get_request(endpoint='api/data?date=now&source=plugs')
+            state["plugs"] = await send_get_request(endpoint='api/data?date=now&source=plugs')
             logging.debug(plugs)
 
             powerstation = await send_get_request(endpoint='api/data?date=now&source=powerstation')
             logging.debug(plugs)
 
-            state['powerstation_percentage'] = powerstation['powerstation_percentage']
+            state["powerstation_percentage"] = powerstation['powerstation_percentage']
 
             stateList = [state]
 

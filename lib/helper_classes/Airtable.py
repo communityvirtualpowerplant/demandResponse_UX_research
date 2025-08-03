@@ -66,7 +66,7 @@ class Airtable():
             else:
                 debug.error(f'missing table name')
 
-        logging.debug(names)
+        #logging.debug(names)
 
         records = []
         for n in range(len(names)):
