@@ -191,7 +191,7 @@ def upcomingScreen(f,s=None,p=None):
 
 def eventScreen(f,s, p):
     # performance percentage
-    perc = min(1,p['performancePerc'])
+    perc = min(1,p['performanceAvg'])
 
     # elapsed time percentage
     et = datetime.now() - p['datetime']  #elapsed  time
