@@ -300,7 +300,7 @@ def eventPausedScreen(f,s,p):
     epd.displayPartial(epd.getbuffer(sImage))
 
 def normalScreen(f,w=None,s=None,p=None):
-    estPay = s['csrp']['monthlyVal'] + s['dlrp']['monthlyVal']
+    estPay = round(s['csrp']['monthlyVal'] + s['dlrp']['monthlyVal'],2)
 
     # display IP and hostname on start up
     sImage = Image.new('1', (screenWidth,screenHeight), 255)
