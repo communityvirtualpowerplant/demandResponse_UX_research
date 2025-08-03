@@ -143,9 +143,10 @@ async def send_get_request(ip:str='localhost', port:int=5000,endpoint:str='',typ
                     logging.debug('SLEEEEEEEEEEEEEEEEEPING')
                     await asyncio.sleep(1+attempt)
         return res
-
+'''
 async def getOngoingPerformance(eTime:float,eType:str,eBaseline:list[float],buttonTracker={'onPause':[0],'offPause':[0]}):
-    eBaseline = mean(eBaseline) #change this!
+    #eBaseline = mean(eBaseline) #change this!
+
     # get today's file
     today = datetime.now().date() #- timedelta(days=1) uncomment to test (also add it to formattedStartTime)
 
@@ -201,7 +202,7 @@ async def getOngoingPerformance(eTime:float,eType:str,eBaseline:list[float],butt
             'button':buttonTracker}
 
     return perf
-
+'''
 async def logPerformance(d:dict):
     try:
         try:
@@ -311,7 +312,7 @@ async def main():
                 eventCSRP['baselineTS']=False
 
             if (eventCSRP['now']):
-                await logPerformance(await getOngoingPerformance(csrpTime,'csrp',eventCSRP['baselineW'],buttonTracker))
+                await logPerformance(await baseline.getOngoingPerformance(csrpTime,'csrp',eventCSRP['baselineW'],buttonTracker))
 
             eventDLRP = isDLRPEventUpcoming(eventDF)
             # update DLRP baseline if needed
@@ -326,7 +327,7 @@ async def main():
                     #eventDLRP['baselineW']=await getBaseline(eventDF,eventDLRP['now'].time().hour,'dlrp')
                     eventDLRP['baselineW']=await baseline.getCBL(eventDF,eventDLRP['now'].time().hour)
                     eventDLRP['baselineTS'] = eventDLRP['now']
-                    await logPerformance(await getOngoingPerformance(eventDLRP['now'].time().hour,'dlrp',eventDLRP['baselineW'],buttonTracker))
+                    await logPerformance(await baseline.getOngoingPerformance(eventDLRP['now'].time().hour,'dlrp',eventDLRP['baselineW'],buttonTracker))
             else:
                 try:
                     eventDLRP['baselineW']=stateDict['dlrp']['baselineW']

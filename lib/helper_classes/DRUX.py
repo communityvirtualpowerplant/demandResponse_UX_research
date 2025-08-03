@@ -310,3 +310,64 @@ class DRUX_Baseline(Helpers):
             hourlyAvg.append(mean(h))
 
         return hourlyAvg
+
+    async def getOngoingPerformance(self, eTime:float,eType:str,eBaseline:list[float],buttonTracker={'onPause':[0],'offPause':[0]}):
+        #eBaseline = mean(eBaseline) #change this!
+
+        # get today's file
+        today = datetime.now().date()
+
+        r = await self.send_get_request(f'api/data?source=plugs&date={today.strftime("%Y-%m-%d")}',type='text')
+        if type(r) == tuple:
+            r = r[0]
+        data=r
+
+        tempDF = pd.read_csv(StringIO(data))
+        tempDF['datetime'] = pd.to_datetime(tempDF['datetime'])
+        parsedData = tempDF
+
+        # get event window
+        eventWindow = parsedData[[(d > d.replace(hour=eTime,minute=0,second=0,microsecond=0)) and (d <= d.replace(hour=eTime+4,minute=0,second=0,microsecond=0)) for d in parsedData['datetime']]]
+
+        formattedStartTime = (datetime.now()).replace(hour=eTime,minute=0,second=0,microsecond=0)
+
+        # create hourly buckets for each day
+        hourly = self.hourlyBuckets(eventWindow,formattedStartTime)
+        # the increments function adds a column for the increment of a specific datapoint
+        incs = []
+        for i,h in enumerate(hourly):
+            incs.append(self.increments(h,formattedStartTime+timedelta(hours=i)))
+
+        hourlyEnergy = []
+        for inc in incs:
+            resWh = self.getWh(inc['ac-W'],inc['increments'])
+            if (not resWh) or (math.isnan(resWh)):
+                resWh = 0.0
+            hourlyEnergy.append(resWh)
+
+        hourlyEnergy = [float(h) for h in hourlyEnergy]
+
+        if len(hourlyEnergy) == 0:
+            hourlyEnergy = [0,0,0,0]
+
+        perfPerc = []
+        for i,v in enumerate(hourlyEnergy):
+            try:
+                perfPerc.append((eBaseline[i]-v)/eBaseline[i])
+            except Exception as e:
+                if 'float division by zero' in e:
+                    logging.error(f'likely missing past data: {e}')
+                else:
+                    logging.error(e)
+                perfPerc = [0,0,0,0]
+
+        perf = {'datetime':formattedStartTime,
+                'performancePerc':perfPerc,
+                'loadW_hourly':hourlyEnergy,
+                'loadW_avg':mean(hourlyEnergy),
+                'flexW_avg':mean(eBaseline)-mean(hourlyEnergy),
+                'baselineW':eBaseline,
+                'event':eType,
+                'button':buttonTracker}
+
+        return perf
