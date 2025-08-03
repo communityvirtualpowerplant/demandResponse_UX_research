@@ -93,7 +93,7 @@ async def main():
         ### STATE ###
         #############
 
-        state = await send_get_request(ip='localhost',endpoint='api/state')
+        state = await send_get_request(endpoint='api/state')
         #logging.debug(state)
 
         try:
@@ -105,7 +105,7 @@ async def main():
         ### HEALTH ###
         ##############
 
-        health = await send_get_request(ip='localhost',endpoint='api/health')
+        health = await send_get_request(endpoint='api/health')
         #logging.debug(state)
 
         try:
