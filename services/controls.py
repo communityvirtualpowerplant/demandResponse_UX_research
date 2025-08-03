@@ -492,12 +492,12 @@ async def main():
             if (eventDLRP['upcoming']):
                 #eventDLRP['baselineW']=await getBaseline(eventDF,eventDLRP['upcoming'].time().hour,'dlrp')
                 eventDLRP['baselineW']=await baseline.getCBL(eventDF,eventDLRP['upcoming'].time().hour)
-                #eventDLRP['baselineTS'] = datetime.now()
+                eventDLRP['baselineTS'] = datetime.now()
                 #dlrpUpdated = True
             elif (eventDLRP['now']):
                     #eventDLRP['baselineW']=await getBaseline(eventDF,eventDLRP['now'].time().hour,'dlrp')
                     eventDLRP['baselineW']=await baseline.getCBL(eventDF,eventDLRP['now'].time().hour)
-                    #eventDLRP['baselineTS'] = datetime.now()
+                    eventDLRP['baselineTS'] = datetime.now()
                     await logPerformance(await getOngoingPerformance(eventDLRP['now'].time().hour,'dlrp',eventDLRP['baselineW'],buttonTracker))
             else:
                 try:
