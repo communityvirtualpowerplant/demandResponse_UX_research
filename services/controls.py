@@ -55,9 +55,9 @@ logging.debug(f'CSRP start time is {csrpTime}')
 buttonState = {}
 held_triggered = False
 
-##########################
-#### Helper Functions ####
-##########################
+#################
+#### Helpers ####
+#################
 
 # returns a dictionary with either False or datetime values
 def isCSRPEventUpcoming(df,t)-> dict:
@@ -144,10 +144,6 @@ async def send_get_request(ip:str='localhost', port:int=5000,endpoint:str='',typ
                     await asyncio.sleep(1+attempt)
         return res
 
-####################
-### DR Metrics ###
-####################
-
 async def getOngoingPerformance(eTime:float,eType:str,eBaseline:list[float],buttonTracker={'onPause':[0],'offPause':[0]}):
     eBaseline = mean(eBaseline) #change this!
     # get today's file
@@ -205,42 +201,6 @@ async def getOngoingPerformance(eTime:float,eType:str,eBaseline:list[float],butt
             'button':buttonTracker}
 
     return perf
-
-# buckets df with datetime within an event window into hourly buckets
-# args: a dataframe with datetimes
-# def hourlyBuckets(tempDF, tempStartTime:float, eventDuration:float=4) -> list[pd.DataFrame]:
-#     hourlyPower = []
-#     for h in range(eventDuration):
-#         #print(tempDF['datetime'])
-#         ts = tempStartTime + timedelta(hours=h)
-#         te = tempStartTime + timedelta(hours=h + 1)
-#         filteredTempDF = (tempDF[(tempDF['datetime']> ts) & (tempDF['datetime']<= te)]).copy() #data within the hour
-#         #filteredTempDF = increments(filteredTempDF,ts)
-#         hourlyPower.append(filteredTempDF)
-#     return hourlyPower
-
-
-#args: a dataframe with datetime column
-# returns df with added increments column based on an hour
-# def increments(df,fm=0)->pd.DataFrame:
-#     if fm==0:
-#         firstMeasurement = df['datetime'].min()
-#     else:
-#         firstMeasurement = fm
-
-#     #print(firstMeasurement)
-#     incList = []
-#     for r in range(len(df['datetime'])):
-#         incSec = (df['datetime'].iloc[r] - firstMeasurement).total_seconds()/60/60 #must convert back from seconds
-#         incList.append(incSec)
-#     df['increments'] = incList
-#     return df
-
-#args: power and time increments (relative to the hour) for a given hour
-# returns the energy (Wh) for the hour
-# def getWh(p:list[float],t:list[datetime])->float:
-#     e = trapezoid(y=p, x=t)
-#     return e
 
 async def logPerformance(d:dict):
     try:
@@ -311,8 +271,8 @@ async def main():
         stateDict = await send_get_request(endpoint='api/state')
     except Exception as e:
         logging.error(f"Couldn't initialize state: {e}")
-        stateDict={"csrp":{"baselineW":0,"baselineTS":0,"now":False,"upcoming":False,"avgPerf":100},
-                    "dlrp":{"baselineW":0,"baselineTS":0,"now":False,"upcoming":False,"avgPerf":100},
+        stateDict={"csrp":{"baselineW":0,"baselineTS":False,"now":False,"upcoming":False,"avgPerf":100},
+                    "dlrp":{"baselineW":0,"baselineTS":False,"now":False,"upcoming":False,"avgPerf":100},
                     "datetime":datetime.now(),
                     "eventPause":{"datetime":datetime.now(), "state":False},
                     "relays":{'bat-in':True,'bat-out':True,'ac':True}}
@@ -333,7 +293,7 @@ async def main():
             csrpBaseline = 0
         logging.error(e)
 
-    dlrpUpdated = False
+    #dlrpUpdated = False
 
     while True:
         buttonTracker={'onPause':shortpresses,'offPause':longpresses}
@@ -354,15 +314,16 @@ async def main():
                 await logPerformance(await getOngoingPerformance(csrpTime,'csrp',eventCSRP['baselineW'],buttonTracker))
 
             eventDLRP = isDLRPEventUpcoming(eventDF)
-            if (eventDLRP['upcoming']):
+            # update DLRP baseline if needed
+            if (eventDLRP['upcoming']) and (eventDLRP['baselineTS'] != eventDLRP['upcoming']):
                 #eventDLRP['baselineW']=await getBaseline(eventDF,eventDLRP['upcoming'].time().hour,'dlrp')
                 eventDLRP['baselineW']=await baseline.getCBL(eventDF,eventDLRP['upcoming'].time().hour)
-                eventDLRP['baselineTS'] = datetime.now()
+                eventDLRP['baselineTS'] = eventDLRP['upcoming']
                 #dlrpUpdated = True
-            elif (eventDLRP['now']):
+            elif (eventDLRP['now']) and (eventDLRP['baselineTS'] != eventDLRP['now']):
                     #eventDLRP['baselineW']=await getBaseline(eventDF,eventDLRP['now'].time().hour,'dlrp')
                     eventDLRP['baselineW']=await baseline.getCBL(eventDF,eventDLRP['now'].time().hour)
-                    eventDLRP['baselineTS'] = datetime.now()
+                    eventDLRP['baselineTS'] = eventDLRP['now']
                     await logPerformance(await getOngoingPerformance(eventDLRP['now'].time().hour,'dlrp',eventDLRP['baselineW'],buttonTracker))
             else:
                 try:
