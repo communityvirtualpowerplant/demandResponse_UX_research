@@ -114,7 +114,7 @@ class DRUX_Baseline():
 
 
     async def getCBL(self,eDF,eTime):
-        self.eventStartTime = eTime
+        #self.eventStartTime = eTime
 
         # drop unnecessary columns
         try:
@@ -127,16 +127,16 @@ class DRUX_Baseline():
         self.pastEventDates = [d.date() for d in list(pastEventsDF['date'])]
 
         if self.method == 'avg':
-            return await self.calcAverageDayMethod()
+            return await self.calcAverageDayMethod(eTime)
         else:
             return await self.calcWeatherSensitiveMethod()
 
-    async def calcAverageDayMethod(self):
+    async def calcAverageDayMethod(self,eTime):
         # get data for up to the past 30 days
         data = await self.getPastData()
 
         #filter all data to event windows
-        windowData = self.getEventWindows(data,self.eventStartTime)
+        windowData = self.getEventWindows(data,eTime)
         windowDict= self.listToDict(windowData)
 
         windowDictBuckets = {}
