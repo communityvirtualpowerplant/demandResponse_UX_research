@@ -57,7 +57,7 @@ class DRUX_Baseline():
                 response = requests.get(f"{url}{endpoint}",headers=headers, timeout=timeout)
                 response.raise_for_status()
                 if type == 'json':
-                    res= parse_datetimes(convert_bools(response.json()))
+                    res= self.parse_datetimes(self.convert_bools(response.json()))
                 elif type == 'text':
                     res= response.text
                 else:
@@ -77,9 +77,9 @@ class DRUX_Baseline():
     # convert datetimes to iso formatted strings
     def convert_datetimes(self, obj):
         if isinstance(obj, dict):
-            return {k: convert_datetimes(v) for k, v in obj.items()}
+            return {k: self.convert_datetimes(v) for k, v in obj.items()}
         elif isinstance(obj, list):
-            return [convert_datetimes(i) for i in obj]
+            return [self.convert_datetimes(i) for i in obj]
         elif isinstance(obj, datetime):
             return obj.isoformat()
         else:
@@ -88,9 +88,9 @@ class DRUX_Baseline():
     # convert to datetimes from iso formatted strings
     def parse_datetimes(self,obj):
         if isinstance(obj, dict):
-            return {k: parse_datetimes(v) for k, v in obj.items()}
+            return {k: self.parse_datetimes(v) for k, v in obj.items()}
         elif isinstance(obj, list):
-            return [parse_datetimes(i) for i in obj]
+            return [self.parse_datetimes(i) for i in obj]
         elif isinstance(obj, str):
             try:
                 return datetime.fromisoformat(obj)
@@ -102,9 +102,9 @@ class DRUX_Baseline():
     # Function to recursively convert "true"/"false" strings to Booleans
     def convert_bools(self, obj):
         if isinstance(obj, dict):
-            return {k: convert_bools(v) for k, v in obj.items()}
+            return {k: self.convert_bools(v) for k, v in obj.items()}
         elif isinstance(obj, list):
-            return [convert_bools(elem) for elem in obj]
+            return [self.convert_bools(elem) for elem in obj]
         elif obj == "true":
             return True
         elif obj == "false":
