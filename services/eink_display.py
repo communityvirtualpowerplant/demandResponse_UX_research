@@ -48,6 +48,7 @@ except Exception as e:
 
 csrpRate = config['csrpRatekW']
 dlrpRate = config['dlrpRatekW']
+pledge = config['pledge']
 
 dayNames = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
 
@@ -191,7 +192,7 @@ def upcomingScreen(f,s=None,p=None):
 
 def eventScreen(f,s, p):
     # performance percentage
-    perc = min(1,p['performanceAvg'])
+    perc = min(1,p['goalAvg'])
 
     # elapsed time percentage
     et = datetime.now() - p['datetime']  #elapsed  time
@@ -210,7 +211,7 @@ def eventScreen(f,s, p):
     epd.displayPartBaseImage(epd.getbuffer(sImage))
 
     sDraw.rectangle((0,0, screenWidth,screenHeight), fill = 255)
-    sDraw.text((screenWidth/2, 3), f"EVENT NOW UNTIL {eventEndStr}!!!)", font = f,anchor="mt",fill = 0)
+    sDraw.text((screenWidth/2, 3), f"EVENT NOW UNTIL {eventEndStr}!!!", font = f,anchor="mt",fill = 0)
 
     # money
     centerX = (screenWidth/3) - (screenWidth/6)
@@ -243,7 +244,7 @@ def eventScreen(f,s, p):
 
 def eventPausedScreen(f,s,p):
     # performance percentage
-    perc = min(1,p['performanceAvg'])
+    perc = min(1,p['goalAvg'])
 
     # elapsed time percentage
     et = datetime.now() - p['datetime']  #elapsed  time

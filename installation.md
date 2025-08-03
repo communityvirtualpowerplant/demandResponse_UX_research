@@ -60,6 +60,10 @@ Copy the env-template file
 
 Create data directory if not present
 
+Update config file
+* change pledge to AC nameplate
+
+
 ## Automate
 `chmod +x /home/drux/demandResponse_UX_research/services/plug_logger.py`
 `sudo cp /home/drux/demandResponse_UX_research/services/plug_logger.service /etc/systemd/system/plug_logger.service`

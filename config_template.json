@@ -4,5 +4,6 @@
 	"csrp":14,
 	"csrpRatekW":18,
 	"dlrpRatekW":18,
-	"paymentStartDate":"2025-07-21"
+	"paymentStartDate":"2025-07-21",
+	"pledgekW":1.2
 }

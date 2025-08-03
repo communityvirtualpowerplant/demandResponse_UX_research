@@ -88,6 +88,8 @@ class DRUX_Baseline(Helpers):
         self.eventStartTime = st # start time
         self.holidays = ['2025-09-01']
         self.pastEventDates = pe # past event dates
+        self.DLRPrate = 18
+        self.CSRPrate = 18
 
     async def getCBL(self,eDF,eTime):
         #self.eventStartTime = eTime
@@ -376,13 +378,13 @@ class DRUX_Baseline(Helpers):
                         logging.error(e)
                     perfPerc = [0,0,0,0]
 
-            avgPerfPerc = mean(perfPerc)
+            avgPerfPerc = mean(perfPerc) #this is NOT the performance factor, which is calculated later
 
             avgFlex = mean(eBaseline)-avgHourlyEnergy
 
         perf = {'datetime':formattedStartTime,
-                'performancePerc':perfPerc,
-                'performanceAvg':avgPerfPerc,
+                'goalPerc':perfPerc,
+                'goalAvg':avgPerfPerc,
                 'loadW_hourly':hourlyEnergy,
                 'loadW_avg':avgHourlyEnergy,
                 'flexW_avg':avgFlex,
