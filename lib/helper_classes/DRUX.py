@@ -363,6 +363,7 @@ class DRUX_Baseline(Helpers):
 
         perf = {'datetime':formattedStartTime,
                 'performancePerc':perfPerc,
+                'performanceAvg':mean(perfPerc),
                 'loadW_hourly':hourlyEnergy,
                 'loadW_avg':mean(hourlyEnergy),
                 'flexW_avg':mean(eBaseline)-mean(hourlyEnergy),
