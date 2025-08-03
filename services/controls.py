@@ -15,7 +15,7 @@ from io import StringIO
 import math
 from statistics import mean
 
-logging.basicConfig(format='%(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',level=logging.DEBUG)
+logging.basicConfig(format='%(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',level=logging.INFO)
 
 libdir = '/home/drux/demandResponse_UX_research/lib/helper_classes'
 if os.path.exists(libdir):
@@ -193,8 +193,8 @@ async def getOngoingPerformance(eTime:float,eType:str,eBaseline:list[float],butt
 
     perf = {'datetime':formattedStartTime,
             'performancePerc':perfPerc,
-            'loadWh_hourly':hourlyEnergy,
-            'loadWh_avg':mean(hourlyEnergy),
+            'loadW_hourly':hourlyEnergy,
+            'loadW_avg':mean(hourlyEnergy),
             'flexW_avg':eBaseline-mean(hourlyEnergy),
             'baselineW':eBaseline,
             'event':eType,
@@ -351,7 +351,7 @@ async def main():
                 logging.debug(f"unpausing!: {stateDict['eventPause']}")
 
             # if event no longer going on, unpause it
-            if (not stateDict['csrp']['now']) or (not stateDict['dlrp']['now']):
+            if (not stateDict['csrp']['now']) and (not stateDict['dlrp']['now']):
                 stateDict['eventPause']={'state':False,'datetime':datetime.now()}
 
         #save state before

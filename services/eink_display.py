@@ -395,7 +395,7 @@ async def main():
     # check for today's performance
     todaysPerformance = None
     for k in performance.keys():
-        if datetime.today().strftime("%Y-%m-%d") in k:
+        if datetime.today().strftime("%Y-%m-%d") in k.strftime("%Y-%m-%d"):
             todaysPerformance = performance[k]
 
     updateScreen = True
