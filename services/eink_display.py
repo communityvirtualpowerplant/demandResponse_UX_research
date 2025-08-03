@@ -166,8 +166,7 @@ async def getPerformance():
     for k in performance.keys():
         if datetime.today().strftime("%Y-%m-%d") in k.split('T')[0]:
             todaysPerformance = performance[k]
-
-    return todaysPerformance
+            return todaysPerformance
 
 ###############
 ### Screens ###
