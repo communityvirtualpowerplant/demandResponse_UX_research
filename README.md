@@ -37,20 +37,15 @@ Software
 biggest today:
 * get actual baseline rules
 * fix performance calculator! - issue with hourlyWh maybe?
+* get performance and payment stuff
 
 display
-* get performance and payment stuff
 * finalize interfaces
-* add QR code to IP screen
 
 backend
 * airtable updater
-* incorporate weather
 * local front end
 * include a script to check AT to run specific branches!
-
-misc
-* add in a battery cutoff below 20%
 
 System
 * plan for sms and emails
@@ -65,3 +60,8 @@ Study
 * finalize goals
 * finalize questions
 * finalize changable plan
+
+Stretch:
+* add QR code to IP screen
+* incorporate weather
+* add in a battery cutoff below 20%

@@ -451,10 +451,13 @@ async def main():
                     "datetime":datetime.now(),
                     "eventPause":{"datetime":datetime.now(), "state":False},
                     "relays":{'bat-in':True,'bat-out':True,'ac':True}}
+    try:
+        eventDF = atEvents.parseListToDF(await atEvents.listRecords())
+    except Exception as e:
+        logging.error(e)
 
     try:
         #baseline.eventStartTime = csrpTime
-        eventDF = atEvents.parseListToDF(await atEvents.listRecords())
         #csrpBaseline=await getBaseline(eventDF,csrpTime,'csrp')
         csrpBaseline = await baseline.getCBL(eventDF,csrpTime)
         csrpBaselineTS = datetime.now()
