@@ -96,11 +96,21 @@ async def main():
         #############
 
         try:
-            state = [await send_get_request(endpoint='api/state')]
+            state = await send_get_request(endpoint='api/state')
             logging.debug(state)
 
+            state['plugs'] = await send_get_request(endpoint='api/data?date=now&source=plugs')
+            logging.debug(plugs)
+
+            powerstation = await send_get_request(endpoint='api/data?date=now&source=powerstation')
+            logging.debug(plugs)
+
+            state['powerstation_percentage'] = powerstation['powerstation_percentage']
+
+            stateList = [state]
+
             try:
-                await AT.updateBatch(AT.names,AT.stateIDs,state,table='state')
+                await AT.updateBatch(AT.names,AT.stateIDs,stateList,table='state')
             except Exception as e:
                 logging.error(e)
         except Exception as e:
@@ -124,29 +134,29 @@ async def main():
         ### PERFORMANCE ###
         ###################
 
-        '''
-        performance = []
+        # try:
+        #     performance = []
 
-        perf = await send_get_request('localhost',endpoint='api/performance')
+        #     perf = await send_get_request(endpoint='api/performance')
 
-        for k in perf.keys():
-            performance.append(perf[k])
-            logging.debug(perf[k])
+        #     for k in perf.keys():
+        #         performance.append(perf[k])
+        #         logging.debug(perf[k])
 
-        try:
-            pIDs = await AT.getRecordIDbyName(perf.keys(),table=f'perf_participant{participantNumber}')
-            logging.debug(pIDs)
+        #     try:
+        #         # pIDs = await AT.getRecordIDbyName(perf.keys(),table=f'perf_participant{participantNumber}')
+        #         # logging.debug(pIDs)
 
-            # how does this deal with new additions?
-            await AT.updateBatch(perf.keys(),pIDs,performance,table=f'perf_participant{participantNumber}')
-        except Exception as e:
-            logging.error(e)
+        #         # how does this deal with new additions?
+        #         await AT.updatePerformance(perf.keys(),pIDs,performance,table=f'perf_participant{participantNumber}')
+        #     except Exception as e:
+        #         logging.error(e)
+        # except Exception as e:
+        #     logging.error(f'Error logging performance: {e}')
 
-        '''
-
-        # if event is happening update every 5 minutes, else update every half-hour
+        # if event is happening update every 10 minutes, else update every half-hour
         if (state['csrp']['now']) or (state['dlrp']['now']):
-            FREQ_SECONDS = 60 * 5
+            FREQ_SECONDS = 60 * 15
         else:
             FREQ_SECONDS = 60 * 30
 
