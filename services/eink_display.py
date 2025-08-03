@@ -300,7 +300,7 @@ def eventPausedScreen(f,s,p):
     epd.displayPartial(epd.getbuffer(sImage))
 
 def normalScreen(f,w=None,s=None,p=None):
-    estPay = s
+    estPay = s['csrp']['monthlyVal'] + s['dlrp']['monthlyVal']
 
     # display IP and hostname on start up
     sImage = Image.new('1', (screenWidth,screenHeight), 255)
@@ -344,7 +344,6 @@ def normalScreen(f,w=None,s=None,p=None):
 
         # payment
         sDraw.line([((2*screenWidth/3),screenHeight/2),((2*screenWidth/3),screenHeight)], fill=0,width=1, joint=None)
-        estPay = 4.5
         sDraw.text(((2*screenWidth/3)+hOffset, screenHeight/2), f'Estimated\nPayment:\n${estPay}/m', font = f, anchor="la",fill = 0)
 
         sDraw.line([(0,screenHeight/2),(screenWidth,screenHeight/2)], fill=0,width=2, joint=None)
