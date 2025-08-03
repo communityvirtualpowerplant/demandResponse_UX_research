@@ -415,12 +415,17 @@ class DRUX_Baseline(Helpers):
         for k,v in filteredPerformance.items():
             allAvgFlexKW.append(v['flexW_avg']*.001)
 
-        totAvgFlexKW = mean(allAvgFlexKW)
+        #totAvgFlexKW = mean(allAvgFlexKW)
+        if len(allAvgFlexKW)>0:
+            totAvgFlexKW = mean(allAvgFlexKW)
+        else:
+            totAvgFlexKW = 0
 
         return totAvgFlexKW
 
+        #returns a tuple
     async def getPerformanceDollarValue(self,mon,cR=18,dR=18):
         c = await self.getAvgReduction('csrp',mon)
         d = await self.getAvgReduction('dlrp',mon)
 
-        return tuple(c * cR,d * dR)
+        return (c * cR,d * dR)

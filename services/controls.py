@@ -258,7 +258,7 @@ async def main():
             if (eventCSRP['now']):
                 await logPerformance(await baseline.getOngoingPerformance(csrpTime,'csrp',eventCSRP['baselineW'],buttonTracker))
                 val = await baseline.getPerformanceDollarValue(datetime.now().month) #returns a tuple
-                eventDLRP['monthlyVal']=val[0]
+                eventCSRP['monthlyVal']=val[0]
 
             eventDLRP = isDLRPEventUpcoming(eventDF)
             # update DLRP baseline if needed
