@@ -93,8 +93,8 @@ async def main():
         ### STATE ###
         #############
 
-        state = await send_get_request(endpoint='api/state')
-        #logging.debug(state)
+        state = [await send_get_request(endpoint='api/state')]
+        logging.debug(state)
 
         try:
             await AT.updateBatch(AT.names,AT.IDs,state,table='state')
@@ -105,7 +105,7 @@ async def main():
         ### HEALTH ###
         ##############
 
-        health = await send_get_request(endpoint='api/health')
+        health = [await send_get_request(endpoint='api/health')]
         #logging.debug(state)
 
         try:

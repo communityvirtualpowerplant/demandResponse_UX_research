@@ -57,7 +57,7 @@ class Airtable():
 
     # updates up to 10 records at once
     # https://airtable.com/developers/web/api/update-multiple-records
-    async def updateBatch(self, names:List, recordIDs:List,data:List,table=None):
+    async def updateBatch(self, names:List, recordIDs:List,data:List,table:str):
         if not table:
             if self.table:
                 table = self.table
