@@ -477,7 +477,11 @@ async def main():
             # check for events
             eventCSRP = isCSRPEventUpcoming(eventDF,csrpTime)
             eventCSRP['baselineW']=csrpBaseline
-            eventCSRP['baselineTS']=csrpBaselineTS
+            if csrpBaselineTS:
+                eventCSRP['baselineTS']=csrpBaselineTS
+            else:
+                eventCSRP['baselineTS']=False
+
             if (eventCSRP['now']):
                 await logPerformance(await getOngoingPerformance(csrpTime,'csrp',eventCSRP['baselineW'],buttonTracker))
 

@@ -17,13 +17,44 @@ class DRUX_Baseline():
         self.holidays = ['2025-09-01']
         self.pastEventDates = pe # past event dates
 
-    async def send_get_request(self,ip:str='localhost', port:int=5000,endpoint:str='',type:str='json',timeout=1):
+    # async def send_get_request(self,ip:str='localhost', port:int=5000,endpoint:str='',type:str='json',timeout=1):
+    #     """Send GET request to the IP."""
+    #     # get own data
+    #     max_tries = 3
+    #     for attempt in range(max_tries):
+    #         try:
+    #             response = requests.get(f"http://{ip}:{port}/{endpoint}", timeout=timeout)
+    #             response.raise_for_status()
+    #             if type == 'json':
+    #                 res= parse_datetimes(convert_bools(response.json()))
+    #             elif type == 'text':
+    #                 res= response.text
+    #             else:
+    #                 res= response.status_code
+    #             break
+    #         except requests.exceptions.HTTPError as e:
+    #             logging.error(f"HTTP error occurred: {e}")
+    #         except Exception as e:
+    #             logging.error(f'{e}')
+    #             if attempt == max_tries-1: # try up to 3 times
+    #                 return None
+    #             else:
+    #                 logging.debug('SLEEEEEEEEEEEEEEEEEPING')
+    #                 await asyncio.sleep(1+attempt)
+    #     return res
+    async def send_get_request(self,url:str='http://localhost:5000/',endpoint:str='',type:str='json',key=None,timeout=1):
         """Send GET request to the IP."""
         # get own data
         max_tries = 3
+
+        if key:
+            headers = {"Authorization": f"Bearer {key}"}
+        else:
+            headers = {}
+
         for attempt in range(max_tries):
             try:
-                response = requests.get(f"http://{ip}:{port}/{endpoint}", timeout=timeout)
+                response = requests.get(f"{url}{endpoint}",headers=headers, timeout=timeout)
                 response.raise_for_status()
                 if type == 'json':
                     res= parse_datetimes(convert_bools(response.json()))
@@ -157,7 +188,7 @@ class DRUX_Baseline():
 
     async def getPastData(self):
         # get file list
-        fileList = await self.send_get_request('http://participant0.local:5000/api/files?source=plugs',type='json')
+        fileList = await self.send_get_request('localhost:5000/api/files?source=plugs',type='json')
         logging.debug(f'all files: {fileList}')
 
         filteredFileList = []
@@ -174,7 +205,7 @@ class DRUX_Baseline():
             #filter out today's data
             fToGet = f.strftime("%Y-%m-%d")
             if datetime.now().date().strftime("%Y-%m-%d")  not in fToGet:
-                r = await self.send_get_request(f'http://participant0.local:5000/api/data?source=plugs&date={fToGet}',type='text')
+                r = await self.send_get_request(f'localhost:5000/api/data?source=plugs&date={fToGet}',type='text')
                 if type(r) == tuple: # the tuple includes the response code, which we don't care about
                     r = r[0]
                 data.append(r)
