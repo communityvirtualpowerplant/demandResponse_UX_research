@@ -315,12 +315,14 @@ async def main():
 
             eventDLRP = isDLRPEventUpcoming(eventDF)
             # update DLRP baseline if needed
-            if (eventDLRP['upcoming']) and (eventDLRP['baselineTS'] != eventDLRP['upcoming']):
-                #eventDLRP['baselineW']=await getBaseline(eventDF,eventDLRP['upcoming'].time().hour,'dlrp')
-                eventDLRP['baselineW']=await baseline.getCBL(eventDF,eventDLRP['upcoming'].time().hour)
-                eventDLRP['baselineTS'] = eventDLRP['upcoming']
-                #dlrpUpdated = True
-            elif (eventDLRP['now']) and (eventDLRP['baselineTS'] != eventDLRP['now']):
+            if (eventDLRP['upcoming']):
+                if (not 'baselineTS' in eventDLRP.keys()) or (eventDLRP['baselineTS'] != eventDLRP['upcoming']):
+                    #eventDLRP['baselineW']=await getBaseline(eventDF,eventDLRP['upcoming'].time().hour,'dlrp')
+                    eventDLRP['baselineW']=await baseline.getCBL(eventDF,eventDLRP['upcoming'].time().hour)
+                    eventDLRP['baselineTS'] = eventDLRP['upcoming']
+                    #dlrpUpdated = True
+            elif (eventDLRP['now']):
+                if (not 'baselineTS' in eventDLRP.keys()) or (eventDLRP['baselineTS'] != eventDLRP['now']):
                     #eventDLRP['baselineW']=await getBaseline(eventDF,eventDLRP['now'].time().hour,'dlrp')
                     eventDLRP['baselineW']=await baseline.getCBL(eventDF,eventDLRP['now'].time().hour)
                     eventDLRP['baselineTS'] = eventDLRP['now']
