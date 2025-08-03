@@ -334,16 +334,19 @@ class DRUX_Baseline(Helpers):
         hourly = self.hourlyBuckets(eventWindow,formattedStartTime)
         # the increments function adds a column for the increment of a specific datapoint
         incs = []
+        dataLens = []
         for i,h in enumerate(hourly):
-            logging.info(h)
+            dataLens.append(len(h))
             incs.append(self.increments(h,formattedStartTime+timedelta(hours=i)))
 
         hourlyEnergy = []
-        for inc in incs:
+        for i, inc in enumerate(incs):
             resW = self.getWh(inc['ac-W'],inc['increments'])
             if (not resW) or (math.isnan(resW)):
                 if resW != 0:
                     resW = -1 #indicates no data without breaking it
+            if dataLens[i] == 0:
+                resW = -1 #indicates no data without breaking it
             hourlyEnergy.append(resW)
         logging.info(hourlyEnergy)
 
