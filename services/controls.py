@@ -23,7 +23,7 @@ if os.path.exists(libdir):
 
 from KasaDRUX import KasaDRUX
 from Airtable import Airtable
-from DRUX_Baseline import DRUX_Baseline
+from DRUX import DRUX_Baseline, Helpers
 
 load_dotenv()
 un = os.getenv('KASA_UN')
@@ -92,35 +92,35 @@ def isDLRPEventUpcoming(df)-> dict:
 
     return dState
 
-# convert datetimes to iso formatted strings
-def convert_datetimes(obj):
-    if isinstance(obj, dict):
-        return {k: convert_datetimes(v) for k, v in obj.items()}
-    elif isinstance(obj, list):
-        return [convert_datetimes(i) for i in obj]
-    elif isinstance(obj, datetime):
-        return obj.isoformat()
-    else:
-        return obj
+# # convert datetimes to iso formatted strings
+# def convert_datetimes(obj):
+#     if isinstance(obj, dict):
+#         return {k: convert_datetimes(v) for k, v in obj.items()}
+#     elif isinstance(obj, list):
+#         return [convert_datetimes(i) for i in obj]
+#     elif isinstance(obj, datetime):
+#         return obj.isoformat()
+#     else:
+#         return obj
 
-# convert to datetimes from iso formatted strings
-def parse_datetimes(obj):
-    if isinstance(obj, dict):
-        return {k: parse_datetimes(v) for k, v in obj.items()}
-    elif isinstance(obj, list):
-        return [parse_datetimes(i) for i in obj]
-    elif isinstance(obj, str):
-        try:
-            return datetime.fromisoformat(obj)
-        except ValueError:
-            return obj
-    else:
-        return obj
+# # convert to datetimes from iso formatted strings
+# def parse_datetimes(obj):
+#     if isinstance(obj, dict):
+#         return {k: parse_datetimes(v) for k, v in obj.items()}
+#     elif isinstance(obj, list):
+#         return [parse_datetimes(i) for i in obj]
+#     elif isinstance(obj, str):
+#         try:
+#             return datetime.fromisoformat(obj)
+#         except ValueError:
+#             return obj
+#     else:
+#         return obj
 
 async def saveState(d:dict):
     try:
         with open(os.path.join(repoRoot,'data/state.json'), "w") as json_file:
-            json.dump(convert_datetimes(d), json_file, indent=4)
+            json.dump(baseline.convert_datetimes(d), json_file, indent=4)
             logging.debug(f'State written to file. :)')
     except Exception as e:
         logging.error(f'Exception writing state to file: {e}')
@@ -143,18 +143,18 @@ async def sleeper(sec):
     except Exception as e:
         logging.debug(f'sleeper error: {e}')
 
-# Function to recursively convert "true"/"false" strings to Booleans
-def convert_bools(obj):
-    if isinstance(obj, dict):
-        return {k: convert_bools(v) for k, v in obj.items()}
-    elif isinstance(obj, list):
-        return [convert_bools(elem) for elem in obj]
-    elif obj == "true":
-        return True
-    elif obj == "false":
-        return False
-    else:
-        return obj
+# # Function to recursively convert "true"/"false" strings to Booleans
+# def convert_bools(obj):
+#     if isinstance(obj, dict):
+#         return {k: convert_bools(v) for k, v in obj.items()}
+#     elif isinstance(obj, list):
+#         return [convert_bools(elem) for elem in obj]
+#     elif obj == "true":
+#         return True
+#     elif obj == "false":
+#         return False
+#     else:
+#         return obj
 
 async def send_get_request(ip:str='localhost', port:int=5000,endpoint:str='',type:str='json',timeout=1):
         """Send GET request to the IP."""
@@ -165,7 +165,7 @@ async def send_get_request(ip:str='localhost', port:int=5000,endpoint:str='',typ
                 response = requests.get(f"http://{ip}:{port}/{endpoint}", timeout=timeout)
                 response.raise_for_status()
                 if type == 'json':
-                    res= parse_datetimes(convert_bools(response.json()))
+                    res= baseline.parse_datetimes(baseline.convert_bools(response.json()))
                 elif type == 'text':
                     res= response.text
                 else:
@@ -186,103 +186,102 @@ async def send_get_request(ip:str='localhost', port:int=5000,endpoint:str='',typ
 ### DR Metrics ###
 ####################
 
-async def prepBaselineData(eDF:pd.DataFrame,eTime:float,eType:str):
-    # drop unnecessary columns
-    eDF = eDF.drop(columns=['modified','notes','network'])
+# async def prepBaselineData(eDF:pd.DataFrame,eTime:float,eType:str):
+#     # drop unnecessary columns
+#     eDF = eDF.drop(columns=['modified','notes','network'])
 
-    # filter to only past events
-    pastEventsDF=eDF[eDF['date']<datetime.now().replace(hour=0,minute=0,second=0,microsecond=0)]
+#     # filter to only past events
+#     pastEventsDF=eDF[eDF['date']<datetime.now().replace(hour=0,minute=0,second=0,microsecond=0)]
 
-    # get file list
-    fileList = await send_get_request(endpoint='api/files?source=plugs')
-    logging.debug(fileList)
+#     # get file list
+#     fileList = await send_get_request(endpoint='api/files?source=plugs')
+#     logging.debug(fileList)
 
-    # retrieve files
-    data = []
-    for f in fileList:
-        if datetime.now().date().strftime("%Y-%m-%d")  not in f:
-            d = f.replace('.csv','').replace('plugs_','')
+#     # retrieve files
+#     data = []
+#     for f in fileList:
+#         if datetime.now().date().strftime("%Y-%m-%d")  not in f:
+#             d = f.replace('.csv','').replace('plugs_','')
 
-            r = await send_get_request(endpoint=f'api/data?source=plugs&date={d}',type='text')
-            if type(r) == tuple:
-                r = r[0]
-            data.append(r)
+#             r = await send_get_request(endpoint=f'api/data?source=plugs&date={d}',type='text')
+#             if type(r) == tuple:
+#                 r = r[0]
+#             data.append(r)
 
-    #parse response
-    parsedData = []
-    for d in data:
-        tempDF = pd.read_csv(StringIO(d))
-        tempDF['datetime'] = pd.to_datetime(tempDF['datetime'])
-        parsedData.append(tempDF)
+#     #parse response
+#     parsedData = []
+#     for d in data:
+#         tempDF = pd.read_csv(StringIO(d))
+#         tempDF['datetime'] = pd.to_datetime(tempDF['datetime'])
+#         parsedData.append(tempDF)
 
-    return (parsedData,pastEventsDF)
+#     return (parsedData,pastEventsDF)
 
 # currently only works with eTime as ints (whole hours)
 #args: event type, event log df
-async def getBaseline(eDF:pd.DataFrame,eTime:float,eType:str,eDate=None):
-    try:
-        prepTuple = await prepBaselineData(eDF,eTime,eType)
-        parsedData = prepTuple[0]
-        pastEventsDF = prepTuple[1]
+# async def getBaseline(eDF:pd.DataFrame,eTime:float,eType:str,eDate=None):
+#     try:
+#         prepTuple = await prepBaselineData(eDF,eTime,eType)
+#         parsedData = prepTuple[0]
+#         pastEventsDF = prepTuple[1]
 
-        logging.debug(f'length of parsed response: {len(parsedData)}')
+#         logging.debug(f'length of parsed response: {len(parsedData)}')
 
-        #update with actual baseline requirements
+#         #update with actual baseline requirements
 
-        # filter out event dates
-        pastEvents_type = pastEventsDF[pastEventsDF['type']==eType]
-        pastEventDates = [d.date() for d in list(pastEvents_type['date'])]
-        logging.debug(f'past events: {pastEventDates}')
+#         # filter out event dates
+#         pastEvents_type = pastEventsDF[pastEventsDF['type']==eType]
+#         pastEventDates = [d.date() for d in list(pastEvents_type['date'])]
+#         logging.debug(f'past events: {pastEventDates}')
 
-        filteredData = []
-        for d in parsedData:
-            #ignore days with past events (should this ignore those days regardless of type?
-            if list(d['datetime'])[0].date() not in pastEventDates:
-                if list(d['datetime'])[0].date().weekday() <=4: # filter out weekends
-                    filteredData.append(d)
+#         filteredData = []
+#         for d in parsedData:
+#             #ignore days with past events (should this ignore those days regardless of type?
+#             if list(d['datetime'])[0].date() not in pastEventDates:
+#                 if list(d['datetime'])[0].date().weekday() <=4: # filter out weekends
+#                     filteredData.append(d)
 
-        # get event windows
-        eventWindows = []
-        for d in filteredData:
-            #get on timestamps between event start and end times
-            eventWindows.append(d[[(d > d.replace(hour=eTime,minute=0,second=0,microsecond=0)) and (d <= d.replace(hour=eTime+4,minute=0,second=0,microsecond=0)) for d in d['datetime']]])
+#         # get event windows
+#         eventWindows = []
+#         for d in filteredData:
+#             #get on timestamps between event start and end times
+#             eventWindows.append(d[[(d > d.replace(hour=eTime,minute=0,second=0,microsecond=0)) and (d <= d.replace(hour=eTime+4,minute=0,second=0,microsecond=0)) for d in d['datetime']]])
 
-        dailyWindowAvgW = []
-        # eventLength = 4
-        for i, d in enumerate(eventWindows):
-            if len(d['datetime']) == 0:
-                continue
+#         dailyWindowAvgW = []
+#         # eventLength = 4
+#         for i, d in enumerate(eventWindows):
+#             if len(d['datetime']) == 0:
+#                 continue
 
-            formattedStartTime = d['datetime'].iloc[0].replace(hour=eTime,minute=0,second=0,microsecond=0)
+#             formattedStartTime = d['datetime'].iloc[0].replace(hour=eTime,minute=0,second=0,microsecond=0)
 
-            # create hourly buckets for each day
-            hourly = hourlyBuckets(d,formattedStartTime)
+#             # create hourly buckets for each day
+#             hourly = hourlyBuckets(d,formattedStartTime)
 
-            # add increments within each hour
-            incs = []
-            for ih,h in enumerate(hourly):
-                # the increments function adds a column for the increment of a specific datapoint
-                incs.append(increments(h,formattedStartTime+timedelta(hours=ih)))
+#             # add increments within each hour
+#             incs = []
+#             for ih,h in enumerate(hourly):
+#                 # the increments function adds a column for the increment of a specific datapoint
+#                 incs.append(increments(h,formattedStartTime+timedelta(hours=ih)))
 
-            #print(incs)
+#             #print(incs)
 
-            hourlyEnergy = []
-            for inc in incs:
-                hourlyEnergy.append(getWh(inc['ac-W'],inc['increments']))
-                if (math.isnan(hourlyEnergy[-1])):
-                    hourlyEnergy[-1] = 0.0
+#             hourlyEnergy = []
+#             for inc in incs:
+#                 hourlyEnergy.append(getWh(inc['ac-W'],inc['increments']))
+#                 if (math.isnan(hourlyEnergy[-1])):
+#                     hourlyEnergy[-1] = 0.0
 
-            dailyWindowAvgW.append(mean(hourlyEnergy))
+#             dailyWindowAvgW.append(mean(hourlyEnergy))
 
-        logging.debug(mean(dailyWindowAvgW))
-        return mean(dailyWindowAvgW)
-    except Exception as e:
-        if e == 'mean requires at least one data point':
-            logging.error(f'likely missing past data: {e}')
-        else:
-            logging.error(e)
-        return 0
-
+#         logging.debug(mean(dailyWindowAvgW))
+#         return mean(dailyWindowAvgW)
+#     except Exception as e:
+#         if e == 'mean requires at least one data point':
+#             logging.error(f'likely missing past data: {e}')
+#         else:
+#             logging.error(e)
+#         return 0
 
 async def getOngoingPerformance(eTime:float,eType:str,eBaseline:list[float],buttonTracker={'onPause':[0],'offPause':[0]}):
     eBaseline = mean(eBaseline) #change this!
@@ -388,7 +387,7 @@ async def logPerformance(d:dict):
         except json.JSONDecodeError:
             lp = {}
         d['modified']= datetime.now()
-        cd = convert_datetimes(d)
+        cd = baseline.convert_datetimes(d)
         lp[cd['datetime']] = cd
         with open(os.path.join(repoRoot,'data/performance.json'), 'w') as json_file_w:
             json.dump(lp, json_file_w, indent=4)
