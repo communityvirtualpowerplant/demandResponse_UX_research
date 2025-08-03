@@ -159,6 +159,16 @@ def stateUpdate(o, n)-> bool:
         return True
     return u
 
+async def getPerformance():
+    # check for today's performance
+    performance = await send_get_request(endpoint='api/performance')
+    todaysPerformance = 0
+    for k in performance.keys():
+        if datetime.today().strftime("%Y-%m-%d") in k.split('T')[0]:
+            todaysPerformance = performance[k]
+
+    return todaysPerformance
+
 ###############
 ### Screens ###
 ###############
@@ -355,16 +365,6 @@ async def displayIP(f):
 def fullRefresh():
     epd.init()
     epd.Clear(0xFF)
-
-async def getPerformance():
-    # check for today's performance
-    performance = await send_get_request(endpoint='api/performance')
-    todaysPerformance = 0
-    for k in performance.keys():
-        if datetime.today().strftime("%Y-%m-%d") in k.strftime("%Y-%m-%d"):
-            todaysPerformance = performance[k]
-
-    return todaysPerformance
 
 async def main():
     global hostname, IPAddr
