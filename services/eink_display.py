@@ -356,6 +356,16 @@ def fullRefresh():
     epd.init()
     epd.Clear(0xFF)
 
+async def getPerformance():
+    # check for today's performance
+    performance = await send_get_request(endpoint='api/performance')
+    todaysPerformance = 0
+    for k in performance.keys():
+        if datetime.today().strftime("%Y-%m-%d") in k.strftime("%Y-%m-%d"):
+            todaysPerformance = performance[k]
+
+    return todaysPerformance
+
 async def main():
     global hostname, IPAddr
 
@@ -388,11 +398,7 @@ async def main():
     power = await send_get_request(endpoint='api/data?date=now&source=plugs')
     battery = await send_get_request(endpoint='api/data?date=now&source=powerstation')
     state = await send_get_request(endpoint='api/state')
-
-    # this should be in the loop, if an event is going on...
-    performance = await send_get_request(endpoint='api/performance')
-
-
+    todaysPerformance = await getPerformance()
 
     updateScreen = True
 
@@ -412,11 +418,8 @@ async def main():
             updateData = datetime.now()
             state = await send_get_request(endpoint='api/state')
             updateState = datetime.now()
-            # check for today's performance
-            todaysPerformance = None
-            for k in performance.keys():
-                if datetime.today().strftime("%Y-%m-%d") in k.strftime("%Y-%m-%d"):
-                    todaysPerformance = performance[k]
+            todaysPerformance = await getPerformance()
+
 
 
         if num >= 3:
