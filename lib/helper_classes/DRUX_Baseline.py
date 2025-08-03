@@ -188,7 +188,7 @@ class DRUX_Baseline():
 
     async def getPastData(self):
         # get file list
-        fileList = await self.send_get_request('localhost:5000/api/files?source=plugs',type='json')
+        fileList = await self.send_get_request('http://localhost:5000/api/files?source=plugs',type='json')
         logging.debug(f'all files: {fileList}')
 
         filteredFileList = []
@@ -205,7 +205,7 @@ class DRUX_Baseline():
             #filter out today's data
             fToGet = f.strftime("%Y-%m-%d")
             if datetime.now().date().strftime("%Y-%m-%d")  not in fToGet:
-                r = await self.send_get_request(f'localhost:5000/api/data?source=plugs&date={fToGet}',type='text')
+                r = await self.send_get_request(f'http://localhost:5000/api/data?source=plugs&date={fToGet}',type='text')
                 if type(r) == tuple: # the tuple includes the response code, which we don't care about
                     r = r[0]
                 data.append(r)

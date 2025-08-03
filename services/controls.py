@@ -402,8 +402,8 @@ async def logPerformance(d:dict):
 async def main():
     global buttonState, button_event, stateDict, shortpresses,longpresses
 
-    #sleep for 30 seconds to give API time to start
-    await asyncio.sleep(30)
+    #sleep for 15 seconds to give API time to start
+    await asyncio.sleep(15)
 
     #track button presses
     shortpresses = []
