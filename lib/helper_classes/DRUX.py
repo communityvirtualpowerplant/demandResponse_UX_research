@@ -340,7 +340,7 @@ class DRUX_Baseline(Helpers):
         hourlyEnergy = []
         for inc in incs:
             resW = self.getWh(inc['ac-W'],inc['increments'])
-            if (not resWh) or (math.isnan(resWh)):
+            if (not resW) or (math.isnan(resW)):
                 resW = -1 #indicates no data without breaking it
             # else:
             #     loadW = resW
