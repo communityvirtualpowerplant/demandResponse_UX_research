@@ -335,6 +335,7 @@ class DRUX_Baseline(Helpers):
         # the increments function adds a column for the increment of a specific datapoint
         incs = []
         for i,h in enumerate(hourly):
+            logging.info(h)
             incs.append(self.increments(h,formattedStartTime+timedelta(hours=i)))
 
         hourlyEnergy = []
@@ -344,7 +345,7 @@ class DRUX_Baseline(Helpers):
                 if resW != 0:
                     resW = -1 #indicates no data without breaking it
             hourlyEnergy.append(resW)
-            logging.info(hourlyEnergy)
+        logging.info(hourlyEnergy)
 
         hourlyEnergy = [float(h) for h in hourlyEnergy]
 
