@@ -312,7 +312,6 @@ class DRUX_Baseline(Helpers):
         return hourlyAvg
 
     async def getOngoingPerformance(self, eTime:float,eType:str,eBaseline:list[float],buttonTracker={'onPause':[0],'offPause':[0]}):
-        #eBaseline = mean(eBaseline) #change this!
 
         # get today's file
         today = datetime.now().date()

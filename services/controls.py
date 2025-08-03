@@ -15,7 +15,7 @@ from io import StringIO
 import math
 from statistics import mean
 
-logging.basicConfig(format='%(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',level=logging.INFO)
+logging.basicConfig(format='%(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',level=logging.DEBUG)
 
 libdir = '/home/drux/demandResponse_UX_research/lib/helper_classes'
 if os.path.exists(libdir):
@@ -143,66 +143,7 @@ async def send_get_request(ip:str='localhost', port:int=5000,endpoint:str='',typ
                     logging.debug('SLEEEEEEEEEEEEEEEEEPING')
                     await asyncio.sleep(1+attempt)
         return res
-'''
-async def getOngoingPerformance(eTime:float,eType:str,eBaseline:list[float],buttonTracker={'onPause':[0],'offPause':[0]}):
-    #eBaseline = mean(eBaseline) #change this!
 
-    # get today's file
-    today = datetime.now().date() #- timedelta(days=1) uncomment to test (also add it to formattedStartTime)
-
-    r = await send_get_request(endpoint=f'api/data?source=plugs&date={today.strftime("%Y-%m-%d")}',type='text')
-    if type(r) == tuple:
-        r = r[0]
-    data=r
-
-    tempDF = pd.read_csv(StringIO(data))
-    tempDF['datetime'] = pd.to_datetime(tempDF['datetime'])
-    parsedData = tempDF
-
-    # get event window
-    eventWindow = parsedData[[(d > d.replace(hour=eTime,minute=0,second=0,microsecond=0)) and (d <= d.replace(hour=eTime+4,minute=0,second=0,microsecond=0)) for d in parsedData['datetime']]]
-
-    formattedStartTime = (datetime.now()).replace(hour=eTime,minute=0,second=0,microsecond=0)
-
-    # create hourly buckets for each day
-    hourly = baseline.hourlyBuckets(eventWindow,formattedStartTime)
-    # the increments function adds a column for the increment of a specific datapoint
-    incs = []
-    for i,h in enumerate(hourly):
-        incs.append(baseline.increments(h,formattedStartTime+timedelta(hours=i)))
-
-    hourlyEnergy = []
-    for inc in incs:
-        resWh = baseline.getWh(inc['ac-W'],inc['increments'])
-        if (not resWh) or (math.isnan(resWh)):
-            resWh = 0.0
-        hourlyEnergy.append(resWh)
-
-    hourlyEnergy = [float(h) for h in hourlyEnergy]
-
-    if len(hourlyEnergy) == 0:
-        hourlyEnergy = 0
-
-    try:
-        perfPerc = 1- (mean(hourlyEnergy)/ eBaseline)
-    except Exception as e:
-        if 'float division by zero' in e:
-            logging.error(f'likely missing past data: {e}')
-        else:
-            logging.error(e)
-        perfPerc = 0
-
-    perf = {'datetime':formattedStartTime,
-            'performancePerc':perfPerc,
-            'loadW_hourly':hourlyEnergy,
-            'loadW_avg':mean(hourlyEnergy),
-            'flexW_avg':eBaseline-mean(hourlyEnergy),
-            'baselineW':eBaseline,
-            'event':eType,
-            'button':buttonTracker}
-
-    return perf
-'''
 async def logPerformance(d:dict):
     try:
         try:
