@@ -284,7 +284,8 @@ async def getBaseline(eDF:pd.DataFrame,eTime:float,eType:str,eDate=None):
         return 0
 
 
-async def getOngoingPerformance(eTime:float,eType:str,eBaseline:float,buttonTracker={'onPause':[0],'offPause':[0]}):
+async def getOngoingPerformance(eTime:float,eType:str,eBaseline:list[float],buttonTracker={'onPause':[0],'offPause':[0]}):
+    eBaseline = mean(eBaseline) #change this!
     # get today's file
     today = datetime.now().date() #- timedelta(days=1) uncomment to test (also add it to formattedStartTime)
 
