@@ -358,36 +358,41 @@ class DRUX_Baseline(Helpers):
         if len(hourlyEnergy) == 0:
             hourlyEnergy = 'NaN'
             avgHourlyEnergy = hourlyEnergy
-            perfPerc = 'NaN'
-            avgPerfPerc = 'NaN'
-            avgFlex = 'NaN'
+            goalPerc = 'NaN'
+            avgGoalPerc = 'NaN'
+            flexW = 'NaN'
+            avgFlexW = flex
         else:
             avgHourlyEnergy = mean([h for h in hourlyEnergy if h != -1])
 
-            perfPerc = []
+            goalPerc = []
+            flexW = []
             for i,v in enumerate(hourlyEnergy):
                 if v == -1:
-                    perfPerc.append(0)
+                    goalPerc.append(0)
+                    flexW.append(0)
                     continue
                 try:
-                    perfPerc.append((eBaseline[i]-v)/eBaseline[i])
+                    f = eBaseline[i]-v
+                    flexW.append(f)
+                    goalPerc.append(f/eBaseline[i])
                 except Exception as e:
                     if 'float division by zero' in e:
                         logging.error(f'likely missing past data: {e}')
                     else:
                         logging.error(e)
-                    perfPerc = [0,0,0,0]
+                    goalPerc = [0,0,0,0]
 
-            avgPerfPerc = mean(perfPerc) #this is NOT the performance factor, which is calculated later
-
-            avgFlex = mean(eBaseline)-avgHourlyEnergy
+            avgGoalPerc = mean(goalPerc) #this is NOT the performance factor, which is calculated later
+            avgFlexW = mean(flexW)
 
         perf = {'datetime':formattedStartTime,
-                'goalPerc':perfPerc,
-                'goalAvg':avgPerfPerc,
+                'goalPerc':goalPerc,
+                'goalAvg':avgGoalPerc,
                 'loadW_hourly':hourlyEnergy,
                 'loadW_avg':avgHourlyEnergy,
-                'flexW_avg':avgFlex,
+                'flexW_avg':avgFlexW,
+                'flexW': flexW,
                 'baselineW':eBaseline,
                 'event':eType,
                 'button':buttonTracker}
