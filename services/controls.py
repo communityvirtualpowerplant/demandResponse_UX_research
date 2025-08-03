@@ -23,6 +23,7 @@ if os.path.exists(libdir):
 
 from KasaDRUX import KasaDRUX
 from Airtable import Airtable
+from DRUX_Baseline import DRUX_Baseline
 
 load_dotenv()
 un = os.getenv('KASA_UN')
@@ -38,6 +39,7 @@ if not atKey:
 
 kD = KasaDRUX(un,pw)
 atEvents = Airtable(atKey,'apptjKq3GAr5CVOQT','events')
+baseline = DRUX_Baseline()
 
 try:
     repoRoot = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
@@ -444,15 +446,18 @@ async def main():
         stateDict = await send_get_request(endpoint='api/state')
     except Exception as e:
         logging.error(f"Couldn't initialize state: {e}")
-        stateDict={"csrp":{"baselineW":0,"now":False,"upcoming":False,"avgPerf":100},
-                    "dlrp":{"baselineW":0,"now":False,"upcoming":False,"avgPerf":100},
+        stateDict={"csrp":{"baselineW":0,"baselineTS":0,"now":False,"upcoming":False,"avgPerf":100},
+                    "dlrp":{"baselineW":0,"baselineTS":0,"now":False,"upcoming":False,"avgPerf":100},
                     "datetime":datetime.now(),
                     "eventPause":{"datetime":datetime.now(), "state":False},
                     "relays":{'bat-in':True,'bat-out':True,'ac':True}}
 
     try:
+        #baseline.eventStartTime = csrpTime
         eventDF = atEvents.parseListToDF(await atEvents.listRecords())
-        csrpBaseline=await getBaseline(eventDF,csrpTime,'csrp')
+        #csrpBaseline=await getBaseline(eventDF,csrpTime,'csrp')
+        csrpBaseline = await baseline.getCBL(eventDF,csrpTime)
+        csrpBaselineTS = datetime.now()
     except Exception as e:
         try:
             csrpBaseline = stateDict['csrp']['baselineW']
@@ -472,6 +477,7 @@ async def main():
             # check for events
             eventCSRP = isCSRPEventUpcoming(eventDF,csrpTime)
             eventCSRP['baselineW']=csrpBaseline
+            eventCSRP['baselineTS']=csrpBaselineTS
             if (eventCSRP['now']):
                 await logPerformance(await getOngoingPerformance(csrpTime,'csrp',eventCSRP['baselineW'],buttonTracker))
 
@@ -479,10 +485,14 @@ async def main():
             if (eventDLRP['upcoming']):
                 #if not dlrpUpdated:
 
-                eventDLRP['baselineW']=await getBaseline(eventDF,eventDLRP['upcoming'].time().hour,'dlrp')
+                #eventDLRP['baselineW']=await getBaseline(eventDF,eventDLRP['upcoming'].time().hour,'dlrp')
+                eventDLRP['baselineW']=await baseline.getCBL(eventDF,eventDLRP['upcoming'].time().hour)
+                eventDLRP['baselineTS'] = datetime.now()
                     #dlrpUpdated = True
             elif (eventDLRP['now']):
-                    eventDLRP['baselineW']=await getBaseline(eventDF,eventDLRP['now'].time().hour,'dlrp')
+                    #eventDLRP['baselineW']=await getBaseline(eventDF,eventDLRP['now'].time().hour,'dlrp')
+                    eventDLRP['baselineW']=await baseline.getCBL(eventDF,eventDLRP['now'].time().hour)
+                    eventDLRP['baselineTS'] = datetime.now()
                     await logPerformance(await getOngoingPerformance(eventDLRP['now'].time().hour,'dlrp',eventDLRP['baselineW'],buttonTracker))
             else:
                 try:

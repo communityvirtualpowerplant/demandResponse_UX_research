@@ -34,6 +34,10 @@ The username for all devices is
 
 Software
 
+biggest today:
+* get actual baseline rules
+* fix performance calculator! - issue with hourlyWh maybe?
+
 display
 * get performance and payment stuff
 * finalize interfaces
@@ -44,8 +48,6 @@ backend
 * incorporate weather
 * local front end
 * include a script to check AT to run specific branches!
-* get actual baseline rules
-* fix performance calculator! - issue with hourlyWh maybe?
 
 misc
 * add in a battery cutoff below 20%
