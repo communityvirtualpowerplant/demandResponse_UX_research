@@ -300,6 +300,7 @@ def eventPausedScreen(f,s,p):
     epd.displayPartial(epd.getbuffer(sImage))
 
 def normalScreen(f,w=None,s=None,p=None):
+    estPay = s
 
     # display IP and hostname on start up
     sImage = Image.new('1', (screenWidth,screenHeight), 255)
@@ -440,7 +441,7 @@ async def main():
                         if not state['dlrp']['now']:
                             if not state['csrp']['upcoming']:
                                 if not state['dlrp']['upcoming']:
-                                    normalScreen(font15,power['ac-W'])
+                                    normalScreen(font15,w=power['ac-W'],s=state)
                                 else:
                                     upcomingScreen(font15,state,todaysPerformance)
                             else:
@@ -457,7 +458,7 @@ async def main():
                 # exit loop if state unknown
                 if not state:
                     logging.error(f'no state!')
-                    normalScreen(font15,power['ac-W'])
+                    normalScreen(font15,w=power['ac-W'],s=state)
                     num = num + 1
                 else:
                     logging.error(e)

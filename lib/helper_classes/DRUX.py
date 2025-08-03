@@ -398,3 +398,29 @@ class DRUX_Baseline(Helpers):
                 'button':buttonTracker}
 
         return perf
+
+    async def getAvgReduction(self,eType,mon):
+        performance = await self.send_get_request('http://localhost:5000/api/performance',type='json')
+
+        #filter performance by event type
+        filteredPerformance = {}
+        for k,v in performance.items():
+            if v['event']==eType:
+                #filter by month
+                if int(k.split('-')[1]) == mon:
+                    filteredPerformance[k] = v
+
+        # get all flexAvgs in kW
+        allAvgFlexKW = []
+        for k,v in filteredPerformance.items():
+            allAvgFlexKW.append(v['flexW_avg']*.001)
+
+        totAvgFlexKW = mean(allAvgFlexKW)
+
+        return totAvgFlexKW
+
+    async def getPerformanceDollarValue(self,mon,cR=18,dR=18):
+        c = await getAvgReduction('csrp',mon)
+        d = await getAvgReduction('dlrp',mon)
+
+        return tuple(c * cR,d * dR)

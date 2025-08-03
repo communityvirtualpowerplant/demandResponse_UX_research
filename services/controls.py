@@ -213,8 +213,8 @@ async def main():
         stateDict = await send_get_request(endpoint='api/state')
     except Exception as e:
         logging.error(f"Couldn't initialize state: {e}")
-        stateDict={"csrp":{"baselineW":0,"baselineTS":False,"now":False,"upcoming":False,"avgPerf":100},
-                    "dlrp":{"baselineW":0,"baselineTS":False,"now":False,"upcoming":False,"avgPerf":100},
+        stateDict={"csrp":{"baselineW":0,"baselineTS":False,"now":False,"upcoming":False,"avgPerf":0,"monthlyVal":0},
+                    "dlrp":{"baselineW":0,"baselineTS":False,"now":False,"upcoming":False,"avgPerf":0,"monthlyVal":0},
                     "datetime":datetime.now(),
                     "eventPause":{"datetime":datetime.now(), "state":False},
                     "relays":{'bat-in':True,'bat-out':True,'ac':True}}
@@ -228,6 +228,7 @@ async def main():
         #csrpBaseline=await getBaseline(eventDF,csrpTime,'csrp')
         csrpBaseline = await baseline.getCBL(eventDF,csrpTime)
         csrpBaselineTS = datetime.now()
+        val = await baseline.getPerformanceDollarValue(datetime.now().month) #returns a tuple
     except Exception as e:
         try:
             csrpBaseline = stateDict['csrp']['baselineW']
@@ -247,6 +248,8 @@ async def main():
             # check for events
             eventCSRP = isCSRPEventUpcoming(eventDF,csrpTime)
             eventCSRP['baselineW']=csrpBaseline
+            eventCSRP['monthlyVal']=val[0]
+
             if csrpBaselineTS:
                 eventCSRP['baselineTS']=csrpBaselineTS
             else:
@@ -254,6 +257,8 @@ async def main():
 
             if (eventCSRP['now']):
                 await logPerformance(await baseline.getOngoingPerformance(csrpTime,'csrp',eventCSRP['baselineW'],buttonTracker))
+                val = await baseline.getPerformanceDollarValue(datetime.now().month) #returns a tuple
+                eventDLRP['monthlyVal']=val[0]
 
             eventDLRP = isDLRPEventUpcoming(eventDF)
             # update DLRP baseline if needed
@@ -269,9 +274,13 @@ async def main():
                     eventDLRP['baselineW']=await baseline.getCBL(eventDF,eventDLRP['now'].time().hour)
                     eventDLRP['baselineTS'] = eventDLRP['now']
                     await logPerformance(await baseline.getOngoingPerformance(eventDLRP['now'].time().hour,'dlrp',eventDLRP['baselineW'],buttonTracker))
+
+                    val = await baseline.getPerformanceDollarValue(datetime.now().month) #returns a tuple
+                    eventDLRP['monthlyVal']=val[1]
             else:
                 try:
                     eventDLRP['baselineW']=stateDict['dlrp']['baselineW']
+                    eventDLRP['monthlyVal']=val[1]
                 except:
                     eventDLRP['baselineW']=0
             stateDict['datetime'] = datetime.now()

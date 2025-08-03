@@ -35,8 +35,7 @@ The username for all devices is
 Software
 
 biggest today:
-* fix ongoing performance to handle 4 values of baseline
-* get performance and payment stuff
+* get performance factor and payment stuff
 
 display
 * finalize interfaces
