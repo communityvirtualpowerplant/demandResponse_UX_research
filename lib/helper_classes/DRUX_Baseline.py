@@ -230,7 +230,7 @@ class DRUX_Baseline():
         return eW
 
     # get event windows
-    def listToDict(data):
+    def listToDict(self, data):
         rD = {}
         for d in data:
             if len(d)>0:
