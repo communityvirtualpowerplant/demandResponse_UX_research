@@ -340,33 +340,49 @@ class DRUX_Baseline(Helpers):
 
         hourlyEnergy = []
         for inc in incs:
-            resWh = self.getWh(inc['ac-W'],inc['increments'])
+            resW = self.getWh(inc['ac-W'],inc['increments'])
             if (not resWh) or (math.isnan(resWh)):
-                resWh = 0.0
-            hourlyEnergy.append(resWh)
+                resW = -1 #indicates no data without breaking it
+            # else:
+            #     loadW = resW
+            hourlyEnergy.append(resW)
 
         hourlyEnergy = [float(h) for h in hourlyEnergy]
 
+        # if no data
         if len(hourlyEnergy) == 0:
-            hourlyEnergy = [0,0,0,0]
+            hourlyEnergy = 'NaN'
+            avgHourlyEnergy = hourlyEnergy
+            perfPerc = 'NaN'
+            avgPerfPerc = 'NaN'
+            avgFlex = 'NaN'
+        else:
+            avgHourlyEnergy = mean([h for h in hourlyEnergy if h != -1])
 
-        perfPerc = []
-        for i,v in enumerate(hourlyEnergy):
-            try:
-                perfPerc.append((eBaseline[i]-v)/eBaseline[i])
-            except Exception as e:
-                if 'float division by zero' in e:
-                    logging.error(f'likely missing past data: {e}')
-                else:
-                    logging.error(e)
-                perfPerc = [0,0,0,0]
+            perfPerc = []
+            for i,v in enumerate(hourlyEnergy):
+                if v == -1:
+                    perfPerc.append(0)
+                    continue
+                try:
+                    perfPerc.append((eBaseline[i]-v)/eBaseline[i])
+                except Exception as e:
+                    if 'float division by zero' in e:
+                        logging.error(f'likely missing past data: {e}')
+                    else:
+                        logging.error(e)
+                    perfPerc = [0,0,0,0]
+
+            avgPerfPerc = mean(perfPerc)
+
+            avgFlex = mean(eBaseline)-avgHourlyEnergy
 
         perf = {'datetime':formattedStartTime,
                 'performancePerc':perfPerc,
-                'performanceAvg':mean(perfPerc),
+                'performanceAvg':avgPerfPerc,
                 'loadW_hourly':hourlyEnergy,
-                'loadW_avg':mean(hourlyEnergy),
-                'flexW_avg':mean(eBaseline)-mean(hourlyEnergy),
+                'loadW_avg':avgHourlyEnergy,
+                'flexW_avg':avgFlex,
                 'baselineW':eBaseline,
                 'event':eType,
                 'button':buttonTracker}
