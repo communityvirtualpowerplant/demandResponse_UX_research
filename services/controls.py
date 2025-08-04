@@ -172,7 +172,7 @@ async def startCheck():
         except Exception as e:
             logging.error(e)
         logging.info('still waiting!')
-        await asyncio.sleep(15)
+        await asyncio.sleep(20)
 
 ##############
 #### Main ####

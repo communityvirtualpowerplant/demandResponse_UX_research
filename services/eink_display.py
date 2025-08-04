@@ -65,7 +65,12 @@ async def send_get_request(ip:str='localhost', port:int=5000,endpoint:str='',typ
         for attempt in range(max_tries):
             try:
                 response = requests.get(fullURL, timeout=timeout)
-                response.raise_for_status()
+
+                if type == 'code':
+                    return response.status_code
+                else:
+                    response.raise_for_status()
+
                 if type == 'json':
                     res= parse_datetimes(convert_bools(response.json()))
                 elif type == 'text':
@@ -75,6 +80,7 @@ async def send_get_request(ip:str='localhost', port:int=5000,endpoint:str='',typ
                 break
             except Exception as e:
                 logging.error(f'{e}')
+
                 if attempt == max_tries-1: # try up to 3 times
                     return None
                 else:
@@ -176,14 +182,14 @@ async def getPerformance():
 async def startCheck():
     while True:
         try:
-            rCode = await send_get_request(endpoint='api/state',type='')
+            rCode = await send_get_request(endpoint='api/state',type='code')
             logging.info(rCode)
             if rCode == 200:
                 break
         except Exception as e:
             logging.error(e)
         logging.info('still waiting!')
-        await asyncio.sleep(15)
+        await asyncio.sleep(20)
 
 ###############
 ### Screens ###
