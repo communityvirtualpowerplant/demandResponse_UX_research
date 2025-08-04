@@ -38,9 +38,8 @@ display
 * finalize interfaces
 
 backend
-* airtable updater
+* airtable performance updater
 * local front end
-* include a script to check AT to run specific branches!
 
 System
 * plan for sms and emails
@@ -57,6 +56,6 @@ Study
 * finalize changable plan
 
 Stretch:
-* add QR code to case
+* add QR code to IP screen
 * incorporate weather
 * add in a battery cutoff below 20%
