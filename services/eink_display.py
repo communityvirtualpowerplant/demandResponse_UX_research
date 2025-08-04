@@ -364,7 +364,7 @@ async def displayIP(f):
     ip_draw.rectangle((10, 20, 220, 105), fill = 255)
     ip_draw.text((10, 20), f'host: {hostname}\nIP: {IPAddr}', font = f, fill = 0)
     epd.displayPartial(epd.getbuffer(ip_image))
-    await asyncio.sleep(20) #needs to wait for the API to spin up before moving on
+    await asyncio.sleep(30) #needs to wait for the API to spin up before moving on
 
 def fullRefresh():
     epd.init()
