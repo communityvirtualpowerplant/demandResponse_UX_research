@@ -178,7 +178,7 @@ async def getPerformance():
         return todaysPerformance
 
 async def startCheck():
-    count = 0
+    count = 1
     while True:
         try:
             rCode = await send_get_request(endpoint='api/state',type='code')
@@ -188,7 +188,7 @@ async def startCheck():
         except Exception as e:
             logging.error(e)
         logging.info('still waiting!')
-        count++
+        count = count + 1
         await asyncio.sleep(20+(count**2))
 
 ###############
