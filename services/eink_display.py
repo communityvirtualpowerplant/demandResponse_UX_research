@@ -177,7 +177,7 @@ async def startCheck():
     while True:
         rCode = await send_get_request(endpoint='api/state',type='')
         logging.info(rCode)
-        if '200' in rCode:
+        if rCode == 200:
             break
         else:
             logging.info('still waiting!')
