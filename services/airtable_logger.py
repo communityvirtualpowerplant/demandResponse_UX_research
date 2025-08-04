@@ -78,8 +78,8 @@ async def send_get_request(url:str='http://localhost:5000/',endpoint:str='',type
 
 async def main():
 
-    #sleep for 10 seconds at start
-    await asyncio.sleep(10)
+    #sleep for 30 seconds at start
+    await asyncio.sleep(60)
 
     # update state
     # get record IDs once at start to minimize API calls
