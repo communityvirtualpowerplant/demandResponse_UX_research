@@ -436,7 +436,7 @@ async def main():
             updateData = datetime.now()
             state = await send_get_request(endpoint='api/state')
             updateState = datetime.now()
-            todaysPerformance = await getPerformance()
+            #todaysPerformance = await getPerformance()
 
         if num >= 3:
             num = 0
@@ -458,12 +458,14 @@ async def main():
                                 if not state['dlrp']['upcoming']:
                                     normalScreen(font15,w=power['ac-W'],s=state)
                                 else:
-                                    upcomingScreen(font15,state,todaysPerformance)
+                                    upcomingScreen(font15,state)
                             else:
-                                upcomingScreen(font15,state,todaysPerformance)
+                                upcomingScreen(font15,state)
                         else:
+                            todaysPerformance = await getPerformance()
                             eventScreen(font15,state,todaysPerformance)
                     else:
+                        todaysPerformance = await getPerformance()
                         eventScreen(font15,state,todaysPerformance)
 
                 updateScreen = False
