@@ -221,8 +221,9 @@ async def main():
     try:
         eventDF = atEvents.parseListToDF(await atEvents.listRecords())
     except Exception as e:
-        logging.error(e)
+        logging.error(f"Couldn't get event list: {e}")
 
+    val = (0,0) #initial value for both programs at $0
     try:
         #baseline.eventStartTime = csrpTime
         #csrpBaseline=await getBaseline(eventDF,csrpTime,'csrp')
@@ -236,8 +237,6 @@ async def main():
             csrpBaseline = 0
         logging.error(e)
 
-    #dlrpUpdated = False
-
     while True:
         buttonTracker={'onPause':shortpresses,'offPause':longpresses}
 
@@ -245,53 +244,57 @@ async def main():
         try:
             #if not eventDF:# conditional only needed to not call this twice at the start of the program
             eventDF = atEvents.parseListToDF(await atEvents.listRecords())
-            # check for events
-            eventCSRP = isCSRPEventUpcoming(eventDF,csrpTime)
-            eventCSRP['baselineW']=csrpBaseline
-            eventCSRP['monthlyVal']=val[0]
 
-            if csrpBaselineTS:
-                eventCSRP['baselineTS']=csrpBaselineTS
-            else:
-                eventCSRP['baselineTS']=False
-
-            if (eventCSRP['now']):
-                await logPerformance(await baseline.getOngoingPerformance(csrpTime,'csrp',eventCSRP['baselineW'],buttonTracker))
-                val = await baseline.getPerformanceDollarValue(datetime.now().month) #returns a tuple
+            try:
+                # check for events
+                eventCSRP = isCSRPEventUpcoming(eventDF,csrpTime)
+                eventCSRP['baselineW']=csrpBaseline
                 eventCSRP['monthlyVal']=val[0]
 
-            eventDLRP = isDLRPEventUpcoming(eventDF)
-            # update DLRP baseline if needed
-            if (eventDLRP['upcoming']):
-                if (not 'baselineTS' in eventDLRP.keys()) or (eventDLRP['baselineTS'] != eventDLRP['upcoming']):
-                    #eventDLRP['baselineW']=await getBaseline(eventDF,eventDLRP['upcoming'].time().hour,'dlrp')
-                    eventDLRP['baselineW']=await baseline.getCBL(eventDF,eventDLRP['upcoming'].time().hour)
-                    eventDLRP['baselineTS'] = eventDLRP['upcoming']
-                    #dlrpUpdated = True
-            elif (eventDLRP['now']):
-                if (not 'baselineTS' in eventDLRP.keys()) or (eventDLRP['baselineTS'] != eventDLRP['now']):
-                    #eventDLRP['baselineW']=await getBaseline(eventDF,eventDLRP['now'].time().hour,'dlrp')
-                    eventDLRP['baselineW']=await baseline.getCBL(eventDF,eventDLRP['now'].time().hour)
-                    eventDLRP['baselineTS'] = eventDLRP['now']
-                    await logPerformance(await baseline.getOngoingPerformance(eventDLRP['now'].time().hour,'dlrp',eventDLRP['baselineW'],buttonTracker))
+                if csrpBaselineTS:
+                    eventCSRP['baselineTS']=csrpBaselineTS
+                else:
+                    eventCSRP['baselineTS']=False
 
+                if (eventCSRP['now']):
+                    await logPerformance(await baseline.getOngoingPerformance(csrpTime,'csrp',eventCSRP['baselineW'],buttonTracker))
                     val = await baseline.getPerformanceDollarValue(datetime.now().month) #returns a tuple
-                    eventDLRP['monthlyVal']=val[1]
-            else:
-                try:
-                    eventDLRP['baselineW']=stateDict['dlrp']['baselineW']
-                    eventDLRP['monthlyVal']=val[1]
-                except:
-                    eventDLRP['baselineW']=0
-            stateDict['datetime'] = datetime.now()
-            stateDict['csrp']=eventCSRP
-            stateDict['dlrp']=eventDLRP
-            logging.debug(stateDict)
+                    eventCSRP['monthlyVal']=val[0]
 
-            # reset eventDF
-            #eventDF = None
+                eventDLRP = isDLRPEventUpcoming(eventDF)
+                # update DLRP baseline if needed
+                if (eventDLRP['upcoming']):
+                    if (not 'baselineTS' in eventDLRP.keys()) or (eventDLRP['baselineTS'] != eventDLRP['upcoming']):
+                        #eventDLRP['baselineW']=await getBaseline(eventDF,eventDLRP['upcoming'].time().hour,'dlrp')
+                        eventDLRP['baselineW']=await baseline.getCBL(eventDF,eventDLRP['upcoming'].time().hour)
+                        eventDLRP['baselineTS'] = eventDLRP['upcoming']
+                        #dlrpUpdated = True
+                elif (eventDLRP['now']):
+                    if (not 'baselineTS' in eventDLRP.keys()) or (eventDLRP['baselineTS'] != eventDLRP['now']):
+                        #eventDLRP['baselineW']=await getBaseline(eventDF,eventDLRP['now'].time().hour,'dlrp')
+                        eventDLRP['baselineW']=await baseline.getCBL(eventDF,eventDLRP['now'].time().hour)
+                        eventDLRP['baselineTS'] = eventDLRP['now']
+                        await logPerformance(await baseline.getOngoingPerformance(eventDLRP['now'].time().hour,'dlrp',eventDLRP['baselineW'],buttonTracker))
+
+                        val = await baseline.getPerformanceDollarValue(datetime.now().month) #returns a tuple
+                        eventDLRP['monthlyVal']=val[1]
+                else:
+                    try:
+                        eventDLRP['baselineW']=stateDict['dlrp']['baselineW']
+                        eventDLRP['monthlyVal']=val[1]
+                    except:
+                        eventDLRP['baselineW']=0
+                stateDict['datetime'] = datetime.now()
+                stateDict['csrp']=eventCSRP
+                stateDict['dlrp']=eventDLRP
+                logging.debug(stateDict)
+
+                # reset eventDF
+                #eventDF = None
+            except Exception as e:
+                logging.error(f"Couldn't handle it: {e}")
         except Exception as e:
-            logging.error(f"Couldn't check event status: {e}")
+            logging.error(f"Couldn't get event list: {e}")
 
         # if paused
         if stateDict['eventPause']['state']:

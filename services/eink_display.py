@@ -362,7 +362,7 @@ async def displayIP(f):
     epd.displayPartBaseImage(epd.getbuffer(ip_image))
 
     ip_draw.rectangle((10, 20, 220, 105), fill = 255)
-    ip_draw.text((10, 20), f'host: {hostname}\nIP: {IPAddr}', font = f, fill = 0)
+    ip_draw.text((5, 20), f'Starting up...\nhost: {hostname}\nIP: {IPAddr}', font = f, fill = 0)
     epd.displayPartial(epd.getbuffer(ip_image))
     await asyncio.sleep(60) #needs to wait for the API to spin up before moving on
 
@@ -374,7 +374,7 @@ async def main():
     global hostname, IPAddr
 
     # delay start
-    await asyncio.sleep(5)
+    await asyncio.sleep(10)
 
     # either should work, but make sure to comment out the line
     #'127.0.1.1 HOSTNAME' from /etc/hosts
