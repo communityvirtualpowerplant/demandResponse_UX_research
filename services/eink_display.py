@@ -364,7 +364,7 @@ async def displayIP(f):
     ip_draw.rectangle((10, 20, 220, 105), fill = 255)
     ip_draw.text((10, 20), f'host: {hostname}\nIP: {IPAddr}', font = f, fill = 0)
     epd.displayPartial(epd.getbuffer(ip_image))
-    await asyncio.sleep(60) #needs to wait for the API to spin up before moving on
+    await asyncio.sleep(30) #needs to wait for the API to spin up before moving on
 
 def fullRefresh():
     epd.init()
@@ -401,7 +401,7 @@ async def main():
     power = await send_get_request(endpoint='api/data?date=now&source=plugs')
     battery = await send_get_request(endpoint='api/data?date=now&source=powerstation')
     state = await send_get_request(endpoint='api/state')
-    todaysPerformance = await getPerformance()
+    #todaysPerformance = await getPerformance()
 
     updateScreen = True
 
@@ -422,8 +422,6 @@ async def main():
             state = await send_get_request(endpoint='api/state')
             updateState = datetime.now()
             todaysPerformance = await getPerformance()
-
-
 
         if num >= 3:
             num = 0
