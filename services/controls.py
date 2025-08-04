@@ -137,6 +137,9 @@ async def send_get_request(ip:str='localhost', port:int=5000,endpoint:str='',typ
                 logging.error(f"HTTP error occurred: {e}")
             except Exception as e:
                 logging.error(f'{e}')
+                if type == 'code':
+                    return None
+
                 if attempt == max_tries-1: # try up to 3 times
                     return None
                 else:
@@ -163,16 +166,18 @@ async def logPerformance(d:dict):
         logging.error(f'Exception writing performance to file: {e}')
 
 async def startCheck():
+    count = 0
     while True:
         try:
-            rCode = await send_get_request(endpoint='api/state',type='')
+            rCode = await send_get_request(endpoint='api/state',type='code')
             logging.info(rCode)
             if rCode == 200:
-                break
+                return None
         except Exception as e:
             logging.error(e)
         logging.info('still waiting!')
-        await asyncio.sleep(20)
+        count = count + 1
+        await asyncio.sleep(20+(count**2))
 
 ##############
 #### Main ####

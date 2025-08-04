@@ -178,7 +178,7 @@ async def getPerformance():
         return todaysPerformance
 
 async def startCheck():
-    count = 1
+    count = 0
     while True:
         try:
             rCode = await send_get_request(endpoint='api/state',type='code')
