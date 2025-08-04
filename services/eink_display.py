@@ -28,7 +28,7 @@ if os.path.exists(libdir):
 
 from waveshare_epd import epd2in13_V4
 
-logging.basicConfig(format='%(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',level=logging.DEBUG)
+logging.basicConfig(format='%(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',level=logging.INFO)
 
 logging.info("DR Display")
 
@@ -173,6 +173,15 @@ async def getPerformance():
     except:
         return todaysPerformance
 
+async def startCheck():
+    while True:
+        rCode = await send_get_request(endpoint='api/status',type='')
+        logging.info(rCode)
+        if rCode == 200:
+            break
+        else:
+            logging.info('still waiting!')
+        await asyncio.sleep(15)
 ###############
 ### Screens ###
 ###############
@@ -362,9 +371,11 @@ async def displayIP(f):
     epd.displayPartBaseImage(epd.getbuffer(ip_image))
 
     ip_draw.rectangle((10, 20, 220, 105), fill = 255)
-    ip_draw.text((5, 20), f'Starting up...\nhost: {hostname}\nIP: {IPAddr}', font = f, fill = 0)
+    ip_draw.text((5, 5), f'Starting up...\n\nhost: {hostname}\nIP: {IPAddr}', font = f, fill = 0)
     epd.displayPartial(epd.getbuffer(ip_image))
-    await asyncio.sleep(60) #needs to wait for the API to spin up before moving on
+
+    startCheck()
+    #await asyncio.sleep(60) #needs to wait for the API to spin up before moving on
 
 def fullRefresh():
     epd.init()
