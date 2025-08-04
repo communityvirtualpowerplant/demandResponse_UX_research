@@ -164,11 +164,14 @@ async def getPerformance():
     # check for today's performance
     performance = await send_get_request(endpoint='api/performance')
     todaysPerformance = 0
-    for k in performance.keys():
-        if datetime.today().strftime("%Y-%m-%d") in k.split('T')[0]:
-            todaysPerformance = performance[k]
-            return todaysPerformance
-    return todaysPerformance
+    try:
+        for k in performance.keys():
+            if datetime.today().strftime("%Y-%m-%d") in k.split('T')[0]:
+                todaysPerformance = performance[k]
+                break
+        return todaysPerformance
+    except:
+        return todaysPerformance
 
 ###############
 ### Screens ###
@@ -361,7 +364,7 @@ async def displayIP(f):
     ip_draw.rectangle((10, 20, 220, 105), fill = 255)
     ip_draw.text((10, 20), f'host: {hostname}\nIP: {IPAddr}', font = f, fill = 0)
     epd.displayPartial(epd.getbuffer(ip_image))
-    await asyncio.sleep(30) #needs to wait for the API to spin up before moving on
+    await asyncio.sleep(20) #needs to wait for the API to spin up before moving on
 
 def fullRefresh():
     epd.init()
