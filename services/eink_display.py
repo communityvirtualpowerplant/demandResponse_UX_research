@@ -309,7 +309,7 @@ def normalScreen(f,w=None,s=None,p=None):
 
     # top
     sDraw.rectangle((0,0, screenWidth,screenHeight/2), fill = 255)
-    sDraw.text((screenWidth/2,0), f'No event upcoming!', anchor='ma',font = f, fill = 0)
+    sDraw.text((screenWidth/2,0), f'No event upcoming :) !', anchor='ma',font = f, fill = 0)
     sDraw.text((screenWidth/2,screenHeight/4), f'AC power draw: {w}W', anchor='ma',font = f, fill = 0)
 
     # center of fan

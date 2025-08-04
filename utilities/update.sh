@@ -1,6 +1,6 @@
 #!/bin/bash
 
-REPO_URL="https://github.com/communityvirtualpowerplant/demandResponse_UX_research"
+REPO_DIR="/home/drux/demandResponse_UX_research"
 
 # Check if destination already exists
 if [ -d "$REPO_DIR" ]; then

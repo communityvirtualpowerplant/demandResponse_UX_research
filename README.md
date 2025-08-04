@@ -34,9 +34,6 @@ The username for all devices is
 
 Software
 
-biggest today:
-* get performance factor and payment stuff
-
 display
 * finalize interfaces
 
