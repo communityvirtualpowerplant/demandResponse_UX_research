@@ -12,8 +12,7 @@ if [ -d "$REPO_DIR" ]; then
 
 else
     echo "Repository doesn't exist."
-
 fi
 
 echo "Rebooting now"
-reboot -h now
+sudo reboot -h now

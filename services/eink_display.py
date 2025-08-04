@@ -309,7 +309,7 @@ def normalScreen(f,w=None,s=None,p=None):
 
     # top
     sDraw.rectangle((0,0, screenWidth,screenHeight/2), fill = 255)
-    sDraw.text((screenWidth/2,0), f'No event upcoming :) !', anchor='ma',font = f, fill = 0)
+    sDraw.text((screenWidth/2,0), f'No event upcoming!', anchor='ma',font = f, fill = 0)
     sDraw.text((screenWidth/2,screenHeight/4), f'AC power draw: {w}W', anchor='ma',font = f, fill = 0)
 
     # center of fan
@@ -360,7 +360,7 @@ async def displayIP(f):
     ip_draw.rectangle((10, 20, 220, 105), fill = 255)
     ip_draw.text((10, 20), f'host: {hostname}\nIP: {IPAddr}', font = f, fill = 0)
     epd.displayPartial(epd.getbuffer(ip_image))
-    await asyncio.sleep(15) #needs to wait for the API to spin up before moving on
+    await asyncio.sleep(30) #needs to wait for the API to spin up before moving on
 
 def fullRefresh():
     epd.init()
@@ -379,7 +379,6 @@ async def main():
     except Exception as e:
         IPAddr = f'IP unknown: {e}'
     logging.debug(IPAddr)
-
 
     logging.info("init and Clear")
     fullRefresh()

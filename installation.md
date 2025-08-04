@@ -73,8 +73,9 @@ Update config file
 `sudo systemctl enable plug_logger.service`
 `sudo systemctl start plug_logger.service`
 
-Reboot at midnight with cron: `sudo crontab -e`
-* add this line to bottom of file: `@midnight bash /home/drux/demandResponse_UX_research/utilities/update.sh > /home/drux/demandResponse_UX_research/utilities/update.log 2>&1`
+Reboot at midnight with cron (DONT use sudo):
+* `crontab -e`
+* add this line to bottom of file: `15 0 * * * bash /home/drux/demandResponse_UX_research/utilities/update.sh > /home/drux/demandResponse_UX_research/utilities/update.log 2>&1`
 
 <!-- `@midnight sudo reboot` -->
 
