@@ -373,6 +373,9 @@ def fullRefresh():
 async def main():
     global hostname, IPAddr
 
+    # delay start
+    await asyncio.sleep(5)
+
     # either should work, but make sure to comment out the line
     #'127.0.1.1 HOSTNAME' from /etc/hosts
     try:
