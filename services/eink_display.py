@@ -175,12 +175,14 @@ async def getPerformance():
 
 async def startCheck():
     while True:
-        rCode = await send_get_request(endpoint='api/state',type='')
-        logging.info(rCode)
-        if rCode == 200:
-            break
-        else:
-            logging.info('still waiting!')
+        try:
+            rCode = await send_get_request(endpoint='api/state',type='')
+            logging.info(rCode)
+            if rCode == 200:
+                break
+        except Exception as e:
+            logging.error(e)
+        logging.info('still waiting!')
         await asyncio.sleep(15)
 
 ###############

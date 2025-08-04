@@ -162,6 +162,18 @@ async def logPerformance(d:dict):
     except Exception as e:
         logging.error(f'Exception writing performance to file: {e}')
 
+async def startCheck():
+    while True:
+        try:
+            rCode = await send_get_request(endpoint='api/state',type='')
+            logging.info(rCode)
+            if rCode == 200:
+                break
+        except Exception as e:
+            logging.error(e)
+        logging.info('still waiting!')
+        await asyncio.sleep(15)
+
 ##############
 #### Main ####
 ##############
@@ -170,7 +182,8 @@ async def main():
     global buttonState, button_event, stateDict, shortpresses,longpresses
 
     #delay start
-    await asyncio.sleep(55)
+    await asyncio.sleep(10)
+    await startCheck()
 
     #track button presses
     shortpresses = []
