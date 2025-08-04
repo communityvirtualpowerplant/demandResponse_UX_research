@@ -182,6 +182,7 @@ async def startCheck():
         else:
             logging.info('still waiting!')
         await asyncio.sleep(15)
+
 ###############
 ### Screens ###
 ###############
@@ -374,7 +375,7 @@ async def displayIP(f):
     ip_draw.text((5, 5), f'Starting up...\n\nhost: {hostname}\nIP: {IPAddr}', font = f, fill = 0)
     epd.displayPartial(epd.getbuffer(ip_image))
 
-    startCheck()
+    await startCheck()
     #await asyncio.sleep(60) #needs to wait for the API to spin up before moving on
 
 def fullRefresh():
