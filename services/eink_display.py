@@ -175,9 +175,9 @@ async def getPerformance():
 
 async def startCheck():
     while True:
-        rCode = await send_get_request(endpoint='api/status',type='')
+        rCode = await send_get_request(endpoint='api/state',type='')
         logging.info(rCode)
-        if rCode == 200:
+        if '200' in rCode:
             break
         else:
             logging.info('still waiting!')
