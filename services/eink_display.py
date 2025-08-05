@@ -243,7 +243,7 @@ def upcomingScreen(f,s=None,p=None):
     bottomVmid = bottomVtop + ((screenHeight - bottomVtop) * .5)
     sDraw.text((hOffset, bottomVmid), f'Your Average\nPerformance:\n{perc}%', font = fs, anchor="lm", fill = 0)
 
-    sDraw.text(((2*screenWidth/3)hOffset, bottomVmid), f'Max Possible\nPayment:\n{estPay / perc}%', font = fs, anchor="lm", fill = 0)
+    sDraw.text(((2*screenWidth/3)+hOffset, bottomVmid), f'Max Possible\nPayment:\n{estPay / perc}%', font = fs, anchor="lm", fill = 0)
 
     # # baseline
     # sDraw.line([((screenWidth/3),screenHeight/2),((screenWidth/3),screenHeight)], fill=0,width=1, joint=None)
