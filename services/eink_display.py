@@ -508,7 +508,7 @@ async def main():
     power = await send_get_request(endpoint='api/data?date=now&source=plugs')
     battery = await send_get_request(endpoint='api/data?date=now&source=powerstation')
     state = await send_get_request(endpoint='api/state')
-    #todaysPerformance = await getPerformance()
+    todaysPerformance = await getPerformance()
 
     updateScreen = True
 
@@ -528,7 +528,8 @@ async def main():
             updateData = datetime.now()
             state = await send_get_request(endpoint='api/state')
             updateState = datetime.now()
-            #todaysPerformance = await getPerformance()
+            # if (state['csrp']['now']) or (state['dlrp']['now']):
+            #     todaysPerformance = await getPerformance()
 
         if num >= 3:
             num = 0
@@ -548,12 +549,12 @@ async def main():
                         if not state['dlrp']['now']:
                             if not state['csrp']['upcoming']:
                                 if not state['dlrp']['upcoming']:
-                                    normalScreen(font15,w=power['ac-W'],s=state)
+                                    normalScreen(font15,w=power['ac-W'],s=state,p=todaysPerformance)
                                 else:
-                                    todaysPerformance = await getPerformance()
+                                    #todaysPerformance = await getPerformance()
                                     upcomingScreen(font15,state,todaysPerformance)
                             else:
-                                todaysPerformance = await getPerformance()
+                                #todaysPerformance = await getPerformance()
                                 upcomingScreen(font15,state,todaysPerformance)
                         else:
                             todaysPerformance = await getPerformance()
@@ -569,10 +570,10 @@ async def main():
                 # exit loop if state unknown
                 if not state:
                     logging.error(f'no state!')
-                    normalScreen(font15,w=power['ac-W'],s=state)
+                    normalScreen(font15,w=power['ac-W'],s=state,p=todaysPerformance)
                     num = num + 1
                 else:
-                    normalScreen(font15,w=power['ac-W'],s=state)
+                    normalScreen(font15,w=power['ac-W'],s=state,p=todaysPerformance)
                     logging.error(e)
             except Exception as e:
                 logging.error(e)
