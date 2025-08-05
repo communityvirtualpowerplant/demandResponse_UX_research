@@ -195,7 +195,8 @@ async def startCheck():
 ###############
 
 def upcomingScreen(f,s=None,p=None):
-    estPay = round(s['csrp']['monthlyVal'] + s['dlrp']['monthlyVal'],2)
+    estPay = s['csrp']['monthlyVal'] + s['dlrp']['monthlyVal']
+    estPay = round(estPay,2)
 
     try:
         perc = min(1,p['goalAvg'])
@@ -398,7 +399,8 @@ def eventPausedScreen(f,s,p):
     epd.displayPartial(epd.getbuffer(sImage))
 
 def normalScreen(f,w=None,s=None,p=None):
-    estPay = round(s['csrp']['monthlyVal'] + s['dlrp']['monthlyVal'],2)
+    estPay = s['csrp']['monthlyVal'] + s['dlrp']['monthlyVal']
+    estPay = round(estPay,2)
 
     try:
         perc = min(1,p['goalAvg'])
