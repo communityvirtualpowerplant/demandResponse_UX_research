@@ -317,85 +317,92 @@ class DRUX_Baseline(Helpers):
 
         # get today's file
         today = datetime.now().date()
-
-        r = await self.send_get_request(f'http://localhost:5000/api/data?source=plugs&date={today.strftime("%Y-%m-%d")}',type='text')
-        if type(r) == tuple:
-            r = r[0]
-        data=r
-
-        tempDF = pd.read_csv(StringIO(data))
-        tempDF['datetime'] = pd.to_datetime(tempDF['datetime'])
-        parsedData = tempDF
-
-        # get event window
-        eventWindow = parsedData[[(d > d.replace(hour=eTime,minute=0,second=0,microsecond=0)) and (d <= d.replace(hour=eTime+4,minute=0,second=0,microsecond=0)) for d in parsedData['datetime']]]
-
         formattedStartTime = (datetime.now()).replace(hour=eTime,minute=0,second=0,microsecond=0)
 
-        # create hourly buckets for each day
-        hourly = self.hourlyBuckets(eventWindow,formattedStartTime)
-        # the increments function adds a column for the increment of a specific datapoint
-        incs = []
-        dataLens = []
-        for i,h in enumerate(hourly):
-            dataLens.append(len(h))
-            incs.append(self.increments(h,formattedStartTime+timedelta(hours=i)))
+        try:
+            r = await self.send_get_request(f'http://localhost:5000/api/data?source=plugs&date={today.strftime("%Y-%m-%d")}',type='text')
+            if type(r) == tuple:
+                r = r[0]
+            data=r
 
-        hourlyEnergy = []
-        for i, inc in enumerate(incs):
-            resW = self.getWh(inc['ac-W'],inc['increments'])
-            if (not resW) or (math.isnan(resW)):
-                if resW != 0:
-                    resW = -1 #indicates no data without breaking it
-            if dataLens[i] == 0:
-                resW = -1 #indicates no data without breaking it
-            hourlyEnergy.append(resW)
-        logging.info(hourlyEnergy)
+            tempDF = pd.read_csv(StringIO(data))
+            tempDF['datetime'] = pd.to_datetime(tempDF['datetime'])
+            parsedData = tempDF
 
-        hourlyEnergy = [float(h) for h in hourlyEnergy]
+            # get event window
+            eventWindow = parsedData[[(d > d.replace(hour=eTime,minute=0,second=0,microsecond=0)) and (d <= d.replace(hour=eTime+4,minute=0,second=0,microsecond=0)) for d in parsedData['datetime']]]
 
-        # if no data
-        if len(hourlyEnergy) == 0:
-            hourlyEnergy = 'NaN'
-            avgHourlyEnergy = hourlyEnergy
-            goalPerc = 'NaN'
-            avgGoalPerc = 'NaN'
-            flexW = 'NaN'
-            avgFlexW = flex
-        else:
-            avgHourlyEnergy = mean([h for h in hourlyEnergy if h != -1])
 
-            goalPerc = []
-            flexW = []
-            for i,v in enumerate(hourlyEnergy):
-                if v == -1:
-                    goalPerc.append(0)
-                    flexW.append(0)
-                    continue
-                try:
-                    f = eBaseline[i]-v #if negative flex needs to be ignored, include max() here
-                    flexW.append(f)
-                    goalPerc.append(f/eBaseline[i])
-                except Exception as e:
-                    if 'float division by zero' in e:
-                        logging.error(f'likely missing past data: {e}')
-                    else:
-                        logging.error(e)
-                    goalPerc = [0,0,0,0]
+            # create hourly buckets for each day
+            hourly = self.hourlyBuckets(eventWindow,formattedStartTime)
+            # the increments function adds a column for the increment of a specific datapoint
+            incs = []
+            dataLens = []
+            for i,h in enumerate(hourly):
+                dataLens.append(len(h))
+                incs.append(self.increments(h,formattedStartTime+timedelta(hours=i)))
 
-            avgGoalPerc = mean(goalPerc) #this is NOT the performance factor, which is calculated later
-            avgFlexW = mean(flexW)
+            try:
+                hourlyEnergy = []
+                for i, inc in enumerate(incs):
+                    resW = self.getWh(inc['ac-W'],inc['increments'])
+                    if (not resW) or (math.isnan(resW)):
+                        if resW != 0:
+                            resW = -1 #indicates no data without breaking it
+                    if dataLens[i] == 0:
+                        resW = -1 #indicates no data without breaking it
+                    hourlyEnergy.append(resW)
+                logging.info(hourlyEnergy)
+            except Exception as e:
+                logging.error(f"Can't get hourly energy: {e}")
+                hourlyEnergy = 'NaN'
 
-        perf = {'datetime':formattedStartTime,
-                'goalPerc':goalPerc,
-                'goalAvg':avgGoalPerc,
-                'loadW_hourly':hourlyEnergy,
-                'loadW_avg':avgHourlyEnergy,
-                'flexW_avg':avgFlexW,
-                'flexW': flexW,
-                'baselineW':eBaseline,
-                'event':eType,
-                'button':buttonTracker}
+            # if no data
+            if (len(hourlyEnergy) == 0) or (hourlyEnergy=='NaN'):
+                hourlyEnergy = 'NaN'
+                avgHourlyEnergy = hourlyEnergy
+                goalPerc = 'NaN'
+                avgGoalPerc = 'NaN'
+                flexW = 'NaN'
+                avgFlexW = flex
+            else:
+                hourlyEnergy = [float(h) for h in hourlyEnergy] #remove?
+
+                avgHourlyEnergy = mean([h for h in hourlyEnergy if h != -1])
+
+                goalPerc = []
+                flexW = []
+                for i,v in enumerate(hourlyEnergy):
+                    if v == -1:
+                        goalPerc.append(0)
+                        flexW.append(0)
+                        continue
+                    try:
+                        f = eBaseline[i]-v #if negative flex needs to be ignored, include max() here
+                        flexW.append(f)
+                        goalPerc.append(f/eBaseline[i])
+                    except Exception as e:
+                        if 'float division by zero' in e:
+                            logging.error(f'likely missing past data: {e}')
+                        else:
+                            logging.error(e)
+                        goalPerc = [0,0,0,0]
+
+                avgGoalPerc = mean(goalPerc) #this is NOT the performance factor, which is calculated later
+                avgFlexW = mean(flexW)
+
+            perf = {'datetime':formattedStartTime,
+                    'goalPerc':0,
+                    'goalAvg':0,
+                    'loadW_hourly':[-1,-1,-1,-1],
+                    'loadW_avg':-1,
+                    'flexW_avg':avgFlexW,
+                    'flexW': flexW,
+                    'baselineW':eBaseline,
+                    'event':eType,
+                    'button':buttonTracker}
+        except Exception as e:
+            logging.error(f"Can't get ongoing performance: {e}")
 
         return perf
 
