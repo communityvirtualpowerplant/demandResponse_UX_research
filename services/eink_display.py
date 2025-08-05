@@ -216,13 +216,13 @@ def upcomingScreen(f,s=None,p=None):
     ft = ImageFont.truetype(os.path.join(picdir, 'Font.ttc'), 17)
 
     sDraw.rectangle((0,0,screenWidth,screenHeight), fill = 255)
-    sDraw.text((screenWidth/2, 5), f'Event upcoming at\n{eTime.strftime("%I:%M %p")} on {eDate}!', anchor='ma',font = ft, fill = 0)
+    sDraw.text((screenWidth/2, 5), f'Event upcoming at\n{eTime.strftime("%I:%M %p")} on {eDate}!', align="center",anchor='ma',font = ft, fill = 0)
 
     # bottom
     sDraw.rectangle((0,(screenHeight/2)-10,screenWidth,screenHeight), fill = 255)
 
-    if (not s) or (not p):
-        sDraw.text((screenHeight/2, screenHeight/2), f'Data Missing :(', font = f, anchor="ma",fill = 0)
+    if (not s):# or (not p):
+        sDraw.text((screenWidth/2, screenHeight/2), f'Data Missing :(', font = f, anchor="ma",fill = 0)
         epd.displayPartial(epd.getbuffer(sImage))
         return None
 
