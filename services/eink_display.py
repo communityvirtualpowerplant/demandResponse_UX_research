@@ -386,7 +386,7 @@ def normalScreen(f,w=None,s=None,p=None):
     # sDraw.text(((screenWidth/3)+hOffset,screenHeight/2), f'Average\nBaseline:\n{avgBase}W', font = f, anchor="la",fill = 0)
 
     # payment
-    sDraw.text(((screenWidth/2)+hOffset, (screenHeight/2)-20)), f'Estimated\nPayment: ${estPay}/m', font = f, anchor="la",fill = 0)
+    sDraw.text(((screenWidth/2)+hOffset, (screenHeight/2)-20), f'Estimated\nPayment: ${estPay}/m', font = f, anchor="la",fill = 0)
 
     sDraw.line([(0,(screenHeight/2)-20),(screenWidth,(screenHeight/2)-20)], fill=0,width=2, joint=None)
     sDraw.line([((screenWidth/2),screenHeight/2),(screenWidth/2,screenHeight)], fill=0,width=1, joint=None)
