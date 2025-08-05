@@ -359,36 +359,40 @@ def normalScreen(f,w=None,s=None,p=None):
     # bottom
     sDraw.rectangle((0,screenHeight/2,screenWidth,screenHeight), fill = 255)
 
-    if w:
-        sDraw.text((screenWidth/2,20), f'AC power draw: {w}W', anchor='ma',font = f, fill = 0)
+    if not w:
+        if w != 0:
+            sDraw.text((screenHeight/2, screenHeight/2), f'Data Missing :(', font = f, anchor="ma",fill = 0)
+            epd.displayPartial(epd.getbuffer(sImage))
+            return None
 
-        hOffset = 2
-        # performance
-        avgPerf = 76
-        fs = f
-        if sDraw.textlength("Performance:", f) > screenWidth/3:
-            fontSize = 15
-            while True:
-                fontSize -= 1
-                print(fontSize)
-                fs = ImageFont.truetype(os.path.join(picdir, 'Font.ttc'), fontSize)
-                if sDraw.textlength("Performance:", fs) <= screenWidth/3:
-                    break
+    sDraw.text((screenWidth/2,20), f'AC power draw: {w}W', anchor='ma',font = f, fill = 0)
 
-        sDraw.text((hOffset, screenHeight/2), f'Average\nPerformance:\n{avgPerf}%', font = fs, anchor="la", fill = 0)
+    hOffset = 2
+    # performance
+    avgPerf = 76
+    fs = f
+    if sDraw.textlength("Performance:", f) > screenWidth/3:
+        fontSize = 15
+        while True:
+            fontSize -= 1
+            print(fontSize)
+            fs = ImageFont.truetype(os.path.join(picdir, 'Font.ttc'), fontSize)
+            if sDraw.textlength("Performance:", fs) <= screenWidth/3:
+                break
 
-        # baseline
-        sDraw.line([((screenWidth/3),screenHeight/2),((screenWidth/3),screenHeight)], fill=0,width=1, joint=None)
-        avgBase = 378
-        sDraw.text(((screenWidth/3)+hOffset,screenHeight/2), f'Average\nBaseline:\n{avgBase}W', font = f, anchor="la",fill = 0)
+    sDraw.text((hOffset, screenHeight/2), f'Average\nPerformance:\n{avgPerf}%', font = fs, anchor="la", fill = 0)
 
-        # payment
-        sDraw.line([((2*screenWidth/3),screenHeight/2),((2*screenWidth/3),screenHeight)], fill=0,width=1, joint=None)
-        sDraw.text(((2*screenWidth/3)+hOffset, screenHeight/2), f'Estimated\nPayment:\n${estPay}/m', font = f, anchor="la",fill = 0)
+    # baseline
+    sDraw.line([((screenWidth/3),screenHeight/2),((screenWidth/3),screenHeight)], fill=0,width=1, joint=None)
+    avgBase = 378
+    sDraw.text(((screenWidth/3)+hOffset,screenHeight/2), f'Average\nBaseline:\n{avgBase}W', font = f, anchor="la",fill = 0)
 
-        sDraw.line([(0,screenHeight/2),(screenWidth,screenHeight/2)], fill=0,width=2, joint=None)
-    else:
-        sDraw.text((screenHeight/2, screenHeight/2), f'Data Missing :(', font = f, anchor="ma",fill = 0)
+    # payment
+    sDraw.line([((2*screenWidth/3),screenHeight/2),((2*screenWidth/3),screenHeight)], fill=0,width=1, joint=None)
+    sDraw.text(((2*screenWidth/3)+hOffset, screenHeight/2), f'Estimated\nPayment:\n${estPay}/m', font = f, anchor="la",fill = 0)
+
+    sDraw.line([(0,screenHeight/2),(screenWidth,screenHeight/2)], fill=0,width=2, joint=None)
+
     epd.displayPartial(epd.getbuffer(sImage))
 
 async def displayIP(f):
