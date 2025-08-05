@@ -392,17 +392,29 @@ class DRUX_Baseline(Helpers):
                 avgFlexW = mean(flexW)
 
             perf = {'datetime':formattedStartTime,
-                    'goalPerc':0,
-                    'goalAvg':0,
-                    'loadW_hourly':[-1,-1,-1,-1],
-                    'loadW_avg':-1,
+                    'goalPerc':goalPerc,
+                    'goalAvg':avgGoalPerc,
+                    'loadW_hourly':hourlyEnergy,
+                    'loadW_avg':avgHourlyEnergy,
                     'flexW_avg':avgFlexW,
                     'flexW': flexW,
                     'baselineW':eBaseline,
                     'event':eType,
                     'button':buttonTracker}
+
+
         except Exception as e:
             logging.error(f"Can't get ongoing performance: {e}")
+            perf = {'datetime':formattedStartTime,
+                    'goalPerc':'NaN',
+                    'goalAvg':'NaN',
+                    'loadW_hourly':'NaN',
+                    'loadW_avg':'NaN',
+                    'flexW_avg':'NaN',
+                    'flexW': 'NaN',
+                    'baselineW':'NaN',
+                    'event':eType,
+                    'button':'NaN'}
 
         return perf
 
