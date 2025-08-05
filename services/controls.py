@@ -334,16 +334,20 @@ async def main():
             logging.error(f"Couldn't get event list: {e}")
 
         # if paused
-        if stateDict['eventPause']['state']:
-            #if eventPause has been going on for an hour or more, unpause it
-            if datetime.now()-stateDict['eventPause']['datetime'] > timedelta(hours=1):
-                # unpause
-                stateDict['eventPause']={'state':False,'datetime':datetime.now()}
-                logging.debug(f"unpausing!: {stateDict['eventPause']}")
+        try:
+            if stateDict['eventPause']['state']:
+                #if eventPause has been going on for an hour or more, unpause it
+                if datetime.now()-stateDict['eventPause']['datetime'] > timedelta(hours=1):
+                    # unpause
+                    stateDict['eventPause']={'state':False,'datetime':datetime.now()}
+                    logging.debug(f"unpausing!: {stateDict['eventPause']}")
 
-            # if event no longer going on, unpause it
-            if (not stateDict['csrp']['now']) and (not stateDict['dlrp']['now']):
-                stateDict['eventPause']={'state':False,'datetime':datetime.now()}
+                # if event no longer going on, unpause it
+                if (not stateDict['csrp']['now']) and (not stateDict['dlrp']['now']):
+                    stateDict['eventPause']={'state':False,'datetime':datetime.now()}
+        except Exception as e:
+            logging.error(f"Couldn't determine pause state: {e}")
+
 
         # respond to event status as needed
         try:
