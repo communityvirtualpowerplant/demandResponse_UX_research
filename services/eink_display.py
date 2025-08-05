@@ -222,9 +222,9 @@ def upcomingScreen(f,s=None,p=None):
 
     sDraw.rectangle((0,0,screenWidth,screenHeight), fill = 255)
     if not soon:
-        sDraw.text((screenWidth/2, 5), f'Event upcoming at\n{eTime.strftime("%I:%M %p")} on {eDate}!', align="center",anchor='ma',font = ft, fill = 0)
+        sDraw.text((screenWidth/2, 3), f'Event upcoming at\n{eTime.strftime("%I:%M %p")} on {eDate}!', align="center",anchor='ma',font = ft, fill = 0)
     else:
-        sDraw.text((screenWidth/2, 5), f'Event upcoming at {eTime.strftime("%I:%M %p")}\nPrecool your space to maximize comfort!', align="center",anchor='ma',font = ft, fill = 0)
+        sDraw.text((screenWidth/2, 3), f'Event upcoming at {eTime.strftime("%I:%M %p")}\nPrecool room to maximize comfort!', align="center",anchor='ma',font = ft, fill = 0)
 
     # bottom
     sDraw.rectangle((0,(screenHeight/2)-10,screenWidth,screenHeight), fill = 255)
@@ -237,25 +237,25 @@ def upcomingScreen(f,s=None,p=None):
     hOffset = 2
     # performance
     fs = ft #could make f none if not actually using it
-    if sDraw.textlength("Performance:", ft) > screenWidth/3:
+    if sDraw.textlength("Avg. Perf.:", ft) > screenWidth/3:
         fontSize = 17
         while True:
             fontSize -= 1
             print(fontSize)
             fs = ImageFont.truetype(os.path.join(picdir, 'Font.ttc'), fontSize)
-            if sDraw.textlength("Performance:", fs) <= screenWidth/3:
+            if sDraw.textlength("Avg. Perf.:", fs) <= screenWidth/3:
                 break
 
     bottomVtop = (screenHeight/2)-10
     bottomVmid = bottomVtop + ((screenHeight - bottomVtop) * .5)
-    sDraw.text((hOffset, bottomVmid), f'Your Average\nPerformance:\n{perc}%', font = fs, anchor="lm", fill = 0)
+    sDraw.text((hOffset, bottomVmid), f'Avg. Perf.:\n{perc}%', font = fs, anchor="lm", fill = 0)
 
     try:
         maxPay = estPay / perc
     except:
         maxPay = 0
 
-    sDraw.text(((2*screenWidth/3)+hOffset, bottomVmid), f'Max Possible\nPayment:\n{maxPay}$/m', font = fs, anchor="lm", fill = 0)
+    sDraw.text(((2*screenWidth/3)+hOffset, bottomVmid), f'Max Pay\nat 100%: {maxPay}$/m', font = fs, anchor="lm", fill = 0)
 
     # # baseline
     # sDraw.line([((screenWidth/3),screenHeight/2),((screenWidth/3),screenHeight)], fill=0,width=1, joint=None)
@@ -263,7 +263,7 @@ def upcomingScreen(f,s=None,p=None):
     # sDraw.text(((screenWidth/3)+hOffset,screenHeight/2), f'Average\nBaseline:\n{avgBase}W', font = f, anchor="la",fill = 0)
 
     # payment
-    sDraw.text(((screenWidth/3)+hOffset, bottomVmid), f'Estimated\nPayment:\n${estPay}/m', font = fs, anchor="lm",fill = 0)
+    sDraw.text(((screenWidth/3)+hOffset, bottomVmid), f'Est. Pay:\n${estPay}/m', font = fs, anchor="lm",fill = 0)
 
     sDraw.line([(0,bottomVtop),(screenWidth,bottomVtop)], fill=0,width=2, joint=None)
     sDraw.line([((screenWidth/3),bottomVtop),(screenWidth/3,screenHeight)], fill=0,width=1, joint=None)
