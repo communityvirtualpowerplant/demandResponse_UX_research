@@ -407,7 +407,7 @@ def normalScreen(f,w=None,s=None,p=None):
     sDraw.rectangle((0,0, screenWidth,screenHeight/2), fill = 255)
     sDraw.text((screenWidth/2,0), f'No upcoming events', anchor='ma',font = ft, fill = 0)
 
-    sDraw.text((screenWidth/2,28), f'AC power draw: {w}W', anchor='ma',font = f, fill = 0)
+    sDraw.text((screenWidth/2,28), f'AC power draw: {round(w,2)}W', anchor='ma',font = f, fill = 0)
 
     # bottom
     sDraw.rectangle((0,(screenHeight/2)-10,screenWidth,screenHeight), fill = 255)
@@ -540,8 +540,10 @@ async def main():
                                 if not state['dlrp']['upcoming']:
                                     normalScreen(font15,w=power['ac-W'],s=state)
                                 else:
+                                    todaysPerformance = await getPerformance()
                                     upcomingScreen(font15,state,todaysPerformance)
                             else:
+                                todaysPerformance = await getPerformance()
                                 upcomingScreen(font15,state,todaysPerformance)
                         else:
                             todaysPerformance = await getPerformance()
