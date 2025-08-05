@@ -368,8 +368,8 @@ def normalScreen(f,w=None,s=None,p=None):
 
     hOffset = 2
     # performance
-    fs = f
-    if sDraw.textlength("Performance:", f) > screenWidth/2:
+    fs = ft #could make f none if not actually using it
+    if sDraw.textlength("Performance:", ft) > screenWidth/2:
         fontSize = 17
         while True:
             fontSize -= 1
@@ -378,7 +378,7 @@ def normalScreen(f,w=None,s=None,p=None):
             if sDraw.textlength("Performance:", fs) <= screenWidth/2:
                 break
 
-    sDraw.text((hOffset, (screenHeight/2)-10), f'Your Average\nPerformance: {perc}%', font = fs, anchor="la", fill = 0)
+    sDraw.text((hOffset, ((screenHeight/2)-10)*.5), f'Your Average\nPerformance:\n{perc}%', font = fs, anchor="lm", fill = 0)
 
     # # baseline
     # sDraw.line([((screenWidth/3),screenHeight/2),((screenWidth/3),screenHeight)], fill=0,width=1, joint=None)
@@ -386,7 +386,7 @@ def normalScreen(f,w=None,s=None,p=None):
     # sDraw.text(((screenWidth/3)+hOffset,screenHeight/2), f'Average\nBaseline:\n{avgBase}W', font = f, anchor="la",fill = 0)
 
     # payment
-    sDraw.text(((screenWidth/2)+hOffset, (screenHeight/2)-10), f'Estimated\nPayment: ${estPay}/m', font = f, anchor="la",fill = 0)
+    sDraw.text(((screenWidth/2)+hOffset, ((screenHeight/2)-10)*.5), f'Estimated\nPayment:\n${estPay}/m', font = fs, anchor="lm",fill = 0)
 
     sDraw.line([(0,(screenHeight/2)-10),(screenWidth,(screenHeight/2)-10)], fill=0,width=2, joint=None)
     sDraw.line([((screenWidth/2),(screenHeight/2)-10),(screenWidth/2,screenHeight)], fill=0,width=1, joint=None)
