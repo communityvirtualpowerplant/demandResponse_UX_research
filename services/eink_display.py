@@ -165,9 +165,9 @@ def stateUpdate(o, n)-> bool:
 
 async def getPerformance():
     # check for today's performance
-    performance = await send_get_request(endpoint='api/performance')
     todaysPerformance = 0
     try:
+        performance = await send_get_request(endpoint='api/performance')
         for k in performance.keys():
             if datetime.today().strftime("%Y-%m-%d") == k.split('T')[0]:
                 todaysPerformance = performance[k]
