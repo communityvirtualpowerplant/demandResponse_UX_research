@@ -43,11 +43,9 @@ backend
 
 System
 * plan for sms and emails
-* design and print cases
 * design supplemental materials
 	* website
 	* system manual
-	* stickers/ labels
 	* DR explainer, with value estimator
 
 Study

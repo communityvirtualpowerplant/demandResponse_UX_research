@@ -135,25 +135,25 @@ async def main():
         ### PERFORMANCE ###
         ###################
 
-        # try:
-        #     performance = []
+        try:
+            performance = []
 
-        #     perf = await send_get_request(endpoint='api/performance')
+            perf = await send_get_request(endpoint='api/performance')
 
-        #     for k in perf.keys():
-        #         performance.append(perf[k])
-        #         logging.debug(perf[k])
+            for k in perf.keys():
+                performance.append(perf[k])
+                logging.debug(perf[k])
 
-        #     try:
-        #         # pIDs = await AT.getRecordIDbyName(perf.keys(),table=f'perf_participant{participantNumber}')
-        #         # logging.debug(pIDs)
+            try:
+                pIDs = await AT.getRecordIDbyName(perf.keys(),table=f'perf_participant{participantNumber}')
+                logging.debug(pIDs)
 
-        #         # how does this deal with new additions?
-        #         await AT.updatePerformance(perf.keys(),pIDs,performance,table=f'perf_participant{participantNumber}')
-        #     except Exception as e:
-        #         logging.error(e)
-        # except Exception as e:
-        #     logging.error(f'Error logging performance: {e}')
+                # how does this deal with new additions?
+                await AT.updateBatch(perf.keys(),pIDs,performance,table=f'perf_participant{participantNumber}')
+            except Exception as e:
+                logging.error(e)
+        except Exception as e:
+            logging.error(f'Error logging performance: {e}')
 
         # if event is happening update every 10 minutes, else update every half-hour
         if (state['csrp']['now']) or (state['dlrp']['now']):

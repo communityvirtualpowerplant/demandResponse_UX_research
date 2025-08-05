@@ -82,9 +82,11 @@ Note: may need to uncomment the 127 ip in host file for some services to be enab
 `sudo systemctl enable plug_logger.service`<br>
 `sudo systemctl start plug_logger.service`
 
-Reboot at midnight with cron (DONT use sudo):
+Check for updates and reboot at 12:15am and 5am  with cron (DONT use sudo):
 * `crontab -e`
-* add this line to bottom of file: `15 0 * * * bash /home/drux/demandResponse_UX_research/utilities/update.sh > /home/drux/demandResponse_UX_research/utilities/update.log 2>&1`
+* add this line to bottom of file:
+	* `15 0 * * * bash /home/drux/demandResponse_UX_research/utilities/update.sh > /home/drux/demandResponse_UX_research/utilities/update.log 2>&1`
+	* `0 5 * * * bash /home/drux/demandResponse_UX_research/utilities/update.sh > /home/drux/demandResponse_UX_research/utilities/update.log 2>&1`
 
 <!-- `@midnight sudo reboot` -->
 
@@ -112,6 +114,7 @@ To switch networks from command line, use network manager tool:
 
 # On-site install
 
+0) Clear past data before install - plugs, powerstation, performance
 1) Install outlets on site wifi
 2) Connect controller to site wifi
 3) Test plugs
