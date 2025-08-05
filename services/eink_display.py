@@ -195,6 +195,13 @@ async def startCheck():
 ###############
 
 def upcomingScreen(f,s=None,p=None):
+    estPay = round(s['csrp']['monthlyVal'] + s['dlrp']['monthlyVal'],2)
+
+    try:
+        perc = min(1,p['goalAvg'])
+    except:
+        perc = 0
+
     if s['csrp']['upcoming']:
         eTime = s['csrp']['upcoming']#.strftime("%I:%M %p")
     elif s['dlrp']['upcoming']:
@@ -202,13 +209,54 @@ def upcomingScreen(f,s=None,p=None):
 
     eDate = dayNames[eTime.weekday()]
 
-    # display IP and hostname on start up
     sImage = Image.new('1', (screenWidth,screenHeight), 255)
     sDraw = ImageDraw.Draw(sImage)
     epd.displayPartBaseImage(epd.getbuffer(sImage))
 
+    ft = ImageFont.truetype(os.path.join(picdir, 'Font.ttc'), 17)
+
     sDraw.rectangle((0,0,screenWidth,screenHeight), fill = 255)
-    sDraw.text((screenWidth/2, 5), f'Event upcoming at\n{eTime.strftime("%I:%M %p")} on {eDate}!', anchor='ma',font = f, fill = 0)
+    sDraw.text((screenWidth/2, 5), f'Event upcoming at\n{eTime.strftime("%I:%M %p")} on {eDate}!', anchor='ma',font = ft, fill = 0)
+
+    # bottom
+    sDraw.rectangle((0,(screenHeight/2)-10,screenWidth,screenHeight), fill = 255)
+
+    if not w:
+        if w != 0:
+            sDraw.text((screenHeight/2, screenHeight/2), f'Data Missing :(', font = f, anchor="ma",fill = 0)
+            epd.displayPartial(epd.getbuffer(sImage))
+            return None
+
+    hOffset = 2
+    # performance
+    fs = ft #could make f none if not actually using it
+    if sDraw.textlength("Performance:", ft) > screenWidth/3:
+        fontSize = 17
+        while True:
+            fontSize -= 1
+            print(fontSize)
+            fs = ImageFont.truetype(os.path.join(picdir, 'Font.ttc'), fontSize)
+            if sDraw.textlength("Performance:", fs) <= screenWidth/3:
+                break
+
+    bottomVtop = (screenHeight/2)-10
+    bottomVmid = bottomVtop + ((screenHeight - bottomVtop) * .5)
+    sDraw.text((hOffset, bottomVmid), f'Your Average\nPerformance:\n{perc}%', font = fs, anchor="lm", fill = 0)
+
+    sDraw.text(((2*screenWidth/3)hOffset, bottomVmid), f'Max Possible\nPayment:\n{estPay / perc}%', font = fs, anchor="lm", fill = 0)
+
+    # # baseline
+    # sDraw.line([((screenWidth/3),screenHeight/2),((screenWidth/3),screenHeight)], fill=0,width=1, joint=None)
+    # avgBase = 378
+    # sDraw.text(((screenWidth/3)+hOffset,screenHeight/2), f'Average\nBaseline:\n{avgBase}W', font = f, anchor="la",fill = 0)
+
+    # payment
+    sDraw.text(((screenWidth/3)+hOffset, bottomVmid), f'Estimated\nPayment:\n${estPay}/m', font = fs, anchor="lm",fill = 0)
+
+    sDraw.line([(0,bottomVtop),(screenWidth,bottomVtop)], fill=0,width=2, joint=None)
+    sDraw.line([((screenWidth/3),bottomVtop),(screenWidth/2,screenHeight)], fill=0,width=1, joint=None)
+    sDraw.line([((2*screenWidth/3),bottomVtop),(2*screenWidth/3,screenHeight)], fill=0,width=1, joint=None)
+
     epd.displayPartial(epd.getbuffer(sImage))
 
 def eventScreen(f,s, p):
