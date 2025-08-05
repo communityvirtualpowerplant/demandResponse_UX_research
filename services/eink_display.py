@@ -300,11 +300,12 @@ def eventScreen(f,s, p):
     sDraw = ImageDraw.Draw(sImage)
     epd.displayPartBaseImage(epd.getbuffer(sImage))
 
+    ft = ImageFont.truetype(os.path.join(picdir, 'Font.ttc'), 16)
     sDraw.rectangle((0,0, screenWidth,screenHeight), fill = 255)
-    sDraw.text((screenWidth/2, 3), f"EVENT NOW UNTIL {eventEndStr}!!!", font = f,anchor="mt",fill = 0)
+    sDraw.text((screenWidth/2, 3), f"EVENT NOW UNTIL {eventEndStr}!", font = ft,anchor="mt",fill = 0)
 
     # money
-    centerX = (screenWidth/3) - (screenWidth/6)
+    centerX = 3
     # sDraw.circle((centerX,centerY),circRad,fill=255, outline=0,width=1)
     # sDraw.pieslice((centerX-circRad,centerY-circRad,centerX+circRad,centerY+circRad), 0-90, int(360*perc)-90,fill=0)
     # sDraw.circle((centerX,centerY),circRad*.33,fill=255, outline=0,width=1)
