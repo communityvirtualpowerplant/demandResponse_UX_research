@@ -255,7 +255,7 @@ def upcomingScreen(f,s=None,p=None):
     except:
         maxPay = 0
 
-    sDraw.text(((2*screenWidth/3)+hOffset, bottomVmid), f'Max Pay\nat 100%: {maxPay}$/m', font = fs, anchor="lm", fill = 0)
+    sDraw.text(((2*screenWidth/3)+hOffset, bottomVmid), f'Max Pay\nat 100%:\n${maxPay}/m', font = fs, anchor="lm", fill = 0)
 
     # # baseline
     # sDraw.line([((screenWidth/3),screenHeight/2),((screenWidth/3),screenHeight)], fill=0,width=1, joint=None)
