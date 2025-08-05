@@ -221,11 +221,10 @@ def upcomingScreen(f,s=None,p=None):
     # bottom
     sDraw.rectangle((0,(screenHeight/2)-10,screenWidth,screenHeight), fill = 255)
 
-    if not w:
-        if w != 0:
-            sDraw.text((screenHeight/2, screenHeight/2), f'Data Missing :(', font = f, anchor="ma",fill = 0)
-            epd.displayPartial(epd.getbuffer(sImage))
-            return None
+    if (not s) or (not p):
+        sDraw.text((screenHeight/2, screenHeight/2), f'Data Missing :(', font = f, anchor="ma",fill = 0)
+        epd.displayPartial(epd.getbuffer(sImage))
+        return None
 
     hOffset = 2
     # performance
