@@ -35,9 +35,13 @@ Reboot after configuration
 Clone repository into home directory<br>
 `git clone https://github.com/communityvirtualpowerplant/demandResponse_UX_research`
 
-Make the data directory `mkdir /home/drux/demandResponse_UX_research/data`
+Make the data directory and copy template
+* `mkdir /home/drux/demandResponse_UX_research/data`
+* `cp /home/drux/demandResponse_UX_research/state_template.json /home/drux/demandResponse_UX_research/data/state.json`
 
-Create a virtual environment in demandResponse_UX_research/ directory `python -m venv venv`
+Create a virtual environment in demandResponse_UX_research/ directory
+* `cd /home/drux/demandResponse_UX_research`
+* `python -m venv venv`
 
 Install python dependencies
 * `source venv/bin/activate`
@@ -49,10 +53,11 @@ Run pigpiod as a service (this allows you to access gpio without sudo)
 `sudo systemctl enable pigpiod`<br>
 `sudo systemctl start pigpiod`
 
-Edit hostname file, so the correct local IP can be retrieved easily
+<!-- Edit hostname file, so the correct local IP can be retrieved easily
 * `sudo nano /etc/hosts`
-* comment out this line: `#127.0.1.1 HOSTNAME`
+* comment out this line: `#127.0.1.1 HOSTNAME` -->
 
+Copy
 Copy the env-template file
 * `sudo cp env-template.txt .env`
 * `nano .env`
@@ -67,7 +72,7 @@ Copy config temp file:
 
 ## Automate
 
-Run this for all services - plug_logger, blueitti_logger, airtable_logger, controls, dashboard, eink_display
+Run this for all services - plug_logger, bluetti_logger, airtable_logger, controls, dashboard, eink_display
 * `chmod +x /home/drux/demandResponse_UX_research/services/plug_logger.py`
 * `sudo cp /home/drux/demandResponse_UX_research/services/plug_logger.service /etc/systemd/system/plug_logger.service`
 
@@ -96,3 +101,24 @@ Reboot at midnight with cron (DONT use sudo):
 5) Add device to Participant# group
 6) Set default state to on.
 7) Test by running `python examples/kasa_smart_plugs.py`. All 3 devices should show up.
+
+
+# Troubleshooting
+
+## Wifi
+
+To switch networks from command line, use network manager tool:
+* To see all networks: `nmcli connection show`
+
+
+# On-site install
+
+1) Install outlets on site wifi
+2) Connect controller to site wifi
+3) Test plugs
+4) Test Bluetti
+5) Test Airtable
+* check updating - state, health,
+* run test event to demo
+	* check button
+4) Photograph installation
