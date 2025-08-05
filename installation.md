@@ -35,7 +35,7 @@ Reboot after configuration
 Clone repository into home directory<br>
 `git clone https://github.com/communityvirtualpowerplant/demandResponse_UX_research`
 
-Make the data directory and copy template
+Make the data directory and copy state template
 * `mkdir /home/drux/demandResponse_UX_research/data`
 * `cp /home/drux/demandResponse_UX_research/state_template.json /home/drux/demandResponse_UX_research/data/state.json`
 
@@ -47,7 +47,7 @@ Install python dependencies
 * `source venv/bin/activate`
 * `pip install -r requirements`
 
-(Note that installing the waveshare and Jetson libraries will probably fail. Navigate to the epaper directory and use `pip install .`)
+(If the waveshare and Jetson libraries fail - clone the epaper directory (see Waveshare instruction),navigate to the epaper directory, and use `pip install .`)
 
 Run pigpiod as a service (this allows you to access gpio without sudo)
 `sudo systemctl enable pigpiod`<br>
@@ -57,7 +57,6 @@ Run pigpiod as a service (this allows you to access gpio without sudo)
 * `sudo nano /etc/hosts`
 * comment out this line: `#127.0.1.1 HOSTNAME` -->
 
-Copy
 Copy the env-template file
 * `sudo cp env-template.txt .env`
 * `nano .env`

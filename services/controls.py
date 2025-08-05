@@ -242,11 +242,12 @@ async def main():
         logging.error(f"Couldn't get event list: {e}")
 
     val = (0,0) #initial value for both programs at $0
+    csrpBaselineTS = datetime.now()
     try:
         #baseline.eventStartTime = csrpTime
         #csrpBaseline=await getBaseline(eventDF,csrpTime,'csrp')
         csrpBaseline = await baseline.getCBL(eventDF,csrpTime)
-        csrpBaselineTS = datetime.now()
+
         val = await baseline.getPerformanceDollarValue(datetime.now().month) #returns a tuple
     except Exception as e:
         try:

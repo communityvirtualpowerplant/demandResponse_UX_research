@@ -1,7 +1,7 @@
 {"csrp":
-    {"baselineW":0,"baselineTS":false,"now":false,"upcoming":false,"avgPerf":0,"monthlyVal":0},
+    {"baselineW":0,"baselineTS":0,"now":false,"upcoming":false,"avgPerf":0,"monthlyVal":0},
 "dlrp":
-    {"baselineW":0,"baselineTS":false,"now":false,"upcoming":false,"avgPerf":0,"monthlyVal":0},
+    {"baselineW":0,"baselineTS":0,"now":false,"upcoming":false,"avgPerf":0,"monthlyVal":0},
 "datetime":false,
 "eventPause":
     {"datetime":false, "state":false},
