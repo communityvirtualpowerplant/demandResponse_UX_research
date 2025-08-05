@@ -225,7 +225,7 @@ def upcomingScreen(f,s=None,p=None):
     if not soon:
         sDraw.text((screenWidth/2, 3), f'Event upcoming at\n{eTime.strftime("%I:%M %p")} on {eDate}!', align="center",anchor='ma',font = ft, fill = 0)
     else:
-        sDraw.text((screenWidth/2, 3), f'Event upcoming at {eTime.strftime("%I:%M %p")}\nPrecool room to maximize comfort!', align="center",anchor='ma',font = ft, fill = 0)
+        sDraw.text((screenWidth/2, 3), f'Event upcoming at {eTime.strftime("%I:%M %p")}\nPrecool to maximize comfort!', align="center",anchor='ma',font = ft, fill = 0)
 
     # bottom
     sDraw.rectangle((0,(screenHeight/2)-10,screenWidth,screenHeight), fill = 255)
@@ -551,16 +551,14 @@ async def main():
                                 if not state['dlrp']['upcoming']:
                                     normalScreen(font15,w=power['ac-W'],s=state,p=todaysPerformance)
                                 else:
-                                    #todaysPerformance = await getPerformance()
                                     upcomingScreen(font15,state,todaysPerformance)
                             else:
-                                #todaysPerformance = await getPerformance()
                                 upcomingScreen(font15,state,todaysPerformance)
                         else:
-                            todaysPerformance = await getPerformance()
+                            todaysPerformance = await getPerformance() #only bother updating when event is ongoing
                             eventScreen(font15,state,todaysPerformance)
                     else:
-                        todaysPerformance = await getPerformance()
+                        todaysPerformance = await getPerformance() #only bother updating when event is ongoing
                         eventScreen(font15,state,todaysPerformance)
 
                 updateScreen = False
