@@ -276,9 +276,19 @@ async def main():
                     eventCSRP['baselineTS']=False
 
                 if (eventCSRP['now']):
-                    await logPerformance(await baseline.getOngoingPerformance(csrpTime,'csrp',eventCSRP['baselineW'],buttonTracker))
-                    val = await baseline.getPerformanceDollarValue(datetime.now().month) #returns a tuple
+                    try:
+                        await logPerformance(await baseline.getOngoingPerformance(csrpTime,'csrp',eventCSRP['baselineW'],buttonTracker))
+                    except Exception as e:
+                        logging.error(e)
+
+                    try:
+                        val = await baseline.getPerformanceDollarValue(datetime.now().month) #returns a tuple
+                    except Exception as e:
+                        logging.error(e)
+                        val = (0,0)
+
                     eventCSRP['monthlyVal']=val[0]
+
 
                 eventDLRP = isDLRPEventUpcoming(eventDF)
                 # update DLRP baseline if needed
@@ -293,9 +303,17 @@ async def main():
                         #eventDLRP['baselineW']=await getBaseline(eventDF,eventDLRP['now'].time().hour,'dlrp')
                         eventDLRP['baselineW']=await baseline.getCBL(eventDF,eventDLRP['now'].time().hour)
                         eventDLRP['baselineTS'] = eventDLRP['now']
-                        await logPerformance(await baseline.getOngoingPerformance(eventDLRP['now'].time().hour,'dlrp',eventDLRP['baselineW'],buttonTracker))
+                        try:
+                            await logPerformance(await baseline.getOngoingPerformance(eventDLRP['now'].time().hour,'dlrp',eventDLRP['baselineW'],buttonTracker))
+                        except Exception as e:
+                            logging.error(e)
 
-                        val = await baseline.getPerformanceDollarValue(datetime.now().month) #returns a tuple
+                        try:
+                            val = await baseline.getPerformanceDollarValue(datetime.now().month) #returns a tuple
+                        except Exception as e:
+                            logging.error(e)
+                            val = (0,0)
+
                         eventDLRP['monthlyVal']=val[1]
                 else:
                     try:
