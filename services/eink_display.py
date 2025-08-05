@@ -215,7 +215,7 @@ def eventScreen(f,s, p):
     # performance percentage
     try:
         perc = min(1,p['goalAvg'])
-     except:
+    except:
         perc = 0
 
     # elapsed time percentage
