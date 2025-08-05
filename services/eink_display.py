@@ -355,16 +355,16 @@ def normalScreen(f,w=None,s=None,p=None):
     sDraw.rectangle((0,0, screenWidth,screenHeight/2), fill = 255)
     sDraw.text((screenWidth/2,0), f'No upcoming events', anchor='ma',font = ft, fill = 0)
 
+    sDraw.text((screenWidth/2,28), f'AC power draw: {w}W', anchor='ma',font = f, fill = 0)
+
     # bottom
-    sDraw.rectangle((0,screenHeight/2,screenWidth,screenHeight), fill = 255)
+    sDraw.rectangle((0,(screenHeight/2)-10,screenWidth,screenHeight), fill = 255)
 
     if not w:
         if w != 0:
             sDraw.text((screenHeight/2, screenHeight/2), f'Data Missing :(', font = f, anchor="ma",fill = 0)
             epd.displayPartial(epd.getbuffer(sImage))
             return None
-
-    sDraw.text((screenWidth/2,25), f'AC power draw: {w}W', anchor='ma',font = f, fill = 0)
 
     hOffset = 2
     # performance
@@ -378,7 +378,7 @@ def normalScreen(f,w=None,s=None,p=None):
             if sDraw.textlength("Performance:", fs) <= screenWidth/2:
                 break
 
-    sDraw.text((hOffset, (screenHeight/2)-20), f'Your Average\nPerformance: {perc}%', font = fs, anchor="la", fill = 0)
+    sDraw.text((hOffset, (screenHeight/2)-10), f'Your Average\nPerformance: {perc}%', font = fs, anchor="la", fill = 0)
 
     # # baseline
     # sDraw.line([((screenWidth/3),screenHeight/2),((screenWidth/3),screenHeight)], fill=0,width=1, joint=None)
@@ -386,10 +386,10 @@ def normalScreen(f,w=None,s=None,p=None):
     # sDraw.text(((screenWidth/3)+hOffset,screenHeight/2), f'Average\nBaseline:\n{avgBase}W', font = f, anchor="la",fill = 0)
 
     # payment
-    sDraw.text(((screenWidth/2)+hOffset, (screenHeight/2)-20), f'Estimated\nPayment: ${estPay}/m', font = f, anchor="la",fill = 0)
+    sDraw.text(((screenWidth/2)+hOffset, (screenHeight/2)-10), f'Estimated\nPayment: ${estPay}/m', font = f, anchor="la",fill = 0)
 
-    sDraw.line([(0,(screenHeight/2)-20),(screenWidth,(screenHeight/2)-20)], fill=0,width=2, joint=None)
-    sDraw.line([((screenWidth/2),screenHeight/2),(screenWidth/2,screenHeight)], fill=0,width=1, joint=None)
+    sDraw.line([(0,(screenHeight/2)-10),(screenWidth,(screenHeight/2)-10)], fill=0,width=2, joint=None)
+    sDraw.line([((screenWidth/2),(screenHeight/2)-10),(screenWidth/2,screenHeight)], fill=0,width=1, joint=None)
     epd.displayPartial(epd.getbuffer(sImage))
 
 async def displayIP(f):
