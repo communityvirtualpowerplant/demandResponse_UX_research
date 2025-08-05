@@ -326,25 +326,27 @@ async def main():
             if (not stateDict['csrp']['now']) and (not stateDict['dlrp']['now']):
                 stateDict['eventPause']={'state':False,'datetime':datetime.now()}
 
-        #save state before
-        #await saveState(stateDict)
-
         # respond to event status as needed
-        if ((eventCSRP['now']) or (eventDLRP['now'])) and (not stateDict['eventPause']['state']):
-            # check that event is still going on...
-            logging.debug('EVENT NOW!')
-            await kD.setEventState()
-            stateDict['relays']= {'bat-in':False,'bat-out':True,'ac':False}
-        elif ((eventCSRP['upcoming']) or (eventDLRP['upcoming'])) :
-            #if true, battery can discharge during prep state (add indicator for battery ok to use)
-            # keep battery charged!
-            logging.debug('EVENT UPCOMING!')
-            await kD.setPrepState(True)
-            stateDict['relays']= {'bat-in':True,'bat-out':True,'ac':True}
-        elif stateDict['eventPause']['state']:
-            await kD.setPauseState(True) #should it be in normal state when paused?
-            stateDict['relays']= {'bat-in':False,'bat-out':True,'ac':True}
-        else:
+        try:
+            if ((eventCSRP['now']) or (eventDLRP['now'])) and (not stateDict['eventPause']['state']):
+                # check that event is still going on...
+                logging.debug('EVENT NOW!')
+                await kD.setEventState()
+                stateDict['relays']= {'bat-in':False,'bat-out':True,'ac':False}
+            elif ((eventCSRP['upcoming']) or (eventDLRP['upcoming'])) :
+                #if true, battery can discharge during prep state (add indicator for battery ok to use)
+                # keep battery charged!
+                logging.debug('EVENT UPCOMING!')
+                await kD.setPrepState(True)
+                stateDict['relays']= {'bat-in':True,'bat-out':True,'ac':True}
+            elif stateDict['eventPause']['state']:
+                await kD.setPauseState(True) #should it be in normal state when paused?
+                stateDict['relays']= {'bat-in':False,'bat-out':True,'ac':True}
+            else:
+                await kD.setNormalState()
+                stateDict['relays']= {'bat-in':True,'bat-out':True,'ac':True}
+        except Exception as e:
+            logging.error(f"Couldn't determine event status: {e}")
             await kD.setNormalState()
             stateDict['relays']= {'bat-in':True,'bat-out':True,'ac':True}
 
