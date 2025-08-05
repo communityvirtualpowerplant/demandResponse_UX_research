@@ -407,10 +407,10 @@ class DRUX_Baseline(Helpers):
             logging.error(f"Can't get ongoing performance: {e}")
             perf = {'datetime':formattedStartTime,
                     'goalPerc':'NaN',
-                    'goalAvg':'NaN',
+                    'goalAvg':0,
                     'loadW_hourly':'NaN',
-                    'loadW_avg':'NaN',
-                    'flexW_avg':'NaN',
+                    'loadW_avg':0,
+                    'flexW_avg':0,
                     'flexW': 'NaN',
                     'baselineW':'NaN',
                     'event':eType,
