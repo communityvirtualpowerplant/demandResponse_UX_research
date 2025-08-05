@@ -213,16 +213,24 @@ def upcomingScreen(f,s=None,p=None):
 
 def eventScreen(f,s, p):
     # performance percentage
-    perc = min(1,p['goalAvg'])
+    try:
+        perc = min(1,p['goalAvg'])
+     except:
+        perc = 0
 
     # elapsed time percentage
-    et = datetime.now() - p['datetime']  #elapsed  time
-    percT = min(1,(et.seconds/60)/ (4*60))
+    try:
+        et = datetime.now() - p['datetime']  #elapsed  time
+        percT = min(1,(et.seconds/60)/ (4*60))
 
-    eventEnd = p['datetime']+timedelta(hours=4)
-    eventEndStr = eventEnd.strftime("%I:%M %p")
+        eventEnd = p['datetime']+timedelta(hours=4)
+        eventEndStr = eventEnd.strftime("%I:%M %p")
 
-    tRemainStr = timeRemainingStr(eventEnd)
+        tRemainStr = timeRemainingStr(eventEnd)
+    except:
+        percT = 0
+        eventEndStr = '???'
+        tRemainStr = '???'
 
     circRad = .9 * screenHeight/3
     centerY = screenHeight - (screenHeight/3)-22
@@ -265,16 +273,25 @@ def eventScreen(f,s, p):
 
 def eventPausedScreen(f,s,p):
     # performance percentage
-    perc = min(1,p['goalAvg'])
+    try:
+        perc = min(1,p['goalAvg'])
+    except:
+        perc = 0
 
     # elapsed time percentage
-    et = datetime.now() - p['datetime']  #elapsed  time
-    percT = min(1,(et.seconds/60)/ (4*60))
+    try:
+        et = datetime.now() - p['datetime']  #elapsed  time
 
-    eventEnd = p['datetime']+timedelta(hours=4)
-    eventEndStr = eventEnd.strftime("%I:%M %p")
+        percT = min(1,(et.seconds/60)/ (4*60))
 
-    tRemainStr = timeRemainingStr(eventEnd)
+        eventEnd = p['datetime']+timedelta(hours=4)
+        eventEndStr = eventEnd.strftime("%I:%M %p")
+
+        tRemainStr = timeRemainingStr(eventEnd)
+    except:
+        percT = 0
+        eventEndStr = '???'
+        tRemainStr = '???'
 
     circRad = .9 * screenHeight/3
     centerY = screenHeight - (screenHeight/3)-22
@@ -486,6 +503,7 @@ async def main():
                     normalScreen(font15,w=power['ac-W'],s=state)
                     num = num + 1
                 else:
+                    normalScreen(font15,w=power['ac-W'],s=state)
                     logging.error(e)
             except Exception as e:
                 logging.error(e)
