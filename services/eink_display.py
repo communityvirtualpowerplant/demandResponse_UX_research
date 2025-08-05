@@ -348,18 +348,20 @@ def normalScreen(f,w=None,s=None,p=None):
     # top
     sDraw.rectangle((0,0, screenWidth,screenHeight/2), fill = 255)
     sDraw.text((screenWidth/2,0), f'No event upcoming!', anchor='ma',font = f, fill = 0)
-    sDraw.text((screenWidth/2,screenHeight/4), f'AC power draw: {w}W', anchor='ma',font = f, fill = 0)
 
-    # center of fan
-    rad = 10
-    fCenterX = (2*screenWidth/3)+rad
-    fCenterY = (screenHeight/6)+rad
-    sDraw.ellipse((fCenterX-rad,fCenterY-rad,fCenterX+rad,fCenterY+rad),fill=None, outline=0, width=3)
+
+    # # center of fan
+    # rad = 10
+    # fCenterX = (2*screenWidth/3)+rad
+    # fCenterY = (screenHeight/6)+rad
+    # sDraw.ellipse((fCenterX-rad,fCenterY-rad,fCenterX+rad,fCenterY+rad),fill=None, outline=0, width=3)
 
     # bottom
     sDraw.rectangle((0,screenHeight/2,screenWidth,screenHeight), fill = 255)
 
     if w:
+        sDraw.text((screenWidth/2,20), f'AC power draw: {w}W', anchor='ma',font = f, fill = 0)
+
         hOffset = 2
         # performance
         avgPerf = 76
@@ -386,7 +388,7 @@ def normalScreen(f,w=None,s=None,p=None):
 
         sDraw.line([(0,screenHeight/2),(screenWidth,screenHeight/2)], fill=0,width=2, joint=None)
     else:
-        sDraw.text((10, screenHeight/2), f'data missing', font = f, anchor="ma",fill = 0)
+        sDraw.text((screenHeight/2, screenHeight/2), f'Data Missing :(', font = f, anchor="ma",fill = 0)
     epd.displayPartial(epd.getbuffer(sImage))
 
 async def displayIP(f):
