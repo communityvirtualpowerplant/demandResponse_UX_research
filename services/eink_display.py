@@ -207,6 +207,11 @@ def upcomingScreen(f,s=None,p=None):
     elif s['dlrp']['upcoming']:
         eTime = s['dlrp']['upcoming']#.strftime("%I:%M %p")
 
+    soon = False
+    if eTime - datetime.now() < timedelta(hours=1):
+        soon = True
+
+
     eDate = dayNames[eTime.weekday()]
 
     sImage = Image.new('1', (screenWidth,screenHeight), 255)
@@ -216,7 +221,10 @@ def upcomingScreen(f,s=None,p=None):
     ft = ImageFont.truetype(os.path.join(picdir, 'Font.ttc'), 17)
 
     sDraw.rectangle((0,0,screenWidth,screenHeight), fill = 255)
-    sDraw.text((screenWidth/2, 5), f'Event upcoming at\n{eTime.strftime("%I:%M %p")} on {eDate}!', align="center",anchor='ma',font = ft, fill = 0)
+    if not soon:
+        sDraw.text((screenWidth/2, 5), f'Event upcoming at\n{eTime.strftime("%I:%M %p")} on {eDate}!', align="center",anchor='ma',font = ft, fill = 0)
+    else:
+        sDraw.text((screenWidth/2, 5), f'Event upcoming at {eTime.strftime("%I:%M %p")}\nPrecool your space to maximize comfort!', align="center",anchor='ma',font = ft, fill = 0)
 
     # bottom
     sDraw.rectangle((0,(screenHeight/2)-10,screenWidth,screenHeight), fill = 255)
@@ -258,7 +266,7 @@ def upcomingScreen(f,s=None,p=None):
     sDraw.text(((screenWidth/3)+hOffset, bottomVmid), f'Estimated\nPayment:\n${estPay}/m', font = fs, anchor="lm",fill = 0)
 
     sDraw.line([(0,bottomVtop),(screenWidth,bottomVtop)], fill=0,width=2, joint=None)
-    sDraw.line([((screenWidth/3),bottomVtop),(screenWidth/2,screenHeight)], fill=0,width=1, joint=None)
+    sDraw.line([((screenWidth/3),bottomVtop),(screenWidth/3,screenHeight)], fill=0,width=1, joint=None)
     sDraw.line([((2*screenWidth/3),bottomVtop),(2*screenWidth/3,screenHeight)], fill=0,width=1, joint=None)
 
     epd.displayPartial(epd.getbuffer(sImage))
