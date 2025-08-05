@@ -295,13 +295,21 @@ async def main():
                 if (eventDLRP['upcoming']):
                     if (not 'baselineTS' in eventDLRP.keys()) or (eventDLRP['baselineTS'] != eventDLRP['upcoming']):
                         #eventDLRP['baselineW']=await getBaseline(eventDF,eventDLRP['upcoming'].time().hour,'dlrp')
-                        eventDLRP['baselineW']=await baseline.getCBL(eventDF,eventDLRP['upcoming'].time().hour)
+                        try:
+                            eventDLRP['baselineW']=await baseline.getCBL(eventDF,eventDLRP['upcoming'].time().hour)
+                        except Exception as e:
+                            logging.error(e)
+                            eventDLRP['baselineW'] = 0
                         eventDLRP['baselineTS'] = eventDLRP['upcoming']
                         #dlrpUpdated = True
                 elif (eventDLRP['now']):
                     if (not 'baselineTS' in eventDLRP.keys()) or (eventDLRP['baselineTS'] != eventDLRP['now']):
                         #eventDLRP['baselineW']=await getBaseline(eventDF,eventDLRP['now'].time().hour,'dlrp')
-                        eventDLRP['baselineW']=await baseline.getCBL(eventDF,eventDLRP['now'].time().hour)
+                        try:
+                            eventDLRP['baselineW']=await baseline.getCBL(eventDF,eventDLRP['now'].time().hour)
+                        except Exception as e:
+                            logging.error(e)
+                            eventDLRP['baselineW'] = 0
                         eventDLRP['baselineTS'] = eventDLRP['now']
                         try:
                             await logPerformance(await baseline.getOngoingPerformance(eventDLRP['now'].time().hour,'dlrp',eventDLRP['baselineW'],buttonTracker))
