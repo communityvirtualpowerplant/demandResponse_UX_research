@@ -242,7 +242,12 @@ def upcomingScreen(f,s=None,p=None):
     bottomVmid = bottomVtop + ((screenHeight - bottomVtop) * .5)
     sDraw.text((hOffset, bottomVmid), f'Your Average\nPerformance:\n{perc}%', font = fs, anchor="lm", fill = 0)
 
-    sDraw.text(((2*screenWidth/3)+hOffset, bottomVmid), f'Max Possible\nPayment:\n{estPay / perc}%', font = fs, anchor="lm", fill = 0)
+    try:
+        maxPay = estPay / perc
+    except:
+        maxPay = 0
+
+    sDraw.text(((2*screenWidth/3)+hOffset, bottomVmid), f'Max Possible\nPayment:\n{maxPay}$/m', font = fs, anchor="lm", fill = 0)
 
     # # baseline
     # sDraw.line([((screenWidth/3),screenHeight/2),((screenWidth/3),screenHeight)], fill=0,width=1, joint=None)
@@ -535,9 +540,9 @@ async def main():
                                 if not state['dlrp']['upcoming']:
                                     normalScreen(font15,w=power['ac-W'],s=state)
                                 else:
-                                    upcomingScreen(font15,state)
+                                    upcomingScreen(font15,state,todaysPerformance)
                             else:
-                                upcomingScreen(font15,state)
+                                upcomingScreen(font15,state,todaysPerformance)
                         else:
                             todaysPerformance = await getPerformance()
                             eventScreen(font15,state,todaysPerformance)
