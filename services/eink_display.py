@@ -309,14 +309,14 @@ def eventScreen(f,s, p):
     # sDraw.pieslice((centerX-circRad,centerY-circRad,centerX+circRad,centerY+circRad), 0-90, int(360*perc)-90,fill=0)
     # sDraw.circle((centerX,centerY),circRad*.33,fill=255, outline=0,width=1)
     cash = 18.65
-    sDraw.text((centerX,centerY-circRad), f"Est. Value\n${cash}/month", font = f,  anchor="mm",fill = 0)
+    sDraw.text((centerX,centerY-circRad), f"Est. Value\n${cash}/month", font = f,  anchor="ma",fill = 0)
 
     # time remaining
-    sDraw.text((centerX,centerY+circRad+2), f"{tRemainStr}\nTime Left", font = f,  anchor="ma",fill = 0)
+    sDraw.text((centerX,centerY+circRad), f"{tRemainStr}\nTime Left", font = f,  anchor="mm",fill = 0)
 
 
     # time
-    centerX = 2*screenWidth/3  - (screenWidth/6) + 10
+    centerX = 2*screenWidth/3  - (screenWidth/6) + 5
     sDraw.circle((centerX,centerY),circRad,fill=255, outline=0,width=1)
     sDraw.pieslice((centerX-circRad,centerY-circRad,centerX+circRad,centerY+circRad), 0-90, int(360*percT)-90,fill=0)
     sDraw.circle((centerX,centerY),circRad*.5,fill=255, outline=0,width=1)
@@ -324,7 +324,7 @@ def eventScreen(f,s, p):
     sDraw.text((centerX,centerY+circRad+2), f"Time Left", font = f,  anchor="ma",fill = 0)
 
     # performance
-    centerX = 3*screenWidth/3 - (screenWidth/6) + 10
+    centerX = 3*screenWidth/3 - (screenWidth/6) + 5
     sDraw.circle((centerX,centerY),circRad,fill=255, outline=0,width=1)
     sDraw.pieslice((centerX-circRad,centerY-circRad,centerX+circRad,centerY+circRad), -90, int(360*perc)-90,fill=0)
     sDraw.circle((centerX,centerY),circRad*.5,fill=255, outline=0,width=1)
