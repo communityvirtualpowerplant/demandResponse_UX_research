@@ -48,7 +48,6 @@ except Exception as e:
 
 csrpRate = config['csrpRatekW']
 dlrpRate = config['dlrpRatekW']
-pledge = config['pledgekW']
 
 dayNames = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
 
@@ -383,8 +382,9 @@ async def displayIP(f):
     ip_draw.text((5, 5), f'Starting up...\n\nhost: {hostname}\nIP: {IPAddr}', font = f, fill = 0)
     epd.displayPartial(epd.getbuffer(ip_image))
 
-    await startCheck()
-    #await asyncio.sleep(60) #needs to wait for the API to spin up before moving on
+    await asyncio.sleep(5)
+
+    await startCheck() #needs to wait for the API to spin up before moving on
 
 def fullRefresh():
     epd.init()

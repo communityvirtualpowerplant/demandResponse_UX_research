@@ -373,7 +373,7 @@ class DRUX_Baseline(Helpers):
                     flexW.append(0)
                     continue
                 try:
-                    f = eBaseline[i]-v
+                    f = eBaseline[i]-v #if negative flex needs to be ignored, include max() here
                     flexW.append(f)
                     goalPerc.append(f/eBaseline[i])
                 except Exception as e:

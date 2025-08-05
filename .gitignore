@@ -12,6 +12,8 @@ __pycache__/*
 data/*
 !data/README.md
 
+case/*
+
 state.json
 performance.json
 config.json
