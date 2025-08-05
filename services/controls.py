@@ -291,6 +291,8 @@ async def main():
 
 
                 eventDLRP = isDLRPEventUpcoming(eventDF)
+                eventDLRP['monthlyVal']=val[1]
+
                 # update DLRP baseline if needed
                 if (eventDLRP['upcoming']):
                     if (not 'baselineTS' in eventDLRP.keys()) or (eventDLRP['baselineTS'] != eventDLRP['upcoming']):
