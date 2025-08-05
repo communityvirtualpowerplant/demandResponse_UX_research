@@ -180,7 +180,7 @@ async def startCheck():
     count = 0
     while True:
         try:
-            rCode = await send_get_request(endpoint='api/state',type='code')
+            rCode = await send_get_request(endpoint='api/health',type='code')
             logging.info(rCode)
             if rCode == 200:
                 return None
