@@ -316,20 +316,20 @@ def eventScreen(f,s, p):
     sDraw.text((centerX,centerY+circRad), f"{tRemainStr}\nTime Left", font = f,  anchor="lm",fill = 0)
 
 
-    # time
-    centerX = 2*screenWidth/3  - (screenWidth/6) - 5
+    # your goal
+    centerX = 2*screenWidth/3  - (screenWidth/6) - 4
     sDraw.circle((centerX,centerY),circRad,fill=255, outline=0,width=1)
-    sDraw.pieslice((centerX-circRad,centerY-circRad,centerX+circRad,centerY+circRad), 0-90, int(360*percT)-90,fill=0)
+    sDraw.pieslice((centerX-circRad,centerY-circRad,centerX+circRad,centerY+circRad), 0-90, int(360*perc)-90,fill=0)
     sDraw.circle((centerX,centerY),circRad*.5,fill=255, outline=0,width=1)
-    sDraw.text((centerX,centerY), f"{tRemainStr}", font = f,  anchor="mm",fill = 0)
+    sDraw.text((centerX,centerY), f"{int(perc*100)}", font = f,  anchor="mm",fill = 0)
     sDraw.text((centerX,centerY+circRad+2), f"Your Goal", font = f,  anchor="ma",fill = 0)
 
-    # performance
-    centerX = 3*screenWidth/3 - (screenWidth/6) -2
+    # network avg
+    centerX = 3*screenWidth/3 - (screenWidth/6)
     sDraw.circle((centerX,centerY),circRad,fill=255, outline=0,width=1)
-    sDraw.pieslice((centerX-circRad,centerY-circRad,centerX+circRad,centerY+circRad), -90, int(360*perc)-90,fill=0)
+    sDraw.pieslice((centerX-circRad,centerY-circRad,centerX+circRad,centerY+circRad), -90, int(360*percT)-90,fill=0)
     sDraw.circle((centerX,centerY),circRad*.5,fill=255, outline=0,width=1)
-    sDraw.text((centerX,centerY), f"{int(perc*100)}%", font = f,  anchor="mm",fill = 0)
+    sDraw.text((centerX,centerY), f"{int(percT*100)}%", font = f,  anchor="mm",fill = 0)
     sDraw.text((centerX,centerY+circRad+2), f"Network Avg", font = f,  anchor="ma",fill = 0)
 
 
