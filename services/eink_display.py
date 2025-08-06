@@ -317,7 +317,7 @@ def eventScreen(f,s, p):
 
 
     # time
-    centerX = 2*screenWidth/3  - (screenWidth/6) + 5
+    centerX = 2*screenWidth/3  - (screenWidth/6)
     sDraw.circle((centerX,centerY),circRad,fill=255, outline=0,width=1)
     sDraw.pieslice((centerX-circRad,centerY-circRad,centerX+circRad,centerY+circRad), 0-90, int(360*percT)-90,fill=0)
     sDraw.circle((centerX,centerY),circRad*.5,fill=255, outline=0,width=1)
@@ -325,12 +325,12 @@ def eventScreen(f,s, p):
     sDraw.text((centerX,centerY+circRad+2), f"Your Goal", font = f,  anchor="ma",fill = 0)
 
     # performance
-    centerX = 3*screenWidth/3 - (screenWidth/6) + 5
+    centerX = 3*screenWidth/3 - (screenWidth/6) + 3
     sDraw.circle((centerX,centerY),circRad,fill=255, outline=0,width=1)
     sDraw.pieslice((centerX-circRad,centerY-circRad,centerX+circRad,centerY+circRad), -90, int(360*perc)-90,fill=0)
     sDraw.circle((centerX,centerY),circRad*.5,fill=255, outline=0,width=1)
     sDraw.text((centerX,centerY), f"{int(perc*100)}%", font = f,  anchor="mm",fill = 0)
-    sDraw.text((centerX,centerY+circRad+2), f"Neighbor Avg", font = f,  anchor="ma",fill = 0)
+    sDraw.text((centerX,centerY+circRad+2), f"Network Avg", font = f,  anchor="ma",fill = 0)
 
 
     epd.displayPartial(epd.getbuffer(sImage))
