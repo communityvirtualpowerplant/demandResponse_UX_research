@@ -329,13 +329,78 @@ def eventScreen(f,s, p):
     sDraw.circle((centerX,centerY),circRad,fill=255, outline=0,width=1)
     sDraw.pieslice((centerX-circRad,centerY-circRad,centerX+circRad,centerY+circRad), -90, int(360*percT)-90,fill=0)
     sDraw.circle((centerX,centerY),circRad*.5,fill=255, outline=0,width=1)
-    sDraw.text((centerX,centerY), f"{int(percT*100)}%", font = f,  anchor="mm",fill = 0)
+    sDraw.text((centerX-1 ,centerY), f"{int(percT*100)}%", font = f,  anchor="mm",fill = 0)
     sDraw.text((centerX,centerY+circRad+2), f"Network Avg", font = f,  anchor="ma",fill = 0)
 
 
     epd.displayPartial(epd.getbuffer(sImage))
 
 def eventPausedScreen(f,s,p):
+    # # performance percentage
+    # try:
+    #     perc = min(1,p['goalAvg'])
+    # except:
+    #     perc = 0
+
+    # # elapsed time percentage
+    # try:
+    #     et = datetime.now() - p['datetime']  #elapsed  time
+
+    #     percT = min(1,(et.seconds/60)/ (4*60))
+
+    #     eventEnd = p['datetime']+timedelta(hours=4)
+    #     eventEndStr = eventEnd.strftime("%I:%M %p")
+
+    #     tRemainStr = timeRemainingStr(eventEnd)
+    # except:
+    #     percT = 0
+    #     eventEndStr = '???'
+    #     tRemainStr = '???'
+
+    # circRad = .9 * screenHeight/3
+    # centerY = screenHeight - (screenHeight/3)-22
+
+    # logging.debug(type(s['eventPause']['datetime']))
+    # endPause = s['eventPause']['datetime']+timedelta(hours=1)
+    # endPauseStr = endPause.strftime("%I:%M %p")
+
+    # sImage = Image.new('1', (screenWidth,screenHeight), 255)
+    # sDraw = ImageDraw.Draw(sImage)
+    # epd.displayPartBaseImage(epd.getbuffer(sImage))
+
+    # # reset screen
+    # sDraw.rectangle((0,0, screenWidth,screenHeight), fill = 255)
+    # sDraw.text((screenWidth/2, 3), f"Event paused until {endPauseStr}!", font = f,anchor="mt",fill = 0)
+
+    # # money
+    # centerX = (screenWidth/3) - (screenWidth/6)
+    # # sDraw.circle((centerX,centerY),circRad,fill=255, outline=0,width=1)
+    # # sDraw.pieslice((centerX-circRad,centerY-circRad,centerX+circRad,centerY+circRad), 0-90, int(360*perc)-90,fill=0)
+    # # sDraw.circle((centerX,centerY),circRad*.33,fill=255, outline=0,width=1)
+    # cash = 18.65
+    # sDraw.text((centerX,centerY), f"${cash}/\nmonth", font = f,  anchor="mm",fill = 0)
+    # sDraw.text((centerX,centerY+circRad+2), f"Est. Value", font = f,  anchor="ma",fill = 0)
+
+
+    # # time
+    # centerX = 2*screenWidth/3  - (screenWidth/6)
+    # sDraw.circle((centerX,centerY),circRad,fill=255, outline=0,width=1)
+    # sDraw.pieslice((centerX-circRad,centerY-circRad,centerX+circRad,centerY+circRad), 0-90, int(360*percT)-90,fill=0)
+    # sDraw.circle((centerX,centerY),circRad*.5,fill=255, outline=0,width=1)
+    # sDraw.text((centerX,centerY), f"{tRemainStr}", font = f,  anchor="mm",fill = 0)
+    # sDraw.text((centerX,centerY+circRad+2), f"Time Left", font = f,  anchor="ma",fill = 0)
+
+    # # performance
+    # centerX = 3*screenWidth/3 - (screenWidth/6)
+    # sDraw.circle((centerX,centerY),circRad,fill=255, outline=0,width=1)
+    # sDraw.pieslice((centerX-circRad,centerY-circRad,centerX+circRad,centerY+circRad), -90, int(360*perc)-90,fill=0)
+    # sDraw.circle((centerX,centerY),circRad*.5,fill=255, outline=0,width=1)
+    # sDraw.text((centerX,centerY), f"{int(perc*100)}%", font = f,  anchor="mm",fill = 0)
+    # sDraw.text((centerX,centerY+circRad+2), f"Goal", font = f,  anchor="ma",fill = 0)
+
+
+    # epd.displayPartial(epd.getbuffer(sImage))
+
     # performance percentage
     try:
         perc = min(1,p['goalAvg'])
@@ -345,7 +410,6 @@ def eventPausedScreen(f,s,p):
     # elapsed time percentage
     try:
         et = datetime.now() - p['datetime']  #elapsed  time
-
         percT = min(1,(et.seconds/60)/ (4*60))
 
         eventEnd = p['datetime']+timedelta(hours=4)
@@ -360,43 +424,46 @@ def eventPausedScreen(f,s,p):
     circRad = .9 * screenHeight/3
     centerY = screenHeight - (screenHeight/3)-22
 
-    logging.debug(type(s['eventPause']['datetime']))
-    endPause = s['eventPause']['datetime']+timedelta(hours=1)
-    endPauseStr = endPause.strftime("%I:%M %p")
-
     sImage = Image.new('1', (screenWidth,screenHeight), 255)
     sDraw = ImageDraw.Draw(sImage)
     epd.displayPartBaseImage(epd.getbuffer(sImage))
 
-    # reset screen
+    logging.debug(type(s['eventPause']['datetime']))
+    endPause = s['eventPause']['datetime']+timedelta(hours=1)
+    endPauseStr = endPause.strftime("%I:%M %p")
+
+    ft = ImageFont.truetype(os.path.join(picdir, 'Font.ttc'), 17)
     sDraw.rectangle((0,0, screenWidth,screenHeight), fill = 255)
-    sDraw.text((screenWidth/2, 3), f"Event paused until {endPauseStr}!", font = f,anchor="mt",fill = 0)
+    #sDraw.text((screenWidth/2, 3), f"EVENT NOW UNTIL {eventEndStr}!", font = ft,anchor="mt",fill = 0)
+    sDraw.text((screenWidth/2, 3), f"Event paused until {endPauseStr}!", font = ft,anchor="mt",fill = 0)
 
     # money
-    centerX = (screenWidth/3) - (screenWidth/6)
+    centerX = 3
     # sDraw.circle((centerX,centerY),circRad,fill=255, outline=0,width=1)
     # sDraw.pieslice((centerX-circRad,centerY-circRad,centerX+circRad,centerY+circRad), 0-90, int(360*perc)-90,fill=0)
     # sDraw.circle((centerX,centerY),circRad*.33,fill=255, outline=0,width=1)
     cash = 18.65
-    sDraw.text((centerX,centerY), f"${cash}/\nmonth", font = f,  anchor="mm",fill = 0)
-    sDraw.text((centerX,centerY+circRad+2), f"Est. Value", font = f,  anchor="ma",fill = 0)
+    sDraw.text((centerX,centerY-circRad+3), f"Est. Value\n${cash}/m", font = f,  anchor="la",fill = 0)
+
+    # time remaining
+    sDraw.text((centerX,centerY+circRad), f"{tRemainStr}\nTime Left", font = f,  anchor="lm",fill = 0)
 
 
-    # time
-    centerX = 2*screenWidth/3  - (screenWidth/6)
+    # your goal
+    centerX = 2*screenWidth/3  - (screenWidth/6) - 4
     sDraw.circle((centerX,centerY),circRad,fill=255, outline=0,width=1)
-    sDraw.pieslice((centerX-circRad,centerY-circRad,centerX+circRad,centerY+circRad), 0-90, int(360*percT)-90,fill=0)
+    sDraw.pieslice((centerX-circRad,centerY-circRad,centerX+circRad,centerY+circRad), 0-90, int(360*perc)-90,fill=0)
     sDraw.circle((centerX,centerY),circRad*.5,fill=255, outline=0,width=1)
-    sDraw.text((centerX,centerY), f"{tRemainStr}", font = f,  anchor="mm",fill = 0)
-    sDraw.text((centerX,centerY+circRad+2), f"Time Left", font = f,  anchor="ma",fill = 0)
+    sDraw.text((centerX,centerY), f"{int(perc*100)}", font = f,  anchor="mm",fill = 0)
+    sDraw.text((centerX,centerY+circRad+2), f"Your Goal", font = f,  anchor="ma",fill = 0)
 
-    # performance
+    # network avg
     centerX = 3*screenWidth/3 - (screenWidth/6)
     sDraw.circle((centerX,centerY),circRad,fill=255, outline=0,width=1)
-    sDraw.pieslice((centerX-circRad,centerY-circRad,centerX+circRad,centerY+circRad), -90, int(360*perc)-90,fill=0)
+    sDraw.pieslice((centerX-circRad,centerY-circRad,centerX+circRad,centerY+circRad), -90, int(360*percT)-90,fill=0)
     sDraw.circle((centerX,centerY),circRad*.5,fill=255, outline=0,width=1)
-    sDraw.text((centerX,centerY), f"{int(perc*100)}%", font = f,  anchor="mm",fill = 0)
-    sDraw.text((centerX,centerY+circRad+2), f"Goal", font = f,  anchor="ma",fill = 0)
+    sDraw.text((centerX-1 ,centerY), f"{int(percT*100)}%", font = f,  anchor="mm",fill = 0)
+    sDraw.text((centerX,centerY+circRad+2), f"Network Avg", font = f,  anchor="ma",fill = 0)
 
 
     epd.displayPartial(epd.getbuffer(sImage))
