@@ -45,16 +45,17 @@ CORS(app)
 def index():
     return render_template('index.html')
 
-filePath = '/home/drux/demandResponse_UX_research/data/'
-@app.route("/data")
-def data():
-    fileName = filePath + "plugs_" +str(datetime.date.today())+'.csv'
-    with open(fileName, newline='') as f:
-        reader = csv.reader(f)
-        next(reader)  # skip header
-        rows = list(reader)#[-10:]  # last 10 readings
-    return render_template('data.htlm', data=rows)
+# filePath = '/home/drux/demandResponse_UX_research/data/'
+# @app.route("/data")
+# def data():
+#     fileName = filePath + "plugs_" +str(datetime.date.today())+'.csv'
+#     with open(fileName, newline='') as f:
+#         reader = csv.reader(f)
+#         next(reader)  # skip header
+#         rows = list(reader)#[-10:]  # last 10 readings
+#     return render_template('data.htlm', data=rows)
 
+filePrefix ="plugs_"
 @app.route("/today", methods=['GET'])
 def today():
     #options: 'plugs' or 'powerstation'
