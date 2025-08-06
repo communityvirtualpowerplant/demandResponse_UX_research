@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, send_file, abort, jsonify, make_response
+from flask import Flask, render_template, render_template_string, request, send_file, abort, jsonify, make_response
 from flask_cors import CORS
 import csv
 import datetime
@@ -44,6 +44,16 @@ CORS(app)
 @app.route("/", methods=['GET'])
 def index():
     return render_template('index.html')
+
+filePath = '/home/drux/demandResponse_UX_research/data/'
+@app.route("/data")
+def data():
+    fileName = filePath + "plugs_" +str(datetime.date.today())+'.csv'
+    with open(fileName, newline='') as f:
+        reader = csv.reader(f)
+        next(reader)  # skip header
+        rows = list(reader)#[-10:]  # last 10 readings
+    return render_template('data.htlm', data=rows)
 
 @app.route("/today", methods=['GET'])
 def today():
