@@ -454,7 +454,7 @@ def eventPausedScreen(f,s,p):
     sDraw.circle((centerX,centerY),circRad,fill=255, outline=0,width=1)
     sDraw.pieslice((centerX-circRad,centerY-circRad,centerX+circRad,centerY+circRad), 0-90, int(360*perc)-90,fill=0)
     sDraw.circle((centerX,centerY),circRad*.5,fill=255, outline=0,width=1)
-    sDraw.text((centerX,centerY), f"{int(perc*100)}", font = f,  anchor="mm",fill = 0)
+    sDraw.text((centerX,centerY), f"{int(perc*100)}%", font = f,  anchor="mm",fill = 0)
     sDraw.text((centerX,centerY+circRad+2), f"Your Goal", font = f,  anchor="ma",fill = 0)
 
     # network avg
