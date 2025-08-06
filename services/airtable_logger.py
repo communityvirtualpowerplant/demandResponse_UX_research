@@ -155,15 +155,15 @@ async def main():
         # except Exception as e:
         #     logging.error(f'Error logging performance: {e}')
 
-        # # if event is happening update every 10 minutes, else update every half-hour
-        # if (state['csrp']['now']) or (state['dlrp']['now']):
-        #     FREQ_SECONDS = 60 * 15
-        # else:
-        #     FREQ_SECONDS = 60 * 30
+        # if event is happening update every 10 minutes, else update every half-hour
+        if (state['csrp']['now']) or (state['dlrp']['now']):
+            FREQ_SECONDS = 60 * 15
+        else:
+            FREQ_SECONDS = 60 * 30
 
-        # logging.debug(f'Sleeping for {FREQ_SECONDS/60} minutes.')
+        logging.debug(f'Sleeping for {FREQ_SECONDS/60} minutes.')
 
-        # await asyncio.sleep(FREQ_SECONDS)
+        await asyncio.sleep(FREQ_SECONDS)
 
 
 
