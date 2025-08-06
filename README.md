@@ -53,6 +53,10 @@ Study
 * finalize questions
 * finalize changable plan
 
+To do, post install:
+* slow all processes down when not event upcoming (like airtable updater)
+* add in start date filter
+
 Stretch:
 * add QR code to IP screen
 * incorporate weather
