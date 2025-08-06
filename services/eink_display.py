@@ -305,7 +305,7 @@ def eventScreen(f,s, p):
     sDraw.text((screenWidth/2, 3), f"EVENT NOW UNTIL {eventEndStr}!", font = ft,anchor="mt",fill = 0)
 
     # money
-    centerX = 3
+    centerX = 1
     # sDraw.circle((centerX,centerY),circRad,fill=255, outline=0,width=1)
     # sDraw.pieslice((centerX-circRad,centerY-circRad,centerX+circRad,centerY+circRad), 0-90, int(360*perc)-90,fill=0)
     # sDraw.circle((centerX,centerY),circRad*.33,fill=255, outline=0,width=1)
@@ -317,7 +317,7 @@ def eventScreen(f,s, p):
 
 
     # your goal
-    centerX = 2*screenWidth/3  - (screenWidth/6) - 4
+    centerX = 2*screenWidth/3  - (screenWidth/6) - 6
     sDraw.circle((centerX,centerY),circRad,fill=255, outline=0,width=1)
     sDraw.pieslice((centerX-circRad,centerY-circRad,centerX+circRad,centerY+circRad), 0-90, int(360*perc)-90,fill=0)
     sDraw.circle((centerX,centerY),circRad*.5,fill=255, outline=0,width=1)
@@ -325,7 +325,7 @@ def eventScreen(f,s, p):
     sDraw.text((centerX,centerY+circRad+2), f"Your Goal", font = f,  anchor="ma",fill = 0)
 
     # network avg
-    centerX = 3*screenWidth/3 - (screenWidth/6)
+    centerX = 3*screenWidth/3 - (screenWidth/6) -2
     sDraw.circle((centerX,centerY),circRad,fill=255, outline=0,width=1)
     sDraw.pieslice((centerX-circRad,centerY-circRad,centerX+circRad,centerY+circRad), -90, int(360*percT)-90,fill=0)
     sDraw.circle((centerX,centerY),circRad*.5,fill=255, outline=0,width=1)
@@ -438,7 +438,7 @@ def eventPausedScreen(f,s,p):
     sDraw.text((screenWidth/2, 3), f"Event paused until {endPauseStr}!", font = ft,anchor="mt",fill = 0)
 
     # money
-    centerX = 3
+    centerX = 1
     # sDraw.circle((centerX,centerY),circRad,fill=255, outline=0,width=1)
     # sDraw.pieslice((centerX-circRad,centerY-circRad,centerX+circRad,centerY+circRad), 0-90, int(360*perc)-90,fill=0)
     # sDraw.circle((centerX,centerY),circRad*.33,fill=255, outline=0,width=1)
@@ -450,7 +450,7 @@ def eventPausedScreen(f,s,p):
 
 
     # your goal
-    centerX = 2*screenWidth/3  - (screenWidth/6) - 4
+    centerX = 2*screenWidth/3  - (screenWidth/6) - 6
     sDraw.circle((centerX,centerY),circRad,fill=255, outline=0,width=1)
     sDraw.pieslice((centerX-circRad,centerY-circRad,centerX+circRad,centerY+circRad), 0-90, int(360*perc)-90,fill=0)
     sDraw.circle((centerX,centerY),circRad*.5,fill=255, outline=0,width=1)
@@ -458,7 +458,7 @@ def eventPausedScreen(f,s,p):
     sDraw.text((centerX,centerY+circRad+2), f"Your Goal", font = f,  anchor="ma",fill = 0)
 
     # network avg
-    centerX = 3*screenWidth/3 - (screenWidth/6)
+    centerX = 3*screenWidth/3 - (screenWidth/6) -2
     sDraw.circle((centerX,centerY),circRad,fill=255, outline=0,width=1)
     sDraw.pieslice((centerX-circRad,centerY-circRad,centerX+circRad,centerY+circRad), -90, int(360*percT)-90,fill=0)
     sDraw.circle((centerX,centerY),circRad*.5,fill=255, outline=0,width=1)
