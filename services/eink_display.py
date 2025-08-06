@@ -469,8 +469,13 @@ def eventPausedScreen(f,s,p):
     epd.displayPartial(epd.getbuffer(sImage))
 
 def normalScreen(f,w=None,s=None,p=None):
-    estPay = s['csrp']['monthlyVal'] + s['dlrp']['monthlyVal']
-    estPay = round(estPay,2)
+    try:
+        estPay = s['csrp']['monthlyVal'] + s['dlrp']['monthlyVal']
+        estPay = round(estPay,2)
+    except:
+        sDraw.text((screenHeight/2, screenHeight/2), f'Data Missing :(', font = f, anchor="ma",fill = 0)
+        epd.displayPartial(epd.getbuffer(sImage))
+        return None
 
     try:
         perc = min(1,p['goalAvg'])
@@ -575,10 +580,13 @@ async def main():
     updateData = datetime.now() # will get updated every 5 minutes
     updateState = datetime.now() # will get updated every 30 seconds
 
-    power = await send_get_request(endpoint='api/data?date=now&source=plugs')
-    battery = await send_get_request(endpoint='api/data?date=now&source=powerstation')
-    state = await send_get_request(endpoint='api/state')
-    todaysPerformance = await getPerformance()
+    try:
+        power = await send_get_request(endpoint='api/data?date=now&source=plugs')
+        battery = await send_get_request(endpoint='api/data?date=now&source=powerstation')
+        state = await send_get_request(endpoint='api/state')
+        todaysPerformance = await getPerformance()
+    except Exception as e:
+        logging.error(f"Can't get data: {e}")
 
     updateScreen = True
 
@@ -645,6 +653,7 @@ async def main():
                     logging.error(e)
             except Exception as e:
                 logging.error(e)
+                normalScreen(font15,s=state,p=todaysPerformance)
 
         # full refresh should be greater than 3 minutes or after 3 partial refreshes
         updateScreen = False
