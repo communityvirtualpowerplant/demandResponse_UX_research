@@ -85,7 +85,7 @@ Note: may need to uncomment the 127 ip in host file for some services to be enab
 Check for updates and reboot at 12:15am and 5am  with cron (DONT use sudo):
 * `crontab -e`
 * add this line to bottom of file:
-	* `15 0 * * * bash /home/drux/demandResponse_UX_research/utilities/update.sh > /home/drux/demandResponse_UX_research/utilities/update.log 2>&1`
+	* `10 0 * * * bash /home/drux/demandResponse_UX_research/utilities/update.sh > /home/drux/demandResponse_UX_research/utilities/update.log 2>&1`
 	* `0 5 * * * bash /home/drux/demandResponse_UX_research/utilities/update.sh > /home/drux/demandResponse_UX_research/utilities/update.log 2>&1`
 
 <!-- `@midnight sudo reboot` -->
