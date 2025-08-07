@@ -167,7 +167,7 @@ async def logPerformance(d:dict):
         logging.error(f'Exception writing performance to file: {e}')
 
 async def startCheck():
-    #stagger the start randomlly
+    #stagger the start randomly
     await asyncio.sleep(random.randint(0,60))
 
     count = 0
@@ -191,7 +191,6 @@ async def main():
     global buttonState, button_event, stateDict, shortpresses,longpresses
 
     #delay start
-    await asyncio.sleep(10)
     await startCheck()
 
     #track button presses
