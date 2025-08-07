@@ -78,7 +78,7 @@ async function fetchAndPlotCSV(files) {
         //y.push(parseFloat(row[1]));
       });
       
-    })
+    }
 
     ///////////////////////////////////////////
     //********** BACKGROUND ******************/
