@@ -167,7 +167,7 @@ async def main():
         try:
             performance = await send_get_request(endpoint='api/performance')
 
-            performanceList = [performance]
+            performanceList = [json.dumps(performance)]
 
             try:
                 await AT.updateBatchPerformance(AT.names,AT.performanceIDs,performanceList,table='performance')
