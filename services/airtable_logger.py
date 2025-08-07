@@ -106,7 +106,7 @@ async def main():
         health = await send_get_request(endpoint='api/health')
         #logging.debug(health)
 
-        headList = [health]
+        healthList = [health]
 
         try:
             await AT.updateBatch(AT.names,AT.healthIDs,healthList,table='health')
