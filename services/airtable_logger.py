@@ -95,15 +95,27 @@ async def logPerformance(n,i):
     except Exception as e:
         logging.error(f'Error getting performance: {e}')
 
+async def startCheck():
+    #stagger the start randomlly
+    await asyncio.sleep(random.randint(20,80))
+
+    count = 0
+    while True:
+        try:
+            rCode = await send_get_request(endpoint='api/health',type='code')
+            logging.info(rCode)
+            if rCode == 200:
+                return None
+        except Exception as e:
+            logging.error(e)
+        logging.info('still waiting!')
+        count = count + 1
+
+        await asyncio.sleep(20+(count**2)+random.randint(0,5))
+
 async def main():
 
-    #stagger start time
-    waitTime = 180 + random.randint(0,120)
-
-    if debug:
-        await asyncio.sleep(20)
-    else:
-        await asyncio.sleep(waitTime)
+    startCheck()
 
     # update state
     # get record IDs once at start to minimize API calls
