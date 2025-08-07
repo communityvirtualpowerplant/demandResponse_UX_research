@@ -9,7 +9,7 @@ import requests
 from typing import Any, Dict, Optional, List
 
 # ------------------ Config ------------------ #
-debug = True
+debug = False
 
 if debug:
     logging.basicConfig(format='%(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',level=logging.DEBUG)
