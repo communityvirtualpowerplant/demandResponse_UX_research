@@ -226,6 +226,7 @@ async def main():
             logging.info(f'Button held! {buttonState}')
         else:
             # update device if button help for more than 10 seconds
+            logging.info(f'Button reeeeaaaally held! Updating and restarting now!')
             subprocess.run("/home/drux/demandResponse_UX_research/utilities/update.sh")
 
 

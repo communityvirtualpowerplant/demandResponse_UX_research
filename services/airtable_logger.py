@@ -10,7 +10,7 @@ from typing import Any, Dict, Optional, List
 import random
 
 # ------------------ Config ------------------ #
-debug = True
+debug = False
 
 if debug:
     logging.basicConfig(format='%(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',level=logging.DEBUG)
@@ -87,6 +87,8 @@ async def logPerformance(n,i):
         performanceList = [json.dumps(performance)]
 
         try:
+            # Remember, even if this is run successfully,
+            # the modified timestamp wont be updated if the data hasn't changed!
             await AT.updateBatchPerformance(n,i,performanceList,table='performance')
         except Exception as e:
             logging.error(f'Error updating performance: {e}')
