@@ -48,23 +48,23 @@ async function fetchAndPlotCSV() {
     //********** BACKGROUND ******************/
     ///////////////////////////////////////////
 
-    // const shapes = []; // Will hold background color blocks
-    // const positions = ['normal','upcoming','ongoing'];
+    const shapes = []; // Will hold background color blocks
+    const positions = ['normal','upcoming','ongoing'];
 
-    // const positionColors = []
+    const positionColors = []
 
-    // // randomly assign a unique color to each position
-    // positions.forEach(p=>{
-    //   if (positionData.includes(p)){
-    //     positionColors[p] = getColor()
-    //   }
-    // })
+    // randomly assign a unique color to each position
+    positions.forEach(p=>{
+      if (positionData.includes(p)){
+        positionColors[p] = getColor()
+      }
+    })
 
     // console.log(positionColors)
 
-    // // Create background rectangles where mode changes
-    // let lastPosition = null;
-    // let startTime = null;
+    // Create background rectangles where mode changes
+    let lastPosition = null;
+    let startTime = null;
 
     // for (let i = 0; i < datetime.length; i++) {
     //   const currentPosition = positionData[i];
