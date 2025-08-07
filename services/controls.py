@@ -227,7 +227,8 @@ async def main():
         else:
             # update device if button help for more than 10 seconds
             logging.info(f'Button reeeeaaaally held! Updating and restarting now!')
-            subprocess.run("/home/drux/demandResponse_UX_research/utilities/update.sh")
+            os.system('sudo sh /home/drux/demandResponse_UX_research/utilties/update.sh')
+            #subprocess.run("/home/drux/demandResponse_UX_research/utilities/update.sh")
 
 
     button = Button(26,hold_time=2.0,bounce_time=0.1)  # Debounce time in seconds
