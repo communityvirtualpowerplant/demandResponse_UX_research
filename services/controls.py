@@ -15,6 +15,7 @@ from io import StringIO
 import math
 from statistics import mean
 import random
+import subprocess
 
 logging.basicConfig(format='%(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',level=logging.INFO)
 
@@ -209,20 +210,23 @@ async def main():
     def on_release():
         global held_triggered
         # Reset hold flag on release
-        if datetime.now() - held_triggered <= timedelta(seconds=button.hold_time):
+        if datetime.now() - held_triggered < timedelta(seconds=button.hold_time):
             buttonState['state']=True
             buttonState['datetime']=datetime.now()
             stateDict['eventPause']=buttonState
             shortpresses.append(datetime.now())
             loop.call_soon_threadsafe(button_event.set)
             logging.info(f'Button pressed! {buttonState}')
-        else:
+        elif datetime.now() - held_triggered <= timedelta(seconds=10):
             buttonState['state']=False
             buttonState['datetime']=datetime.now()
             stateDict['eventPause']=buttonState
             longpresses.append(datetime.now())
             loop.call_soon_threadsafe(button_event.set)
             logging.info(f'Button held! {buttonState}')
+        else:
+            # update device if button help for more than 10 seconds
+            subprocess.run("/home/drux/demandResponse_UX_research/utilities/update.sh")
 
 
     button = Button(26,hold_time=2.0,bounce_time=0.1)  # Debounce time in seconds
