@@ -40,8 +40,6 @@ participantNumber = int(config["participant"])
 AT = Airtable(key,'appqYfVvpJR5kBATE')
 AT.names = [f'participant{participantNumber}']
 
-FREQ_SECONDS = 60 * 5
-
 # Function to recursively convert "true"/"false" strings to Booleans
 def convert_bools(obj):
     if isinstance(obj, dict):
@@ -83,12 +81,11 @@ async def send_get_request(url:str='http://localhost:5000/',endpoint:str='',type
 
 async def main():
 
-    #delay start
-    #stagger the start randomlly
-    waitTime = 120 + random.randint(0,60)
+    #stagger start time
+    waitTime = 180 + random.randint(0,120)
 
     if debug:
-        await asyncio.sleep(10)
+        await asyncio.sleep(20)
     else:
         await asyncio.sleep(waitTime)
 
@@ -148,25 +145,6 @@ async def main():
         ### PERFORMANCE ###
         ###################
 
-        # try:
-        #     performance = []
-
-        #     perf = await send_get_request(endpoint='api/performance')
-
-        #     # for k in perf.keys():
-        #     #     performance.append(perf[k])
-        #     #     logging.debug(perf[k])
-
-        #     try:
-        #         pIDs = await AT.getRecordIDbyName(AT.performanceIDs,table=f'performance')
-        #         logging.debug(pIDs)
-
-        #         # how does this deal with new additions?
-        #         await AT.updateBatch(perf.keys(),pIDs,performance,table=f'perf_participant{participantNumber}')
-        #     except Exception as e:
-        #         logging.error(e)
-        # except Exception as e:
-        #     logging.error(f'Error logging performance: {e}')
         try:
             performance = await send_get_request(endpoint='api/performance')
 
@@ -186,7 +164,7 @@ async def main():
 
         # if event is happening update every 10 minutes, else update every half-hour
         if (state['csrp']['now']) or (state['dlrp']['now']):
-            FREQ_SECONDS = 60 * 15
+            FREQ_SECONDS = 60 * 10
         else:
             FREQ_SECONDS = 60 * 30
 
