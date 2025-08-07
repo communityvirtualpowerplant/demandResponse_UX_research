@@ -1,5 +1,5 @@
 // get today's data
-const apiUrl = '/api/data?file=recent';
+const apiUrl = '/api/data?date=recent&source=plugs';
 
 function getColor(){
   // get colors between 50-245

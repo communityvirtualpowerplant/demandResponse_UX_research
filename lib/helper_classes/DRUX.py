@@ -7,6 +7,7 @@ import math
 from statistics import mean
 from io import StringIO
 import logging
+import random
 
 logging.basicConfig(format='%(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',level=logging.INFO)
 
@@ -80,6 +81,23 @@ class Helpers():
             return False
         else:
             return obj
+
+    # async def startCheck(self):
+    #     #stagger the start randomly
+    #     await asyncio.sleep(random.randint(0,60))
+
+    #     count = 0
+    #     while True:
+    #         try:
+    #             rCode = await send_get_request(endpoint='api/discover',type='code')
+    #             logging.info(rCode)
+    #             if rCode == 200:
+    #                 return None
+    #         except Exception as e:
+    #             logging.error(e)
+    #         logging.info('still waiting!')
+    #         count = count + 1
+    #         await asyncio.sleep(20+(count**2))
 
 class DRUX_Baseline(Helpers):
     def __init__(self,st:int=None,pe:list=None):

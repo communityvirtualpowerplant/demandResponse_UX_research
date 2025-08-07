@@ -1,4 +1,4 @@
-const apiUrl = '/api/data?file=recent';
+const apiUrl = '/api/data?date=recent&source=plugs';
 
 function getColor(){
   // get colors between 20-240
@@ -162,4 +162,5 @@ async function fetchAndPlotCSV() {
   }
 }
 
+console.log('test!')
 fetchAndPlotCSV();
