@@ -386,7 +386,12 @@ async def main():
         #save state
         await saveState(stateDict)
 
-        await sleeper(5*60)
+        # if event is upcoming or ongoing, loop every 5 minutes, otherwise loop every 10 minutes
+        waitSeconds = 10*60
+        if (eventCSRP['now']) or (eventDLRP['now']) or (eventCSRP['upcoming']) or (eventDLRP['upcoming']):
+            waitSeconds = 5*60
+
+        await sleeper(waitSeconds)
         await asyncio.sleep(.1) # may not be necessary
 
 if __name__ == "__main__":

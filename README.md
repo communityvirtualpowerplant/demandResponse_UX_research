@@ -38,7 +38,6 @@ display
 * finalize interfaces
 
 backend
-* airtable performance updater
 * local front end
 
 System
@@ -49,9 +48,7 @@ System
 	* DR explainer, with value estimator
 
 Study
-* finalize goals
-* finalize questions
-* finalize changable plan
+* finalize change over plan
 
 To do, post install:
 * slow all processes down when not event upcoming (like airtable updater)
