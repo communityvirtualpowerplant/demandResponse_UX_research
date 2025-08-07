@@ -147,7 +147,7 @@ async function fetchAndPlotCSV() {
     })  
 
 
-    traces.push(...backgroundLegendTraces)
+    //traces.push(...backgroundLegendTraces)
 
     Plotly.newPlot('plotPower',traces, {
       title: "Smart Plug Power Consumption",
