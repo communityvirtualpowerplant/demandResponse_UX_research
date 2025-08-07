@@ -15,7 +15,7 @@ from io import StringIO
 import math
 from statistics import mean
 import random
-import subprocess
+#import subprocess
 
 logging.basicConfig(format='%(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',level=logging.INFO)
 
@@ -227,7 +227,7 @@ async def main():
         else:
             # update device if button help for more than 10 seconds
             logging.info(f'Button reeeeaaaally held! Updating and restarting now!')
-            os.system('sudo sh /home/drux/demandResponse_UX_research/utilties/update.sh')
+            os.system('sudo sh /home/drux/demandResponse_UX_research/utilities/update.sh')
             #subprocess.run("/home/drux/demandResponse_UX_research/utilities/update.sh")
 
 
