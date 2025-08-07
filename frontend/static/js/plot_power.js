@@ -56,7 +56,7 @@ async function fetchAndPlotCSV(files) {
         })
 
     for (f of files) {
-      const response = await fetch(fileBaseUrl + f.replace('plugs_','').replace('.csv','');
+      const response = await fetch(fileBaseUrl + f.replace('plugs_','').replace('.csv',''));
       const csvText = await response.text();
       console.log(csvText)
       // Parse CSV manually
