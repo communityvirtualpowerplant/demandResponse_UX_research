@@ -55,7 +55,7 @@ async function fetchAndPlotCSV(files) {
           y[c] = []
         })
 
-    files.forEach(f=>{
+    files.forEach(f=>await {
       const response = await fetch(apiUrl);
       const csvText = await response.text();
       console.log(csvText)
