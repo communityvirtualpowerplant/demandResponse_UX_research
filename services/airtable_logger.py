@@ -9,7 +9,12 @@ import requests
 from typing import Any, Dict, Optional, List
 
 # ------------------ Config ------------------ #
-logging.basicConfig(format='%(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',level=logging.DEBUG)
+debug = True
+
+if debug:
+    logging.basicConfig(format='%(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',level=logging.DEBUG)
+else:
+    logging.basicConfig(format='%(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',level=logging.INFO)
 
 libdir = '/home/drux/demandResponse_UX_research/lib/helper_classes'
 if os.path.exists(libdir):
@@ -79,25 +84,32 @@ async def send_get_request(url:str='http://localhost:5000/',endpoint:str='',type
 async def main():
 
     #delay start
-    await asyncio.sleep(120)
+    if debug:
+        await asyncio.sleep(120)
+    else:
+        await asyncio.sleep(10)
 
     # update state
     # get record IDs once at start to minimize API calls
 
     AT.stateIDs = await AT.getRecordIDbyName(AT.names,table='state')
     AT.healthIDs = await AT.getRecordIDbyName(AT.names,table='health')
+    AT.performanceIDs = await AT.getRecordIDbyName(AT.names,table='performance')
 
-    #logging.debug(AT.IDs)
+    # logging.debug(AT.healthIDs)
+    # logging.debug(AT.stateIDs)
 
     #######################################
     ### HEALTH - only needed once a day ###
     #######################################
     try:
-        health = [await send_get_request(endpoint='api/health')]
-        #logging.debug(state)
+        health = await send_get_request(endpoint='api/health')
+        #logging.debug(health)
+
+        headList = [health]
 
         try:
-            await AT.updateBatch(AT.names,AT.healthIDs,health,table='health')
+            await AT.updateBatch(AT.names,AT.healthIDs,healthList,table='health')
         except Exception as e:
             logging.error(f'Error updating health: {e}')
     except Exception as e:
@@ -115,10 +127,8 @@ async def main():
             logging.debug(type(state))
 
             state["plugs"] = await send_get_request(endpoint='api/data?date=now&source=plugs')
-            logging.debug(state["plugs"] )
 
             powerstation = await send_get_request(endpoint='api/data?date=now&source=powerstation')
-            #logging.debug(powerstation)
 
             state["powerstation"] = powerstation
 
@@ -140,12 +150,12 @@ async def main():
 
         #     perf = await send_get_request(endpoint='api/performance')
 
-        #     for k in perf.keys():
-        #         performance.append(perf[k])
-        #         logging.debug(perf[k])
+        #     # for k in perf.keys():
+        #     #     performance.append(perf[k])
+        #     #     logging.debug(perf[k])
 
         #     try:
-        #         pIDs = await AT.getRecordIDbyName(perf.keys(),table=f'perf_participant{participantNumber}')
+        #         pIDs = await AT.getRecordIDbyName(AT.performanceIDs,table=f'performance')
         #         logging.debug(pIDs)
 
         #         # how does this deal with new additions?
@@ -154,6 +164,22 @@ async def main():
         #         logging.error(e)
         # except Exception as e:
         #     logging.error(f'Error logging performance: {e}')
+        try:
+            performance = await send_get_request(endpoint='api/performance')
+
+            performanceList = [performance]
+
+            try:
+                await AT.updateBatchPerformance(AT.names,AT.performanceIDs,performanceList,table='performance')
+            except Exception as e:
+                logging.error(f'Error updating performance: {e}')
+        except Exception as e:
+            logging.error(f'Error getting performance: {e}')
+
+
+        #############
+        ### SLEEP ###
+        #############
 
         # if event is happening update every 10 minutes, else update every half-hour
         if (state['csrp']['now']) or (state['dlrp']['now']):
