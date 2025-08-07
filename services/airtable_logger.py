@@ -10,7 +10,7 @@ from typing import Any, Dict, Optional, List
 import random
 
 # ------------------ Config ------------------ #
-debug = False
+debug = True
 
 if debug:
     logging.basicConfig(format='%(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',level=logging.DEBUG)
@@ -80,6 +80,19 @@ async def send_get_request(url:str='http://localhost:5000/',endpoint:str='',type
                     await asyncio.sleep(1+attempt)
         return res
 
+async def logPerformance(n,i):
+    try:
+        performance = await send_get_request(endpoint='api/performance')
+
+        performanceList = [json.dumps(performance)]
+
+        try:
+            await AT.updateBatchPerformance(n,i,performanceList,table='performance')
+        except Exception as e:
+            logging.error(f'Error updating performance: {e}')
+    except Exception as e:
+        logging.error(f'Error getting performance: {e}')
+
 async def main():
 
     #stagger start time
@@ -96,6 +109,8 @@ async def main():
     AT.stateIDs = await AT.getRecordIDbyName(AT.names,table='state')
     AT.healthIDs = await AT.getRecordIDbyName(AT.names,table='health')
     AT.performanceIDs = await AT.getRecordIDbyName(AT.names,table='performance')
+
+    await logPerformance(AT.names,AT.performanceIDs)
 
     # logging.debug(AT.healthIDs)
     # logging.debug(AT.stateIDs)
@@ -146,18 +161,8 @@ async def main():
         ### PERFORMANCE ###
         ###################
 
-        try:
-            performance = await send_get_request(endpoint='api/performance')
-
-            performanceList = [json.dumps(performance)]
-
-            try:
-                await AT.updateBatchPerformance(AT.names,AT.performanceIDs,performanceList,table='performance')
-            except Exception as e:
-                logging.error(f'Error updating performance: {e}')
-        except Exception as e:
-            logging.error(f'Error getting performance: {e}')
-
+        if (state['csrp']['now']) or (state['dlrp']['now']):
+            await logPerformance(AT.names,AT.performanceIDs)
 
         #############
         ### SLEEP ###
