@@ -88,6 +88,7 @@ Check for updates and reboot at 12:15am and 5am  with cron (DONT use sudo):
 	* `10 0 * * * bash /home/drux/demandResponse_UX_research/utilities/update.sh > /home/drux/demandResponse_UX_research/utilities/update.log 2>&1`
 	* `0 5 * * * bash /home/drux/demandResponse_UX_research/utilities/update.sh > /home/drux/demandResponse_UX_research/utilities/update.log 2>&1`
 	* `0 13 * * * bash /home/drux/demandResponse_UX_research/utilities/update.sh > /home/drux/demandResponse_UX_research/utilities/update.log 2>&1`
+	* `0 21 * * * bash /home/drux/demandResponse_UX_research/utilities/update.sh > /home/drux/demandResponse_UX_research/utilities/update.log 2>&1`
 
 <!-- `@midnight sudo reboot` -->
 

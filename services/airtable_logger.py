@@ -99,9 +99,9 @@ async def main():
         try:
             await AT.updateBatch(AT.names,AT.healthIDs,health,table='health')
         except Exception as e:
-            logging.error(e)
+            logging.error(f'Error updating health: {e}')
     except Exception as e:
-        logging.error(f'Error logging health: {e}')
+        logging.error(f'Error getting health: {e}')
 
     while True:
 
@@ -127,9 +127,9 @@ async def main():
             try:
                 await AT.updateBatch(AT.names,AT.stateIDs,stateList,table='state')
             except Exception as e:
-                logging.error(e)
+                logging.error(f'Error updating state: {e}')
         except Exception as e:
-            logging.error(f'Error logging state: {e}')
+            logging.error(f'Error getting state: {e}')
 
         ###################
         ### PERFORMANCE ###
