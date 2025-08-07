@@ -1,5 +1,5 @@
 const fileListUrl = '/api/files?source=plugs'; 
-const apiUrl = '/api/data?date=recent&source=plugs';
+const fileBaseUrl = '/api/data?source=plugs&date=';//2025-08-07
 
 
 // getAirtableData('https://communityvirtualpowerplant.com/api/gateway.php?table=events')
@@ -55,8 +55,8 @@ async function fetchAndPlotCSV(files) {
           y[c] = []
         })
 
-    files.forEach(f=>await {
-      const response = await fetch(apiUrl);
+    for (f of files) {
+      const response = await fetch(fileBaseUrl + f.replace('plugs_','').replace('.csv','');
       const csvText = await response.text();
       console.log(csvText)
       // Parse CSV manually
