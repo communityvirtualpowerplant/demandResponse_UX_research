@@ -17,6 +17,7 @@ from PIL import Image,ImageDraw,ImageFont
 import asyncio
 import json
 import netifaces
+import random
 
 # picdir = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), 'assets')
 # libdir = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), 'lib')
@@ -177,6 +178,9 @@ async def getPerformance():
         return todaysPerformance
 
 async def startCheck():
+    #stagger the start randomlly
+    await asyncio.sleep(random.randint(0,60))
+
     count = 0
     while True:
         try:

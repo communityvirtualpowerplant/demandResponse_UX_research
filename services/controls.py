@@ -14,6 +14,7 @@ from scipy.integrate import trapezoid
 from io import StringIO
 import math
 from statistics import mean
+import random
 
 logging.basicConfig(format='%(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',level=logging.INFO)
 
@@ -166,6 +167,9 @@ async def logPerformance(d:dict):
         logging.error(f'Exception writing performance to file: {e}')
 
 async def startCheck():
+    #stagger the start randomlly
+    await asyncio.sleep(random.randint(0,60))
+
     count = 0
     while True:
         try:

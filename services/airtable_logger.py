@@ -9,7 +9,7 @@ import requests
 from typing import Any, Dict, Optional, List
 
 # ------------------ Config ------------------ #
-debug = True
+debug = False
 
 if debug:
     logging.basicConfig(format='%(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',level=logging.DEBUG)
@@ -84,10 +84,13 @@ async def send_get_request(url:str='http://localhost:5000/',endpoint:str='',type
 async def main():
 
     #delay start
+    #stagger the start randomlly
+    waitTime = 120 + random.randint(0,60)
+
     if debug:
-        await asyncio.sleep(120)
-    else:
         await asyncio.sleep(10)
+    else:
+        await asyncio.sleep(waitTime)
 
     # update state
     # get record IDs once at start to minimize API calls
