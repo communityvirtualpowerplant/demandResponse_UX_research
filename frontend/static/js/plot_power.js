@@ -1,4 +1,28 @@
+const fileListUrl = '/api/files?source=plugs'; 
 const apiUrl = '/api/data?date=recent&source=plugs';
+
+
+// getAirtableData('https://communityvirtualpowerplant.com/api/gateway.php?table=events')
+
+
+// function getAirtableData(url){
+//   fetch(url)
+//     .then(response => {
+//       if (!response.ok) {
+//         throw new Error('Network response was not OK');
+//       }
+//       return response.text(); // or response.text() if it's plain text
+//     })
+//     .then(data => {
+//       const safeJSON = data.replace(/\bNaN\b/g, 'null');
+//       data = JSON.parse(safeJSON);
+//       //console.log('Data received:', data);
+//       updateData(data);
+//     })
+//     .catch(error => {
+//       console.error('There was a problem with the fetch:', error);
+//     });
+// }
 
 function getColor(){
   // get colors between 20-240
@@ -9,40 +33,52 @@ function getColor(){
   return `rgba(${r},${g},${b},${a})`
 }
 
-async function fetchAndPlotCSV() {
-  try {
-    const response = await fetch(apiUrl);
-    const csvText = await response.text();
-    console.log(csvText)
-    // Parse CSV manually
-    const rows = csvText.trim().split('\n').map(row => row.split(','));
-    const headers = rows.shift();
+async function getFileList(){
+  const response = await fetch(fileListUrl);
+  files = await response.json()
+  const sorted = files.sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+  
+  myFiles= []
+  for (let d = 5;d >0;d--){
+    myFiles.push(sorted[sorted.length-d])
+  }
+  return myFiles
+}
 
-    // Assuming the first column is X (e.g., Date) and second column is Y (e.g., Value)
+async function fetchAndPlotCSV(files) {
+  try {
     const datetime = [];
     const cols = ['ac-W','batteryin-W','batteryout-W'];
     const y = {}
     const positionData = []
-
-
     cols.forEach(c=>{
           y[c] = []
         })
 
-    // get column position for datetime
-    let dti = headers.indexOf('datetime');
+    files.forEach(f=>{
+      const response = await fetch(apiUrl);
+      const csvText = await response.text();
+      console.log(csvText)
+      // Parse CSV manually
+      const rows = csvText.trim().split('\n').map(row => row.split(','));
+      const headers = rows.shift();
+      
+      // get column position for datetime
+      let dti = headers.indexOf('datetime');
 
-    rows.forEach(row => {
-      datetime.push(row[dti]);
-      positionData.push(row[headers.indexOf('position')])
-      cols.forEach(c=>{
-        // get col position
-        let i = headers.indexOf(c); 
-        let v = parseFloat(row[i])
-        y[c].push(isNaN(v) ? null : v)
-      })
-      //y.push(parseFloat(row[1]));
-    });
+      rows.forEach(row => {
+        datetime.push(row[dti]);
+        positionData.push(row[headers.indexOf('position')])
+        cols.forEach(c=>{
+          // get col position
+          let i = headers.indexOf(c); 
+          let v = parseFloat(row[i])
+          y[c].push(isNaN(v) ? null : v)
+        })
+        //y.push(parseFloat(row[1]));
+      });
+      
+    })
 
     ///////////////////////////////////////////
     //********** BACKGROUND ******************/
@@ -141,7 +177,7 @@ async function fetchAndPlotCSV() {
         y: y[c],
         mode: 'lines+markers',
         type: 'scatter',
-        name:c.replace('ac-W','AC').replace('_',' ').replace('batteryin-W','Battery In').replace('batteryout-W','Battery Out')// make labels more readable
+        name:c.replace('ac-W','AC (W)').replace('_',' ').replace('batteryin-W','Battery In (W)').replace('batteryout-W','Battery Out (W)')// make labels more readable
       }
       traces.push(t)
     })  
@@ -164,4 +200,4 @@ async function fetchAndPlotCSV() {
   }
 }
 
-fetchAndPlotCSV();
+getFileList().then(res => {fetchAndPlotCSV(res)});
