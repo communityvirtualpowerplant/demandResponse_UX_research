@@ -61,7 +61,7 @@ held_triggered = False
 #################
 
 # returns a dictionary with either False or datetime values
-def isCSRPEventUpcoming(df=None,t)-> dict:
+def isCSRPEventUpcoming(df=None,t=None)-> dict:
     cState = {'now':False,'upcoming':False}
 
     if df:
