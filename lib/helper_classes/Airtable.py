@@ -28,7 +28,7 @@ class Airtable():
                 debug.error(f'missing table name')
         try:
             res = await self.send_secure_get_request(f'{self.baseURL}{self.base}/{table}')
-            logging.info(res)
+            #logging.info(res)
             return res
         except Exception as e:
             logging.error(e)
@@ -190,6 +190,8 @@ class Airtable():
             return False
 
     def parseListToDF(self,res):
+        logging.info(res)
+
         fields = []
         for r in res['records']:
             fields.append(r['fields'])

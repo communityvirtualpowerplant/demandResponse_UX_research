@@ -262,6 +262,7 @@ async def main():
             #if not eventDF:# conditional only needed to not call this twice at the start of the program
             try:
                 eventDF = atEvents.parseListToDF(await atEvents.listRecords())
+                logging.info(eventDF)
             except:
                 eventDF=None
 

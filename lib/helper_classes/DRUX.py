@@ -118,7 +118,7 @@ class Helpers():
                 rCode = await self.send_get_request(endpoint='api/discover',type='code')
                 logging.info(rCode)
                 if rCode == 200:
-                    logging.info(f'Lets begin!')
+                    logging.debug(f'Lets begin!')
                     return None
             except Exception as e:
                 logging.error(e)
