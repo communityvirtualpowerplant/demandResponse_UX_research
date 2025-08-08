@@ -192,12 +192,8 @@ async def startCheck():
             logging.error(e)
         logging.info('still waiting!')
         count = count + 1
-        if count >20:
-            rebootMe()
-        await asyncio.sleep(20+(count**2))
 
-async def rebootMe():
-    os.system('sudo reboot')
+        await asyncio.sleep(20+(count**2))
 
 ###############
 ### Screens ###

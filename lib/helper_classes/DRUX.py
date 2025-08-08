@@ -93,9 +93,12 @@ class Helpers():
 
         if not 'Already up to date' in result.stdout:
             logging.info('Pulled update... rebooting now')
-            os.system('sudo reboot')
+            self.rebootMe()
         else:
             logging.info('Already up to date')
+
+    def rebootMe(self):
+        os.system('sudo reboot')
 
     # async def startCheck(self):
     #     #stagger the start randomly
