@@ -129,23 +129,26 @@ async def main():
     # logging.debug(AT.healthIDs)
     # logging.debug(AT.stateIDs)
 
-    #######################################
-    ### HEALTH - only needed once a day ###
-    #######################################
-    try:
-        health = await send_get_request(endpoint='api/health')
-        #logging.debug(health)
-
-        healthList = [health]
-
-        try:
-            await AT.updateBatch(AT.names,AT.healthIDs,healthList,table='health')
-        except Exception as e:
-            logging.error(f'Error updating health: {e}')
-    except Exception as e:
-        logging.error(f'Error getting health: {e}')
-
+    count = 0
     while True:
+
+        #######################################
+        ### HEALTH - only needed periodically ###
+        #######################################
+        if count % 4 == 0:
+            try:
+                health = await send_get_request(endpoint='api/health')
+                #logging.debug(health)
+
+                healthList = [health]
+            except Exception as e:
+                healthList = [f"Error getting health: {e}"]
+                logging.error(f"Error getting health: {e}")
+
+            try:
+                await AT.updateBatch(AT.names,AT.healthIDs,healthList,table='health')
+            except Exception as e:
+                logging.error(f'Error updating health: {e}')
 
         #############
         ### STATE ###
@@ -155,21 +158,28 @@ async def main():
             state = await send_get_request(endpoint='api/state')
             logging.debug(state)
             logging.debug(type(state))
-
-            state["plugs"] = await send_get_request(endpoint='api/data?date=now&source=plugs')
-
-            powerstation = await send_get_request(endpoint='api/data?date=now&source=powerstation')
-
-            state["powerstation"] = powerstation
-
-            stateList = [state]
-
-            try:
-                await AT.updateBatch(AT.names,AT.stateIDs,stateList,table='state')
-            except Exception as e:
-                logging.error(f'Error updating state: {e}')
         except Exception as e:
             logging.error(f'Error getting state: {e}')
+            state = f'Error getting state: {e}'
+
+        try:
+            state["plugs"] = await send_get_request(endpoint='api/data?date=now&source=plugs')
+        except Exception as e:
+            logging.error(f"Error getting plugs: {e}")
+            state["plugs"] = f"Error getting plugs: {e}"
+
+        try:
+            powerstation = await send_get_request(endpoint='api/data?date=now&source=powerstation')
+            state["powerstation"] = powerstation
+        except Exception as e:
+            state["powerstation"] = f"Error getting powerstation: {e}"
+
+        stateList = [state]
+
+        try:
+            await AT.updateBatch(AT.names,AT.stateIDs,stateList,table='state')
+        except Exception as e:
+            logging.error(f'Error updating state: {e}')
 
         ###################
         ### PERFORMANCE ###
@@ -181,6 +191,8 @@ async def main():
         #############
         ### SLEEP ###
         #############
+
+        count = count + 1
 
         # if event is happening update every 10 minutes, else update every half-hour
         if (state['csrp']['now']) or (state['dlrp']['now']):
