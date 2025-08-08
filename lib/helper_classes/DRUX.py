@@ -9,6 +9,7 @@ from io import StringIO
 import logging
 import random
 import subprocess
+import os
 
 logging.basicConfig(format='%(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',level=logging.INFO)
 
