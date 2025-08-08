@@ -8,6 +8,7 @@ from statistics import mean
 from io import StringIO
 import logging
 import random
+import subprocess
 
 logging.basicConfig(format='%(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',level=logging.INFO)
 
@@ -82,6 +83,16 @@ class Helpers():
         else:
             return obj
 
+    async def getUpdate(self):
+        result = subprocess.run(
+                ['git', 'pull'],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True
+            )
+
+        if not 'Already up to date' in result.stdout:
+            logging.info('Pull update')
     # async def startCheck(self):
     #     #stagger the start randomly
     #     await asyncio.sleep(random.randint(0,60))
