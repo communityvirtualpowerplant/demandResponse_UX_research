@@ -87,7 +87,7 @@ class Helpers():
         else:
             return obj
 
-    def getUpdate(self):
+    def getUpdate(self)->None:
         result = subprocess.run(
                 ['git', 'pull'],
                 cwd='/home/drux/demandResponse_UX_research',
@@ -103,6 +103,8 @@ class Helpers():
         else:
             logging.info('Already up to date :)')
 
+        return None
+
     def rebootMe(self):
         os.system('sudo reboot')
 
@@ -116,6 +118,7 @@ class Helpers():
                 rCode = await self.send_get_request(endpoint='api/discover',type='code')
                 logging.info(rCode)
                 if rCode == 200:
+                    logging.info(f'Lets begin!')
                     return None
             except Exception as e:
                 logging.error(e)
