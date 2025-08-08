@@ -101,7 +101,7 @@ class Helpers():
             logging.info('Pulled update :) ... rebooting now')
             #self.rebootMe()
         else:
-            logging.info('Already up to date')
+            logging.info('Already up to date :)')
 
     def rebootMe(self):
         os.system('sudo reboot')
