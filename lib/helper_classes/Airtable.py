@@ -190,7 +190,7 @@ class Airtable():
             return False
 
     def parseListToDF(self,res):
-        logging.info(res)
+        #logging.info(res)
 
         fields = []
         for r in res['records']:
