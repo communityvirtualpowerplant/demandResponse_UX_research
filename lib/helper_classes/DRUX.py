@@ -89,7 +89,8 @@ class Helpers():
 
     def getUpdate(self):
         result = subprocess.run(
-                ['git', 'pull','origin','status-reporting'],
+                ['git', 'pull'],
+                cwd='/home/drux/demandResponse_UX_research',
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 text=True
