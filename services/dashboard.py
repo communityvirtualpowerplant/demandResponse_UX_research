@@ -210,6 +210,14 @@ def health_check():
     except Exception as e:
         fileStatusPowerStation = f"error: {str(e)}"
 
+    try:
+        serviceList = ['controls','eink_display','plug_logger','bluetti_logger','dashboard','airtable_logger']
+        serviceDict = {}
+        for s in serviceList:
+            serviceDict[s] = api.getServiceStatus(s)
+    except Exception as e:
+        serviceDict = f"error:{str(e)}"
+
     return jsonify({
         "datetime": dt.strftime("%Y-%m-%d %H:%M:%S"),
         "cpu_tempC": cpu_tempC,
@@ -219,7 +227,8 @@ def health_check():
         "powerIssues" : powerIssues,
         "sdCardErrors" : sdCardErrors,
         "fileStatusPlugs":fileStatusPlugs,
-        "fileStatusPowerStation":fileStatusPowerStation
+        "fileStatusPowerStation":fileStatusPowerStation,
+        "services":serviceDict
     }), 200
 
 if __name__ == "__main__":

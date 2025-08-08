@@ -128,3 +128,17 @@ class API():
             "missing_timestamps": [dt.strftime("%Y-%m-%d %H:%M") for dt in missing_ts],
             "status": "OK" if not outliers and not missing_ts else "WARNING: Issues found"
         }
+
+    def getServiceStatus(self,service):
+        try:
+            result = subprocess.run(
+                ['systemctl', 'is-active', service],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True
+            )
+            print(result)
+            return = result.stdout.strip()
+        except Exception as e:
+            status = f'Error: {str(e)}'
+        return = status

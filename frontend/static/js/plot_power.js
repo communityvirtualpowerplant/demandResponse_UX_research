@@ -186,7 +186,7 @@ async function fetchAndPlotCSV(files) {
     //traces.push(...backgroundLegendTraces)
 
     layout = {
-      title: {text:"Smart Plug Power Consumption"},
+      title: {text:"Smart Plug Power Data"},
       xaxis: { title: "Time" },
       yaxis: { title: "Power" },
       shapes: shapes,
@@ -195,7 +195,7 @@ async function fetchAndPlotCSV(files) {
         traceorder: 'grouped'
       }
     }
-    
+
     Plotly.newPlot('plotPower',traces, layout);
   } catch (error) {
     console.error('Error fetching or plotting CSV:', error);
