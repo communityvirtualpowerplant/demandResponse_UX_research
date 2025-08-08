@@ -115,7 +115,7 @@ async def startCheck():
 
 async def main():
 
-    startCheck()
+    await startCheck()
 
     # update state
     # get record IDs once at start to minimize API calls
