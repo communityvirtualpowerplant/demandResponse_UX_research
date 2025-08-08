@@ -95,10 +95,11 @@ class Helpers():
                 stderr=subprocess.PIPE,
                 text=True
             )
+        logging.info(result)
 
         if not 'Already up to date' in result.stdout:
             logging.info('Pulled update :) ... rebooting now')
-            self.rebootMe()
+            #self.rebootMe()
         else:
             logging.info('Already up to date')
 
