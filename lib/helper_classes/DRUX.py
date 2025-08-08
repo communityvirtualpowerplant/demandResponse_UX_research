@@ -83,7 +83,7 @@ class Helpers():
         else:
             return obj
 
-    async def getUpdate(self):
+    def getUpdate(self):
         result = subprocess.run(
                 ['git', 'pull'],
                 stdout=subprocess.PIPE,
@@ -92,7 +92,11 @@ class Helpers():
             )
 
         if not 'Already up to date' in result.stdout:
-            logging.info('Pull update')
+            logging.info('Pulled update... rebooting now')
+            os.system('sudo reboot')
+        else:
+            logging.info('Already up to date')
+
     # async def startCheck(self):
     #     #stagger the start randomly
     #     await asyncio.sleep(random.randint(0,60))

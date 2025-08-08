@@ -190,6 +190,9 @@ async def startCheck():
 async def main():
     global buttonState, button_event, stateDict, shortpresses,longpresses
 
+    # check for update
+    baseline.getUpdate()
+
     #delay start
     await startCheck()
 
