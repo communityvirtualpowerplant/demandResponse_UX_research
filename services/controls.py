@@ -64,7 +64,7 @@ held_triggered = False
 def isCSRPEventUpcoming(df=None,t=None)-> dict:
     cState = {'now':False,'upcoming':False}
 
-    if df:
+    if not df.empty:
         csrpDF = df[df['type']=='csrp']
         for index, row in csrpDF.iterrows():
             csrpStartTime = row['date'].replace(hour=t)
@@ -83,7 +83,7 @@ def isDLRPEventUpcoming(df=None)-> dict:
 
     dState = {'now':False,'upcoming':False}
 
-    if df:
+    if not df.empty:
         dlrpDF = df[df['type']=='dlrp']
         for index, row in dlrpDF.iterrows():
             dlrpStartTime = row['date'].replace(hour=int(row['time']))
@@ -260,11 +260,8 @@ async def main():
         # get event status from Airtable
         try:
             #if not eventDF:# conditional only needed to not call this twice at the start of the program
-            try:
-                eventDF = atEvents.parseListToDF(await atEvents.listRecords()).drop(columns=['modified','notes'])
-                logging.info(eventDF)
-            except:
-                eventDF=None
+            eventDF = atEvents.parseListToDF(await atEvents.listRecords()).drop(columns=['modified','notes'])
+            logging.info(eventDF)
 
             try:
                 # check for events
