@@ -92,7 +92,7 @@ class Helpers():
             )
 
         if not 'Already up to date' in result.stdout:
-            logging.info('Pulled update... rebooting now')
+            logging.info('Pulled update :) ... rebooting now')
             self.rebootMe()
         else:
             logging.info('Already up to date')
