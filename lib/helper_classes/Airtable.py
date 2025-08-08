@@ -133,7 +133,7 @@ class Airtable():
                         }
                     })
             except Exception as e:
-                logging.error(f'Exception while formatting data: {e}')
+                logging.error(f'Exception while formatting performance data: {e}')
 
             pData={"records": records}
 

@@ -261,7 +261,6 @@ async def main():
         try:
             #if not eventDF:# conditional only needed to not call this twice at the start of the program
             eventDF = atEvents.parseListToDF(await atEvents.listRecords()).drop(columns=['modified','notes'])
-            logging.info(eventDF)
 
             try:
                 # check for events
