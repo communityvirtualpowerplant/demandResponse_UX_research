@@ -39,6 +39,9 @@ class Helpers():
                 logging.error(f"HTTP error occurred: {e}")
             except Exception as e:
                 logging.error(f'{e}')
+                if type == 'code':
+                    return None
+
                 if attempt == max_tries-1: # try up to 3 times
                     return None
                 else:
@@ -86,7 +89,7 @@ class Helpers():
 
     def getUpdate(self):
         result = subprocess.run(
-                ['git', 'pull'],
+                ['git', 'pull','origin','status-reporting'],
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 text=True
@@ -101,22 +104,24 @@ class Helpers():
     def rebootMe(self):
         os.system('sudo reboot')
 
-    # async def startCheck(self):
-    #     #stagger the start randomly
-    #     await asyncio.sleep(random.randint(0,60))
+    async def startCheck(self,rebootCount = False):
+        #stagger the start randomly
+        await asyncio.sleep(random.randint(0,60))
 
-    #     count = 0
-    #     while True:
-    #         try:
-    #             rCode = await send_get_request(endpoint='api/discover',type='code')
-    #             logging.info(rCode)
-    #             if rCode == 200:
-    #                 return None
-    #         except Exception as e:
-    #             logging.error(e)
-    #         logging.info('still waiting!')
-    #         count = count + 1
-    #         await asyncio.sleep(20+(count**2))
+        count = 0
+        while True:
+            try:
+                rCode = await self.send_get_request(endpoint='api/discover',type='code')
+                logging.info(rCode)
+                if rCode == 200:
+                    return None
+            except Exception as e:
+                logging.error(e)
+            logging.info('still waiting!')
+            count = count + 1
+            if (count > 30) and (rebootCount):
+                self.rebootMe()
+            await asyncio.sleep(20+(count**2))
 
 class DRUX_Baseline(Helpers):
     def __init__(self,st:int=None,pe:list=None):

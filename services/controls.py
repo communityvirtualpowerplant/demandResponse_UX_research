@@ -166,24 +166,24 @@ async def logPerformance(d:dict):
     except Exception as e:
         logging.error(f'Exception writing performance to file: {e}')
 
-async def startCheck():
-    #stagger the start randomly
-    await asyncio.sleep(random.randint(0,60))
+# async def startCheck():
+#     #stagger the start randomly
+#     await asyncio.sleep(random.randint(0,60))
 
-    count = 0
-    while True:
-        try:
-            rCode = await send_get_request(endpoint='api/discover',type='code')
-            logging.info(rCode)
-            if rCode == 200:
-                return None
-        except Exception as e:
-            logging.error(e)
-        logging.info('still waiting!')
-        count = count + 1
-        if count > 30:
-            baseline.rebootMe()
-        await asyncio.sleep(20+(count**2))
+#     count = 0
+#     while True:
+#         try:
+#             rCode = await send_get_request(endpoint='api/discover',type='code')
+#             logging.info(rCode)
+#             if rCode == 200:
+#                 return None
+#         except Exception as e:
+#             logging.error(e)
+#         logging.info('still waiting!')
+#         count = count + 1
+#         if count > 30:
+#             baseline.rebootMe()
+#         await asyncio.sleep(20+(count**2))
 
 ##############
 #### Main ####
@@ -192,11 +192,13 @@ async def startCheck():
 async def main():
     global buttonState, button_event, stateDict, shortpresses,longpresses
 
+    await asyncio.sleep(20)
+
     # check for update
     baseline.getUpdate()
 
     #delay start
-    await startCheck()
+    await baseline.startCheck(True)
 
     #track button presses
     shortpresses = []
