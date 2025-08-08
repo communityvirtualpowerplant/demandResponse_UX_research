@@ -28,6 +28,7 @@ class Airtable():
                 debug.error(f'missing table name')
         try:
             res = await self.send_secure_get_request(f'{self.baseURL}{self.base}/{table}')
+            logging.info(res)
             return res
         except Exception as e:
             logging.error(e)

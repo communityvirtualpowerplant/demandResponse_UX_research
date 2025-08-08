@@ -61,35 +61,39 @@ held_triggered = False
 #################
 
 # returns a dictionary with either False or datetime values
-def isCSRPEventUpcoming(df,t)-> dict:
+def isCSRPEventUpcoming(df=None,t)-> dict:
     cState = {'now':False,'upcoming':False}
 
-    csrpDF = df[df['type']=='csrp']
-    for index, row in csrpDF.iterrows():
-        csrpStartTime = row['date'].replace(hour=t)
-        logging.debug(datetime.now()-csrpStartTime)
-        if (datetime.now()-csrpStartTime < timedelta(hours=0)) and (datetime.now()-csrpStartTime >= timedelta(hours=-21)):
-            logging.debug('CSRP event upcoming within 21 hours')
-            cState['upcoming'] = csrpStartTime
-        elif (datetime.now()-csrpStartTime > timedelta(hours=0)) and (datetime.now()-csrpStartTime <= timedelta(hours=4)):
-            logging.debug('CSRP event ongoing!')
-            cState['now'] = csrpStartTime
+    if df:
+        csrpDF = df[df['type']=='csrp']
+        for index, row in csrpDF.iterrows():
+            csrpStartTime = row['date'].replace(hour=t)
+            logging.debug(datetime.now()-csrpStartTime)
+            if (datetime.now()-csrpStartTime < timedelta(hours=0)) and (datetime.now()-csrpStartTime >= timedelta(hours=-21)):
+                logging.debug('CSRP event upcoming within 21 hours')
+                cState['upcoming'] = csrpStartTime
+            elif (datetime.now()-csrpStartTime > timedelta(hours=0)) and (datetime.now()-csrpStartTime <= timedelta(hours=4)):
+                logging.debug('CSRP event ongoing!')
+                cState['now'] = csrpStartTime
 
     return cState
 
 # returns a dictionary with either False or datetime values
-def isDLRPEventUpcoming(df)-> dict:
+def isDLRPEventUpcoming(df=None)-> dict:
+
     dState = {'now':False,'upcoming':False}
-    dlrpDF = df[df['type']=='dlrp']
-    for index, row in dlrpDF.iterrows():
-        dlrpStartTime = row['date'].replace(hour=int(row['time']))
-        logging.debug(datetime.now()-dlrpStartTime)
-        if (datetime.now()-dlrpStartTime < timedelta(hours=0)) and (datetime.now()-dlrpStartTime >= timedelta(hours=-2)):
-            logging.debug('event upcoming within 2 hours')
-            dState['upcoming'] = dlrpStartTime
-        elif (datetime.now()-dlrpStartTime > timedelta(hours=0)) and (datetime.now()-dlrpStartTime <= timedelta(hours=4)):
-            logging.debug('event ongoing')
-            dState['now'] = dlrpStartTime
+
+    if df:
+        dlrpDF = df[df['type']=='dlrp']
+        for index, row in dlrpDF.iterrows():
+            dlrpStartTime = row['date'].replace(hour=int(row['time']))
+            logging.debug(datetime.now()-dlrpStartTime)
+            if (datetime.now()-dlrpStartTime < timedelta(hours=0)) and (datetime.now()-dlrpStartTime >= timedelta(hours=-2)):
+                logging.debug('event upcoming within 2 hours')
+                dState['upcoming'] = dlrpStartTime
+            elif (datetime.now()-dlrpStartTime > timedelta(hours=0)) and (datetime.now()-dlrpStartTime <= timedelta(hours=4)):
+                logging.debug('event ongoing')
+                dState['now'] = dlrpStartTime
 
     return dState
 
@@ -165,25 +169,6 @@ async def logPerformance(d:dict):
             logging.info(f'Performance written to file. :)')
     except Exception as e:
         logging.error(f'Exception writing performance to file: {e}')
-
-# async def startCheck():
-#     #stagger the start randomly
-#     await asyncio.sleep(random.randint(0,60))
-
-#     count = 0
-#     while True:
-#         try:
-#             rCode = await send_get_request(endpoint='api/discover',type='code')
-#             logging.info(rCode)
-#             if rCode == 200:
-#                 return None
-#         except Exception as e:
-#             logging.error(e)
-#         logging.info('still waiting!')
-#         count = count + 1
-#         if count > 30:
-#             baseline.rebootMe()
-#         await asyncio.sleep(20+(count**2))
 
 ##############
 #### Main ####
@@ -275,7 +260,10 @@ async def main():
         # get event status from Airtable
         try:
             #if not eventDF:# conditional only needed to not call this twice at the start of the program
-            eventDF = atEvents.parseListToDF(await atEvents.listRecords())
+            try:
+                eventDF = atEvents.parseListToDF(await atEvents.listRecords())
+            except:
+                eventDF=None
 
             try:
                 # check for events
