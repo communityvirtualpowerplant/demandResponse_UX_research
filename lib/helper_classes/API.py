@@ -138,7 +138,6 @@ class API():
                 text=True
             )
             print(result)
-            return = result.stdout.strip()
+            return result.stdout.strip()
         except Exception as e:
-            status = f'Error: {str(e)}'
-        return = status
+            return f'Error: {str(e)}'
