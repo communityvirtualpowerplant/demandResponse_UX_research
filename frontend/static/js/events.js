@@ -13,9 +13,8 @@ function getData(url){
     })
     .then(data => {
       //const safeJSON = data.replace(/\bNaN\b/g, 'null');
-      data = JSON.parse(data);
-      //console.log('Data received:', data);
-      updateData(data);
+      //data = JSON.parse(data);
+      updateData(data['records']);
     })
     .catch(error => {
       console.error('There was a problem with the fetch:', error);
@@ -25,6 +24,10 @@ function getData(url){
 function updateData(data){
     console.log(data)
     console.log(Object.keys(data))
+
+    events.forEach(e=>{
+        console.log(e['date'])
+    }
 
     // data = data['records']//[0]['fields']
 
