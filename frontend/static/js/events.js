@@ -21,7 +21,7 @@ const performanceEndPt = '/api/performance';
 //     });
 // }
 
-let performance = await getPerformance()
+let performance = getPerformance()
 
 async function getPerformance (){
     try{
@@ -40,14 +40,13 @@ async function getPerformance (){
         console.log(dates)
         dates.sort((a, b) => a - b);
 
-        const today = new Date();
-
-        const filteredDates = dates.filter(date => {
-          return date <= today;
-        });
+        //const today = new Date();
+        // const filteredDates = dates.filter(date => {
+        //   return date <= today;
+        // });
 
         const filteredDatesStr = []
-        filteredDates.forEach(e=>{
+        dates.forEach(e=>{
             filteredDatesStr.push(String(e.getMonth()) + '/'+String(e.getDate())+'/'+String(e.getFullYear()));
         })
 
