@@ -74,20 +74,21 @@ async function plotPerformance(dateStr){
         performance = await response.json()
         console.log(performance)
 
-        let eventData = performance[Object.keys(performance)[4]]
-        // baselineLoad = eventData['baselineW']
+        let eventData = performance[Object.keys(performance)[1]]
+        baselineLoad = eventData['baselineW']
         goal = eventData['goalPerc']
         eventLoad = eventData['loadW_hourly']
-        flexLoad = eventData['flexW']
+        //flexLoad = eventData['flexW']
 
-        // baselineLoadR = []
-        // baselineLoad.forEach(g=>{
-        //     baselineLoadR.push(String(Math.round(g*100)/100)+'W')
-        // })
-        flexLoadR = []
-        flexLoad.forEach(g=>{
-            flexLoadR.push(String(Math.round(g*100)/100)+'W')
+        baselineLoadR = []
+        baselineLoad.forEach(g=>{
+            baselineLoadR.push(String(Math.round(g*100)/100)+'W')
         })
+
+        // flexLoadR = []
+        // flexLoad.forEach(g=>{
+        //     flexLoadR.push(String(Math.round(g*100)/100)+'W')
+        // })
 
         eventLoadR = []
         eventLoad.forEach(g=>{
@@ -103,8 +104,8 @@ async function plotPerformance(dateStr){
 
         let trace1E = {
             x: hours,
-            y: flexLoad,
-            text: flexLoadR.map(String),
+            y: baselineLoad,
+            text: baselineLoadR.map(String),
             textposition: 'auto',
             name: 'Reduction (W)',
             type: 'bar'
@@ -121,7 +122,7 @@ async function plotPerformance(dateStr){
 
         var dataE = [trace1E, trace2E];
 
-        var layoutE = {barmode: 'stack',
+        var layoutE = {barmode: 'group',
             title: {text:"Event Performance (" + String(performance['flexW_avg']) + "W)"},
             xaxis: { title: "Hours" },
             yaxis: { title: "Load" }
