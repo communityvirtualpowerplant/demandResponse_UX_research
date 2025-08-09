@@ -1,28 +1,5 @@
 const fileListUrl = '/api/files?source=plugs'; 
-const fileBaseUrl = '/api/data?source=plugs&date=';//2025-08-07
-
-
-// getAirtableData('https://communityvirtualpowerplant.com/api/gateway.php?table=events')
-
-
-// function getAirtableData(url){
-//   fetch(url)
-//     .then(response => {
-//       if (!response.ok) {
-//         throw new Error('Network response was not OK');
-//       }
-//       return response.text(); // or response.text() if it's plain text
-//     })
-//     .then(data => {
-//       const safeJSON = data.replace(/\bNaN\b/g, 'null');
-//       data = JSON.parse(safeJSON);
-//       //console.log('Data received:', data);
-//       updateData(data);
-//     })
-//     .catch(error => {
-//       console.error('There was a problem with the fetch:', error);
-//     });
-// }
+const fileBaseUrl = '/api/data?source=plugs&date=';
 
 function getColor(){
   // get colors between 20-240
