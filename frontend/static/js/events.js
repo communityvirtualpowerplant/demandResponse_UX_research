@@ -32,9 +32,9 @@ async function getPerformance (){
 
         dates = []
         //datesStr = []
-        perf.forEach(e=>{
+        Object.keys(perf).forEach(e=>{
             //datesStr.push(e['fields']['date'])
-            dateStrSplit = e['datetime'].split('T')[0].split('-')
+            dateStrSplit = perf[e]['datetime'].split('T')[0].split('-')
             dates.push(new Date(dateStrSplit[0], dateStrSplit[1] - 1, dateStrSplit[2],e['datetime'].split('T')[1].split(':')[0]))
         })
         console.log(dates)
