@@ -82,22 +82,26 @@ async function plotPerformance(dateStr){
         hours = ['1 ('+goal[0]+'%)', '2 ('+goal[1]+'%)', '3 ('+goal[2]+'%)','4 ('+goal[3]+'%)']
 
         let trace1 = {
-          x: hours,
-          y: baselineLoad,
-          name: 'baseline load (W)',
-          type: 'bar'
+            x: hours,
+            y: baselineLoad,
+            text: baselineLoad.map(String),
+            textposition: 'auto',
+            name: 'baseline load (W)',
+            type: 'bar'
         };
 
         var trace2 = {
-          x: hours,
-          y: eventLoad  ,
-          name: 'event load (W)',
-          type: 'bar'
+            x: hours,
+            y: eventLoad,
+            text: eventLoad.map(String),
+            textposition: 'auto',
+            name: 'event load (W)',
+            type: 'bar'
         };
 
         var data = [trace1, trace2];
 
-        var layout = {barmode: 'stack',
+        var layout = {barmode: 'group',
             title: {text:"Event Performance"},
             xaxis: { title: "Hours" },
             yaxis: { title: "Load" }
