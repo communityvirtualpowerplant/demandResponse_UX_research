@@ -145,7 +145,7 @@ async function fetchAndPlotCSV(files) {
     //********** CREATE DATA TRACES***********/
     ///////////////////////////////////////////
 
-    traces = []//...backgroundLegendTraces] // ... spreads content into array, so it isn't nested
+    tracesP = []//...backgroundLegendTraces] // ... spreads content into array, so it isn't nested
 
 
     cols.forEach(c=>{
@@ -156,13 +156,13 @@ async function fetchAndPlotCSV(files) {
         type: 'scatter',
         name:c.replace('ac-W','AC (W)').replace('_',' ').replace('batteryin-W','Battery In (W)').replace('batteryout-W','Battery Out (W)')// make labels more readable
       }
-      traces.push(t)
+      tracesP.push(t)
     })  
 
 
     //traces.push(...backgroundLegendTraces)
 
-    layout = {
+    layoutP = {
       title: {text:"Smart Plug Power Data"},
       xaxis: { title: "Time" },
       yaxis: { title: "Power" },
@@ -173,7 +173,7 @@ async function fetchAndPlotCSV(files) {
       }
     }
 
-    Plotly.newPlot('plotPower',traces, layout);
+    Plotly.newPlot('plotPower',tracesP, layoutP);
   } catch (error) {
     console.error('Error fetching or plotting CSV:', error);
   }

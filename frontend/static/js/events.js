@@ -68,17 +68,18 @@ function updateData(data){
 let performance 
 async function plotPerformance(dateStr){
     console.log(String(dateStr));
-     /*   
+
     try{
         const response = await fetch(performanceEndPt);
         performance = await response.json()
         console.log(performance)
 
         let eventData = performance[Object.keys(performance)[0]]
-        // baselineLoad = eventData['baselineW']
+        // baselineLoad
+        flexLoad = eventData['baselineW']
         goal = eventData['goalPerc']
         eventLoad = eventData['loadW_hourly']
-        flexLoad = eventData['flexW']
+        //flexLoad = eventData['flexW']
 
         // baselineLoadR = []
         // baselineLoad.forEach(g=>{
@@ -101,7 +102,7 @@ async function plotPerformance(dateStr){
 
         hours = ['1 ('+perc[0]+')', '2 ('+perc[1]+')', '3 ('+perc[2]+')','4 ('+perc[3]+')']
 
-        let trace1 = {
+        let trace1E = {
             x: hours,
             y: flexLoad,
             text: flexLoadR.map(String),
@@ -110,7 +111,7 @@ async function plotPerformance(dateStr){
             type: 'bar'
         };
 
-        var trace2 = {
+        var trace2E = {
             x: hours,
             y: eventLoad,
             text: eventLoadR.map(String),
@@ -119,31 +120,17 @@ async function plotPerformance(dateStr){
             type: 'bar'
         };
 
-        var data = [trace1, trace2];
+        var dataE = [trace1E, trace2E];
 
-        var layout = {barmode: 'stack',
+        var layoutE = {barmode: 'stack',
             title: {text:"Event Performance (" + String(performance['flexW_avg']) + "W)"},
             xaxis: { title: "Hours" },
             yaxis: { title: "Load" }
         }
 
-        Plotly.newPlot('plotEvent', data, layout);
+        Plotly.newPlot('plotEvent', dataE, layoutE);
 
     } catch (error) {
         console.error('Error fetching:', error);
-    }*/
+    }
 }
-
-
-// // Control diagram interaction - Wait until DOM is ready
-// document.addEventListener('DOMContentLoaded', () => {
-//     const imgElement = document.getElementById('controlImage');
-
-//     document.querySelectorAll('a[data-img]').forEach(link => {
-//         link.addEventListener('click', event => {
-//             event.preventDefault();
-//             const filename = event.target.getAttribute('data-img');
-//             imgElement.src = `${filename}`;
-//         });
-//     });
-// });
