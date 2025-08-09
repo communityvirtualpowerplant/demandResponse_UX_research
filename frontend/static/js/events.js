@@ -51,7 +51,6 @@ async function getPerformance (){
         })
 
         console.log(dates)
-        console.log(filteredDates)
         console.log(filteredDatesStr)
 
         eventDateContainer = document.getElementById('eventDates')
