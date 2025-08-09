@@ -122,7 +122,7 @@ async function plotPerformance(dateStr){
         var data = [trace1, trace2];
 
         var layout = {barmode: 'stack',
-            title: {text:"Event Performance (" + performance['flexW_avg'] + "W)"},
+            title: {text:"Event Performance (" + String(performance['flexW_avg']) + "W)"},
             xaxis: { title: "Hours" },
             yaxis: { title: "Load" }
         }
