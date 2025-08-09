@@ -62,7 +62,7 @@ async function makeDateLinks(perf){
 
         const filteredDatesStr = []
         dates.forEach(e=>{
-            filteredDatesStr.push(e.toISOString())//String(e.getMonth()+1) + '/'+String(e.getDate())+'/'+String(e.getFullYear()));
+            filteredDatesStr.push(e.toISOString());
         })
 
         console.log(dates)
@@ -95,7 +95,7 @@ async function plotPerformance(date){
             console.log(e)
             //e.split('T')[0].split('-')
             //kStr = String(e.getMonth()) + '/'+String(e.getDate())+'/'+String(e.getFullYear())
-            if (e == date.replace('.00Z','')){
+            if (e == date.replace('.000Z','')){
                 myKey =e
             }
         })
