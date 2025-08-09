@@ -79,12 +79,27 @@ async function plotPerformance(dateStr){
         goal = eventData['goalPerc']
         eventLoad = eventData['loadW_hourly']
 
-        hours = ['1 ('+goal[0]+'%)', '2 ('+goal[1]+'%)', '3 ('+goal[2]+'%)','4 ('+goal[3]+'%)']
+        baselineLoadR = []
+        baselineLoad.forEach(g=>{
+            baselineLoadR.push(String(Math.round(g*1000)/10)+'%')
+        })
+
+        eventLoadR = []
+        eventLoad.forEach(g=>{
+            eventLoadR.push(String(Math.round(g*1000)/10)+'%')
+        })
+
+        perc = []
+        goal.forEach(g=>{
+            perc.push(String(Math.round(g*1000)/10)+'%')
+        })
+
+        hours = ['1 ('+perc[0]+')', '2 ('+perc[1]+')', '3 ('+perc[2]+')','4 ('+perc[3]+')']
 
         let trace1 = {
             x: hours,
-            y: baselineLoad,
-            text: baselineLoad.map(String),
+            y: baselineLoadR,
+            text: baselineLoadR.map(String),
             textposition: 'auto',
             name: 'baseline load (W)',
             type: 'bar'
@@ -92,8 +107,8 @@ async function plotPerformance(dateStr){
 
         var trace2 = {
             x: hours,
-            y: eventLoad,
-            text: eventLoad.map(String),
+            y: eventLoadR,
+            text: eventLoadR.map(String),
             textposition: 'auto',
             name: 'event load (W)',
             type: 'bar'
