@@ -238,6 +238,7 @@ async def main():
         eventDF = atEvents.parseListToDF(await atEvents.listRecords())
     except Exception as e:
         logging.error(f"Couldn't get event list: {e}")
+        eventDF = None
 
     val = (0,0) #initial value for both programs at $0
     csrpBaselineTS = datetime.now()
@@ -254,7 +255,13 @@ async def main():
             csrpBaseline = 0
         logging.error(e)
 
+    count = 0
     while True:
+
+        # check for update
+        if count % 4 == 0:
+            baseline.getUpdate()
+
         buttonTracker={'onPause':shortpresses,'offPause':longpresses}
 
         # get event status from Airtable

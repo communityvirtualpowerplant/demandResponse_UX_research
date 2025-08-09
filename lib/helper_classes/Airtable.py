@@ -5,6 +5,7 @@ import logging
 import requests
 from typing import Any, Dict, Optional, List
 import pandas as pd
+import random
 
 logging.basicConfig(format='%(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',level=logging.DEBUG)
 
@@ -155,23 +156,32 @@ class Airtable():
 
     async def send_secure_get_request(self, url:str,type:str='json',timeout=2) -> Any:
         """Send GET request to the IP."""
-        try:
-            headers = {"Content-Type": "application/json; charset=utf-8"}
+        max_tries = 3
+        for attempt in range(max_tries):
+            try:
+                headers = {"Content-Type": "application/json; charset=utf-8"}
 
-            if self.key != '':
-                headers = {"Authorization": f"Bearer {self.key}"}
+                if self.key != '':
+                    headers = {"Authorization": f"Bearer {self.key}"}
 
-            response = requests.get(url, headers=headers, timeout=timeout)
-            if type == 'json':
-                return response.json()
-            elif type == 'text':
-                return (response.text, response.status_code)
-            else:
-                return response.status_code
-        except requests.Timeout as e:
-            return e
-        except Exception as e:
-            return e
+                response = requests.get(url, headers=headers, timeout=timeout)
+                response.raise_for_status()
+                if type == 'json':
+                    return response.json()
+                elif type == 'text':
+                    return (response.text, response.status_code)
+                else:
+                    return response.status_code
+            # except requests.Timeout as e:
+            #     return e
+            # except requests.exceptions.HTTPError as e:
+            #     logging.error(f"HTTP error occurred: {e}")
+            except Exception as e:
+                if attempt == max_tries-1: # try up to 3 times
+                    return e
+                else:
+                    logging.debug('SLEEEEEEEEEEEEEEEEEPING')
+                    await asyncio.sleep((random.randint(1,5)+attempt)**2)
 
     async def send_patch_request(self, url:str, data:Dict={},timeout=1):
 

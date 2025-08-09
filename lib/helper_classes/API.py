@@ -137,7 +137,7 @@ class API():
                 stderr=subprocess.PIPE,
                 text=True
             )
-            print(result)
+            #print(result)
             return result.stdout.strip()
         except Exception as e:
             return f'Error: {str(e)}'
