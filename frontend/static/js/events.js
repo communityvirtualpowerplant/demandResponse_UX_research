@@ -1,7 +1,7 @@
-let params = new URLSearchParams(document.location.search);
-let name = 'home'//params.get("name"); update this to be dynamic
+//let params = new URLSearchParams(document.location.search);
+const performanceEndPt = '/api/performance';
 
-getData('https://communityvirtualpowerplant.com/api/drux/gateway.php?table=events')
+getData('https://communityvirtualpowerplant.com/api/drux/gateway.php?table=events&key=12345')
 
 function getData(url){
   fetch(url)
@@ -23,29 +23,59 @@ function getData(url){
 
 function updateData(data){
     console.log(data)
-    console.log(Object.keys(data))
 
-    events.forEach(e=>{
-        console.log(e['date'])
+    dates = []
+    //datesStr = []
+    data.forEach(e=>{
+        //datesStr.push(e['fields']['date'])
+        dateStrSplit = e['fields']['date'].split('/')
+        dates.push(new Date(dateStrSplit[2], dateStrSplit[0] - 1, dateStrSplit[1],e['fields']['time']))
+    })
+
+    dates.sort((a, b) => a - b);
+
+    const today = new Date();
+
+    const filteredDates = dates.filter(date => {
+      return date <= today;
+    });
+
+    const filteredDatesStr = []
+    filteredDates.forEach(e=>{
+        filteredDatesStr.push(String(e.getMonth()) + '/'+String(e.getDate())+'/'+String(e.getFullYear()));
+    })
+
+    console.log(dates)
+    console.log(filteredDates)
+    console.log(filteredDatesStr)
+
+    eventDateContainer = document.getElementById('eventDates')
+    eventDateContainer.innerHTML  = ''
+
+    filteredDatesStr.forEach(d=>{
+        let a = document.createElement('a');
+        let link = document.createTextNode(d);
+        // Append the text node to anchor element.
+        a.appendChild(link);
+        // Set the href property.
+        a.href = "javascript:plotPerformance('"+d+"')";
+        // Append the anchor element to the body.
+        eventDateContainer.appendChild(a);
+
+    })
+}
+
+let performance 
+async function plotPerformance(dateStr){
+    console.log(String(dateStr));
+
+    try{
+        const response = await fetch(performanceEndPt);
+        performance = await response.json()
+        console.log(performance)
+    } catch (error) {
+        console.error('Error fetching:', error);
     }
-
-    // data = data['records']//[0]['fields']
-
-    // // Find index where name is
-    // const index = data.findIndex(item => item.fields.name === name);
-    // console.log(index); // Output: 1
-
-    // data = data[index]['fields']
-    // console.log(data)
-
-
-    // let eventStatus = '';
-    // if (data['event upcoming'] == 1){
-    //     eventStatus = 'upcoming'
-    // } else if (data['event ongoing'] == 1){
-    //     eventStatus = 'ongoing'
-    // }
-    // document.getElementById('eventDates').textContent = eventStatus;
 }
 
 
