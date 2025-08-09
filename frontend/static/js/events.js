@@ -27,7 +27,7 @@ async function getPerformance (){
     try{
         const response = await fetch(performanceEndPt);
         perf = await response.json()
-        console.log(perf)  
+        //console.log(perf)  
 
         dates = []
         //datesStr = []
@@ -37,7 +37,7 @@ async function getPerformance (){
             dateStrSplit = e.split('T')[0].split('-')
             dates.push(new Date(dateStrSplit[0], dateStrSplit[1] - 1, dateStrSplit[2],e.split('T')[1].split(':')[0]))
         })
-        console.log(dates)
+        //console.log(dates)
         dates.sort((a, b) => a - b);
 
         //const today = new Date();
@@ -65,7 +65,6 @@ async function getPerformance (){
             a.href = "javascript:plotPerformance('"+d+"')";
             // Append the anchor element to the body.
             eventDateContainer.appendChild(a);
-
         })
 
         return perf
@@ -81,7 +80,15 @@ async function plotPerformance(date){
         // performance = await response.json()
         // console.log(performance)
 
-        let eventData = performance[Object.keys(performance)[1]]
+        let meKey
+        Object.keys(performance).forEach(k=>{
+            kStr = String(e.getMonth()) + '/'+String(e.getDate())+'/'+String(e.getFullYear())
+            if (kStr == date){
+                myKey =k
+            }
+        })
+
+        let eventData = performance[myKey]
         console.log(eventData)
         baselineLoad = eventData['baselineW']
         goal = eventData['goalPerc']
