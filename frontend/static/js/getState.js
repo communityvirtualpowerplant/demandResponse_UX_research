@@ -8,7 +8,7 @@ async function fetchState(endpoint) {
     
     console.log(state)
 
-    eStatus = No event
+    eStatus = 'No event'
 
     if (state['csrp']['now'] != false){
       eStatus = 'Event now!'
