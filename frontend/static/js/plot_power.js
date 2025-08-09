@@ -35,7 +35,7 @@ async function fetchAndPlotCSV(files) {
     for (f of files) {
       const response = await fetch(fileBaseUrl + f.replace('plugs_','').replace('.csv',''));
       const csvText = await response.text();
-      console.log(csvText)
+      //console.log(csvText)
       // Parse CSV manually
       const rows = csvText.trim().split('\n').map(row => row.split(','));
       const headers = rows.shift();

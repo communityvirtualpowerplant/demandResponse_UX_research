@@ -75,7 +75,6 @@ async function getPerformance (){
     }
 }
 
-let performance 
 async function plotPerformance(date){
     
     try{
