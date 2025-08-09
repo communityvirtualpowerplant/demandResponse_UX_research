@@ -21,14 +21,29 @@ const performanceEndPt = '/api/performance';
 //     });
 // }
 
-let performance = getPerformance()
+let performanceData = {}
+
+document.addEventListener('DOMContentLoaded', () => {
+  init().catch(err => console.error(err));
+});
+
+async function init() {
+  performanceData = await getPerformance();
+  makeDateLinks(performanceData);
+}
 
 async function getPerformance (){
     try{
         const response = await fetch(performanceEndPt);
         perf = await response.json()
-        //console.log(perf)  
+        return perf;
+    } catch (error) {
+        console.error('Error fetching:', error);
+        return {}
+    }
+}
 
+async function makeDateLinks(pef){  
         dates = []
         //datesStr = []
         Object.keys(perf).forEach(e=>{
@@ -66,11 +81,6 @@ async function getPerformance (){
             // Append the anchor element to the body.
             eventDateContainer.appendChild(a);
         })
-
-        return perf
-    } catch (error) {
-        console.error('Error fetching:', error);
-    }
 }
 
 async function plotPerformance(date){
@@ -81,7 +91,7 @@ async function plotPerformance(date){
         // console.log(performance)
 
         let myKey
-        Object.keys(performance).forEach(e=>{
+        Object.keys(performanceData).forEach(e=>{
             console.log(e)
             kStr = String(e.getMonth()) + '/'+String(e.getDate())+'/'+String(e.getFullYear())
             if (kStr == date){
@@ -89,7 +99,7 @@ async function plotPerformance(date){
             }
         })
 
-        let eventData = performance[myKey]
+        let eventData = performanceData[myKey]
         console.log(eventData)
         baselineLoad = eventData['baselineW']
         goal = eventData['goalPerc']
