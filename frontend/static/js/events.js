@@ -29,13 +29,13 @@ async function getPerformance (){
         perf = await response.json()
         console.log(perf)  
 
-
         dates = []
         //datesStr = []
         Object.keys(perf).forEach(e=>{
             //datesStr.push(e['fields']['date'])
-            dateStrSplit = perf[e]['datetime'].split('T')[0].split('-')
-            dates.push(new Date(dateStrSplit[0], dateStrSplit[1] - 1, dateStrSplit[2],e['datetime'].split('T')[1].split(':')[0]))
+            console.log(e)
+            dateStrSplit = e.split('T')[0].split('-')
+            dates.push(new Date(dateStrSplit[0], dateStrSplit[1] - 1, dateStrSplit[2],e.split('T')[1].split(':')[0]))
         })
         console.log(dates)
         dates.sort((a, b) => a - b);
