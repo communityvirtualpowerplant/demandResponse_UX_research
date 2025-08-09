@@ -12,8 +12,8 @@ function getData(url){
       return response.json(); // or response.text() if it's plain text
     })
     .then(data => {
-      const safeJSON = data.replace(/\bNaN\b/g, 'null');
-      data = JSON.parse(safeJSON);
+      //const safeJSON = data.replace(/\bNaN\b/g, 'null');
+      data = JSON.parse(data);
       //console.log('Data received:', data);
       updateData(data);
     })
