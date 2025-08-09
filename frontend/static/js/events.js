@@ -75,18 +75,23 @@ async function plotPerformance(dateStr){
         console.log(performance)
 
         let eventData = performance[Object.keys(performance)[0]]
-        baselineLoad = eventData['baselineW']
+        // baselineLoad = eventData['baselineW']
         goal = eventData['goalPerc']
         eventLoad = eventData['loadW_hourly']
+        flexLoad = eventData['flexW']
 
-        baselineLoadR = []
-        baselineLoad.forEach(g=>{
-            baselineLoadR.push(String(Math.round(g*100)/100)+'%')
+        // baselineLoadR = []
+        // baselineLoad.forEach(g=>{
+        //     baselineLoadR.push(String(Math.round(g*100)/100)+'W')
+        // })
+        flexLoadR = []
+        flexLoad.forEach(g=>{
+            flexLoadR.push(String(Math.round(g*100)/100)+'W')
         })
 
         eventLoadR = []
         eventLoad.forEach(g=>{
-            eventLoadR.push(String(Math.round(g*100)/100)+'%')
+            eventLoadR.push(String(Math.round(g*100)/100)+'W')
         })
 
         perc = []
@@ -98,8 +103,8 @@ async function plotPerformance(dateStr){
 
         let trace1 = {
             x: hours,
-            y: baselineLoadR,
-            text: baselineLoadR.map(String),
+            y: flexLoad,
+            text: flexLoadR.map(String),
             textposition: 'auto',
             name: 'baseline load (W)',
             type: 'bar'
@@ -107,7 +112,7 @@ async function plotPerformance(dateStr){
 
         var trace2 = {
             x: hours,
-            y: eventLoadR,
+            y: eventLoad,
             text: eventLoadR.map(String),
             textposition: 'auto',
             name: 'event load (W)',
@@ -116,15 +121,13 @@ async function plotPerformance(dateStr){
 
         var data = [trace1, trace2];
 
-        var layout = {barmode: 'group',
-            title: {text:"Event Performance"},
+        var layout = {barmode: 'stack',
+            title: {text:"Event Performance (" + performance['flexW_avg'] + "W)"},
             xaxis: { title: "Hours" },
             yaxis: { title: "Load" }
         }
 
         Plotly.newPlot('plotEvent', data, layout);
-
-
 
     } catch (error) {
         console.error('Error fetching:', error);
