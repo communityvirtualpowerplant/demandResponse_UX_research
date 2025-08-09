@@ -8,12 +8,12 @@ async function fetchState(endpoint) {
     
     console.log(state)
 
-    eventStatusContainer = window.getElementById('eventStatus')
-    eventStatusContainer.text = 'test!'
+    eventStatusContainer = document.getElementById('eventStatus')
+    eventStatusContainer.innerHTML = 'test!'
 
   } catch (error) {
-    console.error('Error fetching or plotting CSV:', error);
+    console.error('Error fetching or showing state:', error);
   }
 }
 
-fetchState(res);
+fetchState(endpoint);
