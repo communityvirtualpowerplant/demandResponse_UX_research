@@ -8,8 +8,26 @@ async function fetchState(endpoint) {
     
     console.log(state)
 
+    eStatus = No event
+
+    if (state['csrp']['now'] != false){
+      eStatus = 'Event now!'
+    }
+
+    if (state['dlrp']['now'] != false ){
+      eStatus = 'Event now!'//state['csrp']['upcoming'] 
+    }
+
+    if (state['csrp']['upcoming'] != false){
+      eStatus = 'Upcoming at '+state['csrp']['upcoming'] 
+    }
+
+    if (state['dlrp']['upcoming'] != false){
+      eStatus = 'Upcoming at '+ state['dlrp']['upcoming'] 
+    }
+
     eventStatusContainer = document.getElementById('eventStatus')
-    eventStatusContainer.innerHTML = 'test!'
+    eventStatusContainer.innerHTML = eStatus
 
   } catch (error) {
     console.error('Error fetching or showing state:', error);
