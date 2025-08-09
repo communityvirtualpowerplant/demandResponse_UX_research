@@ -32,6 +32,17 @@ async function init() {
   makeDateLinks(performanceData);
 }
 
+function formationTime(dt){
+    const isoNoTZ = 
+    dt.getFullYear() + '-' +
+    String(dt.getMonth() + 1).padStart(2, '0') + '-' +
+    String(dt.getDate()).padStart(2, '0') + 'T' +
+    String(dt.getHours()).padStart(2, '0') + ':' +
+    String(dt.getMinutes()).padStart(2, '0') + ':' +
+    String(dt.getSeconds()).padStart(2, '0');
+
+  return isoNoTZ
+}
 async function getPerformance (){
     try{
         const response = await fetch(performanceEndPt);
@@ -62,7 +73,7 @@ async function makeDateLinks(perf){
 
         const filteredDatesStr = []
         dates.forEach(e=>{
-            filteredDatesStr.push(e.toISOString());
+            filteredDatesStr.push(formationTime(e));//.toISOString());
         })
 
         console.log(dates)
@@ -95,7 +106,7 @@ async function plotPerformance(date){
             console.log(e)
             //e.split('T')[0].split('-')
             //kStr = String(e.getMonth()) + '/'+String(e.getDate())+'/'+String(e.getFullYear())
-            if (e == date.replace('.000Z','')){
+            if (e == date){
                 myKey =e
             }
         })
