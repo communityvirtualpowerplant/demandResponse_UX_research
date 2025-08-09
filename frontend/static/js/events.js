@@ -95,7 +95,7 @@ async function plotPerformance(date){
             console.log(e)
             //e.split('T')[0].split('-')
             //kStr = String(e.getMonth()) + '/'+String(e.getDate())+'/'+String(e.getFullYear())
-            if (e == date){
+            if (e == date.replace('.00Z','')){
                 myKey =e
             }
         })
