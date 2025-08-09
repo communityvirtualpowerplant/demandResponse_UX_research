@@ -218,6 +218,20 @@ def health_check():
     except Exception as e:
         serviceDict = f"error:{str(e)}"
 
+    try:
+        commit = subprocess.check_output(
+            ["git", "rev-parse", "--short", "HEAD"],
+            cwd='/home/drux/demandResponse_UX_research').decode().strip()
+    except Exception as e:
+        commit = f"errpr{str(e)}"
+
+    try:
+        branch = subprocess.check_output(
+            ["git", "rev-parse", "--abbrev-ref", "HEAD"],
+            cwd='/home/drux/demandResponse_UX_research').decode().strip()
+    except Exception as e:
+        branch = f"errpr{str(e)}"
+
     return jsonify({
         "datetime": dt.strftime("%Y-%m-%d %H:%M:%S"),
         "cpu_tempC": cpu_tempC,
@@ -228,7 +242,9 @@ def health_check():
         "sdCardErrors" : sdCardErrors,
         "fileStatusPlugs":fileStatusPlugs,
         "fileStatusPowerStation":fileStatusPowerStation,
-        "services":serviceDict
+        "services":serviceDict,
+        "branch":branch,
+        "commit":commit
     }), 200
 
 if __name__ == "__main__":
