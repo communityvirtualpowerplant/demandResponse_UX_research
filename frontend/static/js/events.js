@@ -74,7 +74,7 @@ async function plotPerformance(dateStr){
         performance = await response.json()
         console.log(performance)
 
-        let eventData = performance[Object.keys(performance)[7]]
+        let eventData = performance[Object.keys(performance)[4]]
         // baselineLoad = eventData['baselineW']
         goal = eventData['goalPerc']
         eventLoad = eventData['loadW_hourly']
