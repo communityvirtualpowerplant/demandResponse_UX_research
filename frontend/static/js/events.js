@@ -75,9 +75,33 @@ async function plotPerformance(dateStr){
         console.log(Object.keys(performance))
 
         let eventData = performance[Object.keys(performance)[0]]
-        console.log(eventData['baselineW'])
-        console.log(eventData['goalPerc'])
-        console.log(eventData['loadW_hourly'])
+        baselineLoad = eventData['baselineW']
+        goal = eventData['goalPerc']
+        eventLoad = eventData['loadW_hourly']
+
+        hours = ['1', '2', '3','4']
+        let trace1 = {
+          x: hours,
+          y: baselineLoad,
+          name: 'baseline load (W)',
+          type: 'bar'
+        };
+
+        var trace2 = {
+          x: hours,
+          y: eventLoad  ,
+          name: 'event load (W)',
+          type: 'bar'
+        };
+
+        var data = [trace1, trace2];
+
+        var layout = {barmode: 'stack'};
+
+        Plotly.newPlot('plotEvent', data, layout);
+
+
+
     } catch (error) {
         console.error('Error fetching:', error);
     }
