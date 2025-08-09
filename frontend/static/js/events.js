@@ -74,12 +74,11 @@ async function plotPerformance(dateStr){
         performance = await response.json()
         console.log(performance)
 
-        let eventData = performance[Object.keys(performance)[0]]
-        // baselineLoad
-        flexLoad = eventData['baselineW']
+        let eventData = performance[Object.keys(performance)[7]]
+        // baselineLoad = eventData['baselineW']
         goal = eventData['goalPerc']
         eventLoad = eventData['loadW_hourly']
-        //flexLoad = eventData['flexW']
+        flexLoad = eventData['flexW']
 
         // baselineLoadR = []
         // baselineLoad.forEach(g=>{
