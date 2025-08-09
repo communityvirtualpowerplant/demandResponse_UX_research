@@ -73,7 +73,11 @@ async function plotPerformance(dateStr){
         const response = await fetch(performanceEndPt);
         performance = await response.json()
         console.log(Object.keys(performance))
-        console.log(performance[Object.keys(performance)[0]])
+
+        let eventData = performance[Object.keys(performance)[0]]
+        console.log(eventData['baselineW'])
+        console.log(eventData['goalPerc'])
+        console.log(eventData['loadW_hourly'])
     } catch (error) {
         console.error('Error fetching:', error);
     }
