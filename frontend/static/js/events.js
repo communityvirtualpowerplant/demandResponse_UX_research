@@ -43,14 +43,14 @@ async function getPerformance (){
     }
 }
 
-async function makeDateLinks(pef){  
+async function makeDateLinks(perf){  
         dates = []
         //datesStr = []
         Object.keys(perf).forEach(e=>{
             //datesStr.push(e['fields']['date'])
             console.log(e)
-            dateStrSplit = e.split('T')[0].split('-')
-            dates.push(new Date(dateStrSplit[0], dateStrSplit[1] - 1, dateStrSplit[2],e.split('T')[1].split(':')[0]))
+            //dateStrSplit = e.split('T')[0].split('-')
+            dates.push(new Date(e))//new Date(dateStrSplit[0], dateStrSplit[1] - 1, dateStrSplit[2],e.split('T')[1].split(':')[0]))
         })
         //console.log(dates)
         dates.sort((a, b) => a - b);
@@ -62,7 +62,7 @@ async function makeDateLinks(pef){
 
         const filteredDatesStr = []
         dates.forEach(e=>{
-            filteredDatesStr.push(String(e.getMonth()+1) + '/'+String(e.getDate())+'/'+String(e.getFullYear()));
+            filteredDatesStr.push(e.toISOString())//String(e.getMonth()+1) + '/'+String(e.getDate())+'/'+String(e.getFullYear()));
         })
 
         console.log(dates)
@@ -93,8 +93,9 @@ async function plotPerformance(date){
         let myKey
         Object.keys(performanceData).forEach(e=>{
             console.log(e)
-            kStr = String(e.getMonth()) + '/'+String(e.getDate())+'/'+String(e.getFullYear())
-            if (kStr == date){
+            //e.split('T')[0].split('-')
+            //kStr = String(e.getMonth()) + '/'+String(e.getDate())+'/'+String(e.getFullYear())
+            if (e == date){
                 myKey =e
             }
         })
