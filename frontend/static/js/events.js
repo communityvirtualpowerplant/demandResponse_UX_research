@@ -81,10 +81,11 @@ async function plotPerformance(date){
         // console.log(performance)
 
         let myKey
-        Object.keys(performance).forEach(k=>{
+        Object.keys(performance).forEach(e=>{
+            console.log(e)
             kStr = String(e.getMonth()) + '/'+String(e.getDate())+'/'+String(e.getFullYear())
             if (kStr == date){
-                myKey =k
+                myKey =e
             }
         })
 
