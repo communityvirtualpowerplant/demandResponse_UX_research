@@ -68,7 +68,7 @@ function updateData(data){
 let performance 
 async function plotPerformance(dateStr){
     console.log(String(dateStr));
-
+     /*   
     try{
         const response = await fetch(performanceEndPt);
         performance = await response.json()
@@ -106,7 +106,7 @@ async function plotPerformance(dateStr){
             y: flexLoad,
             text: flexLoadR.map(String),
             textposition: 'auto',
-            name: 'baseline load (W)',
+            name: 'Reduction (W)',
             type: 'bar'
         };
 
@@ -115,7 +115,7 @@ async function plotPerformance(dateStr){
             y: eventLoad,
             text: eventLoadR.map(String),
             textposition: 'auto',
-            name: 'event load (W)',
+            name: 'Event Load (W)',
             type: 'bar'
         };
 
@@ -131,7 +131,7 @@ async function plotPerformance(dateStr){
 
     } catch (error) {
         console.error('Error fetching:', error);
-    }
+    }*/
 }
 
 
