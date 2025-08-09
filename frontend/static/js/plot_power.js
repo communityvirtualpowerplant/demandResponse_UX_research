@@ -73,73 +73,6 @@ async function fetchAndPlotCSV(files) {
       }
     })
 
-    // console.log(positionColors)
-
-    // Create background rectangles where mode changes
-    let lastPosition = null;
-    let startTime = null;
-
-    // for (let i = 0; i < datetime.length; i++) {
-    //   const currentPosition = positionData[i];
-    //   const currentTime = datetime[i];
-    //   if (currentPosition !== lastPosition) {
-    //     if (lastPosition !== null) {
-    //       // Close previous rectangle
-    //       shapes.push({
-    //         type: 'rect',
-    //         xref: 'x',
-    //         yref: 'paper',
-    //         x0: startTime,
-    //         x1: currentTime,
-    //         y0: 0,
-    //         y1: 1,
-    //         fillcolor: positionColors[lastPosition],
-    //         opacity: 0.3,
-    //         line: { width: 0 }
-    //       });
-    //     }
-    //     startTime = currentTime;
-    //     lastPosition = currentPosition;
-    //   }
-    // }
-
-    // // Add last rectangle
-    // if (lastPosition !== null) {
-    //   shapes.push({
-    //     type: 'rect',
-    //     xref: 'x',
-    //     yref: 'paper',
-    //     x0: startTime,
-    //     x1: datetime[datetime.length - 1],
-    //     y0: 0,
-    //     y1: 1,
-    //     fillcolor: positionColors[lastPosition],
-    //     opacity: 0.3,
-    //     line: { width: 0 }
-    //   });
-    // }
-
-    // //dummy background traces
-    // const backgroundLegendTraces = Object.entries(positionColors).map(([position, color], index) => ({
-    //   name: `Position: ${position}`,
-    //   type: 'scatter',
-    //   mode: 'markers',     // don't plot points
-    //   x: [datetime[0]], // Needs at least one point (we can use first datetime)
-    //   y: [0], 
-    //   hoverinfo: 'skip', // avoid hover distractions
-    //   showlegend: true,
-    //   marker: { 
-    //     color: color,
-    //     size: 8 // small marker, visible in legend
-    //   },
-    //   //legendgroup: 'positions'//, // optional: group legend items
-    //   //line: { color } // ensures legend swatch gets the color
-    //   legendgroup: 'positions',
-    //   ...(index === 0 ? { 
-    //     legendgrouptitle: { text: 'Positions' } 
-    //   } : {})
-    // }));
-
 
     ///////////////////////////////////////////
     //********** CREATE DATA TRACES***********/
@@ -158,9 +91,6 @@ async function fetchAndPlotCSV(files) {
       }
       tracesP.push(t)
     })  
-
-
-    //traces.push(...backgroundLegendTraces)
 
     layoutP = {
       title: {text:"Smart Plug Power Data"},
