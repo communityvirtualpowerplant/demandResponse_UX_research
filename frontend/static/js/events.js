@@ -97,15 +97,9 @@ async function makeDateLinks(perf){
 async function plotPerformance(date){
     
     try{
-        // const response = await fetch(performanceEndPt);
-        // performance = await response.json()
-        // console.log(performance)
-
         let myKey
         Object.keys(performanceData).forEach(e=>{
             console.log(e)
-            //e.split('T')[0].split('-')
-            //kStr = String(e.getMonth()) + '/'+String(e.getDate())+'/'+String(e.getFullYear())
             if (e == date){
                 myKey =e
             }
@@ -161,7 +155,7 @@ async function plotPerformance(date){
         var dataE = [trace1E, trace2E];
 
         var layoutE = {barmode: 'group',
-            title: {text:"Event Performance (" + String(performance['flexW_avg']) + "W)"},
+            title: {text: date + " Event Performance (" + String(eventData['flexW_avg']) + "W)"},
             xaxis: { title: "Hours" },
             yaxis: { title: "Load" }
         }
