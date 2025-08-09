@@ -47,7 +47,7 @@ async function getPerformance (){
 
         const filteredDatesStr = []
         dates.forEach(e=>{
-            filteredDatesStr.push(String(e.getMonth()) + '/'+String(e.getDate())+'/'+String(e.getFullYear()));
+            filteredDatesStr.push(String(e.getMonth()+1) + '/'+String(e.getDate())+'/'+String(e.getFullYear()));
         })
 
         console.log(dates)
