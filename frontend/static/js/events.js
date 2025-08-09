@@ -124,7 +124,11 @@ async function plotPerformance(date){
 
         eventLoadR = []
         eventLoad.forEach(g=>{
-            eventLoadR.push(String(Math.round(g*100)/100)+'W')
+            if (g != -1){
+                eventLoadR.push(String(Math.round(g*100)/100)+'W')
+            } else {
+                eventLoadR.push('NaN')
+            }
         })
 
         perc = []
@@ -136,7 +140,7 @@ async function plotPerformance(date){
 
         let trace1E = {
             x: hours,
-            y: baselineLoadR,
+            y: baselineLoad,
             text: baselineLoadR.map(String),
             textposition: 'auto',
             name: 'Baseline Load (W)',
@@ -145,7 +149,7 @@ async function plotPerformance(date){
 
         var trace2E = {
             x: hours,
-            y: eventLoadR,
+            y: eventLoad,
             text: eventLoadR.map(String),
             textposition: 'auto',
             name: 'Event Load (W)',
@@ -155,7 +159,7 @@ async function plotPerformance(date){
         var dataE = [trace1E, trace2E];
 
         var layoutE = {barmode: 'group',
-            title: {text: date + " Event Performance (" + String(eventData['flexW_avg']) + "W)"},
+            title: {text: date + " Event Performance (" + String(Math.round(eventData['flexW_avg']*100)/100) + "W)"},
             xaxis: { title: "Hours" },
             yaxis: { title: "Load" }
         }
