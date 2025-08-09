@@ -101,7 +101,7 @@ class Helpers():
             logging.info('Pulled update... rebooting now')
             self.rebootMe()
         else:
-            logging.info('Already up to date :)')
+            logging.debug('Already up to date :)')
 
         return None
 

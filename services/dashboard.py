@@ -9,6 +9,7 @@ import json
 import pandas as pd
 import psutil
 import logging
+import subprocess
 
 libdir = '/home/drux/demandResponse_UX_research/lib/helper_classes'
 if os.path.exists(libdir):
