@@ -1,80 +1,91 @@
 //let params = new URLSearchParams(document.location.search);
 const performanceEndPt = '/api/performance';
 
-getData('https://communityvirtualpowerplant.com/api/drux/gateway.php?table=events&key=12345')
+//getData('https://communityvirtualpowerplant.com/api/drux/gateway.php?table=events&key=12345')
 
-function getData(url){
-  fetch(url)
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Network response was not OK');
-      }
-      return response.json(); // or response.text() if it's plain text
-    })
-    .then(data => {
-      //const safeJSON = data.replace(/\bNaN\b/g, 'null');
-      //data = JSON.parse(data);
-      updateData(data['records']);
-    })
-    .catch(error => {
-      console.error('There was a problem with the fetch:', error);
-    });
-}
+// function getData(url){
+//   fetch(url)
+//     .then(response => {
+//       if (!response.ok) {
+//         throw new Error('Network response was not OK');
+//       }
+//       return response.json(); // or response.text() if it's plain text
+//     })
+//     .then(data => {
+//       //const safeJSON = data.replace(/\bNaN\b/g, 'null');
+//       //data = JSON.parse(data);
+//       updateData(data['records']);
+//     })
+//     .catch(error => {
+//       console.error('There was a problem with the fetch:', error);
+//     });
+// }
 
-function updateData(data){
-    console.log(data)
+let performance = await getPerformance()
 
-    dates = []
-    //datesStr = []
-    data.forEach(e=>{
-        //datesStr.push(e['fields']['date'])
-        dateStrSplit = e['fields']['date'].split('/')
-        dates.push(new Date(dateStrSplit[2], dateStrSplit[0] - 1, dateStrSplit[1],e['fields']['time']))
-    })
+async function getPerformance (){
+    try{
+        const response = await fetch(performanceEndPt);
+        perf = await response.json()
+        console.log(perf)  
 
-    dates.sort((a, b) => a - b);
 
-    const today = new Date();
+        dates = []
+        //datesStr = []
+        perf.forEach(e=>{
+            //datesStr.push(e['fields']['date'])
+            dateStrSplit = e['datetime'].split('T')[0].split('-')
+            dates.push(new Date(dateStrSplit[0], dateStrSplit[1] - 1, dateStrSplit[2],e['datetime'].split('T')[1].split(':')[0]))
+        })
+        console.log(dates)
+        dates.sort((a, b) => a - b);
 
-    const filteredDates = dates.filter(date => {
-      return date <= today;
-    });
+        const today = new Date();
 
-    const filteredDatesStr = []
-    filteredDates.forEach(e=>{
-        filteredDatesStr.push(String(e.getMonth()) + '/'+String(e.getDate())+'/'+String(e.getFullYear()));
-    })
+        const filteredDates = dates.filter(date => {
+          return date <= today;
+        });
 
-    console.log(dates)
-    console.log(filteredDates)
-    console.log(filteredDatesStr)
+        const filteredDatesStr = []
+        filteredDates.forEach(e=>{
+            filteredDatesStr.push(String(e.getMonth()) + '/'+String(e.getDate())+'/'+String(e.getFullYear()));
+        })
 
-    eventDateContainer = document.getElementById('eventDates')
-    eventDateContainer.innerHTML  = ''
+        console.log(dates)
+        console.log(filteredDates)
+        console.log(filteredDatesStr)
 
-    filteredDatesStr.forEach(d=>{
-        let a = document.createElement('a');
-        let link = document.createTextNode(d);
-        // Append the text node to anchor element.
-        a.appendChild(link);
-        // Set the href property.
-        a.href = "javascript:plotPerformance('"+d+"')";
-        // Append the anchor element to the body.
-        eventDateContainer.appendChild(a);
+        eventDateContainer = document.getElementById('eventDates')
+        eventDateContainer.innerHTML  = ''
 
-    })
+        filteredDatesStr.forEach(d=>{
+            let a = document.createElement('a');
+            let link = document.createTextNode(d);
+            // Append the text node to anchor element.
+            a.appendChild(link);
+            // Set the href property.
+            a.href = "javascript:plotPerformance('"+d+"')";
+            // Append the anchor element to the body.
+            eventDateContainer.appendChild(a);
+
+        })
+
+        return perf
+    } catch (error) {
+        console.error('Error fetching:', error);
+    }
 }
 
 let performance 
-async function plotPerformance(dateStr){
-    console.log(String(dateStr));
-
+async function plotPerformance(date){
+    
     try{
-        const response = await fetch(performanceEndPt);
-        performance = await response.json()
-        console.log(performance)
+        // const response = await fetch(performanceEndPt);
+        // performance = await response.json()
+        // console.log(performance)
 
         let eventData = performance[Object.keys(performance)[1]]
+        console.log(eventData)
         baselineLoad = eventData['baselineW']
         goal = eventData['goalPerc']
         eventLoad = eventData['loadW_hourly']
@@ -104,16 +115,16 @@ async function plotPerformance(dateStr){
 
         let trace1E = {
             x: hours,
-            y: baselineLoad,
+            y: baselineLoadR,
             text: baselineLoadR.map(String),
             textposition: 'auto',
-            name: 'Reduction (W)',
+            name: 'Baseline Load (W)',
             type: 'bar'
         };
 
         var trace2E = {
             x: hours,
-            y: eventLoad,
+            y: eventLoadR,
             text: eventLoadR.map(String),
             textposition: 'auto',
             name: 'Event Load (W)',
