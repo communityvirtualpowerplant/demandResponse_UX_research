@@ -79,7 +79,8 @@ async function plotPerformance(dateStr){
         goal = eventData['goalPerc']
         eventLoad = eventData['loadW_hourly']
 
-        hours = ['1', '2', '3','4']
+        hours = ['1 ('+goal[0]+'%)', '2 ('+goal[1]+'%)', '3 ('+goal[2]+'%)','4 ('+goal[3]+'%)']
+
         let trace1 = {
           x: hours,
           y: baselineLoad,
@@ -96,7 +97,11 @@ async function plotPerformance(dateStr){
 
         var data = [trace1, trace2];
 
-        var layout = {barmode: 'stack'};
+        var layout = {barmode: 'stack',
+            title: {text:"Event Performance"},
+            xaxis: { title: "Hours" },
+            yaxis: { title: "Load" }
+        }
 
         Plotly.newPlot('plotEvent', data, layout);
 
