@@ -80,7 +80,7 @@ async function plotPerformance(date){
         // performance = await response.json()
         // console.log(performance)
 
-        let meKey
+        let myKey
         Object.keys(performance).forEach(k=>{
             kStr = String(e.getMonth()) + '/'+String(e.getDate())+'/'+String(e.getFullYear())
             if (kStr == date){
