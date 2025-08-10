@@ -55,34 +55,51 @@ async function getPerformance (){
 }
 
 async function makeDateLinks(perf){  
-        dates = []
+        datesC = []
+        datesD=[]
         //datesStr = []
         Object.keys(perf).forEach(e=>{
             //datesStr.push(e['fields']['date'])
             console.log(e)
             //dateStrSplit = e.split('T')[0].split('-')
-            dates.push(new Date(e))//new Date(dateStrSplit[0], dateStrSplit[1] - 1, dateStrSplit[2],e.split('T')[1].split(':')[0]))
+            if (perf[e]['event']='csrp'){
+                datesC.push(new Date(e))
+            } else {
+                datesD.push(new Date(e))
+            }
         })
         //console.log(dates)
-        dates.sort((a, b) => a - b);
+        datesC.sort((a, b) => a - b);
+        datesD.sort((a, b) => a - b);
 
         //const today = new Date();
         // const filteredDates = dates.filter(date => {
         //   return date <= today;
         // });
 
-        const filteredDatesStr = []
-        dates.forEach(e=>{
-            filteredDatesStr.push(formationTime(e));//.toISOString());
+        const filteredDatesStrC = []
+        datesC.forEach(e=>{
+            filteredDatesStrD.push(formationTime(e));//.toISOString());
         })
 
-        console.log(dates)
-        console.log(filteredDatesStr)
+        const filteredDatesStrD = []
+        datesD.forEach(e=>{
+            filteredDatesStrD.push(formationTime(e));//.toISOString());
+        })
 
-        eventDateContainer = document.getElementById('eventDates')
-        eventDateContainer.innerHTML  = ''
+        console.log('csrp:')
+        console.log(filteredDatesStrC)
 
-        filteredDatesStr.forEach(d=>{
+        console.log('dlrp:')
+        console.log(filteredDatesStrD)
+
+        eventDateCSRP = document.getElementById('eventDatesCSRP')
+        eventDateCSRP.innerHTML  = ''
+
+        eventDateDLRP = document.getElementById('eventDatesDLRP')
+        eventDateDLRP.innerHTML  = ''
+
+        filteredDatesStrC.forEach(d=>{
             let a = document.createElement('a');
             let link = document.createTextNode(d);
             // Append the text node to anchor element.
@@ -90,7 +107,18 @@ async function makeDateLinks(perf){
             // Set the href property.
             a.href = "javascript:plotPerformance('"+d+"')";
             // Append the anchor element to the body.
-            eventDateContainer.appendChild(a);
+            eventDateCSRP.appendChild(a);
+        })
+
+        filteredDatesStrD.forEach(d=>{
+            let a = document.createElement('a');
+            let link = document.createTextNode(d);
+            // Append the text node to anchor element.
+            a.appendChild(link);
+            // Set the href property.
+            a.href = "javascript:plotPerformance('"+d+"')";
+            // Append the anchor element to the body.
+            eventDateDLRP.appendChild(a);
         })
 }
 
