@@ -61,9 +61,8 @@ async function makeDateLinks(perf){
         Object.keys(perf).forEach(e=>{
             //datesStr.push(e['fields']['date'])
             console.log(e)
-            console.log(perf[e]['event'])
             //dateStrSplit = e.split('T')[0].split('-')
-            if (perf[e]['event']='csrp'){
+            if (perf[e]['event']=='csrp'){
                 datesC.push(new Date(e))
             } else {
                 datesD.push(new Date(e))
