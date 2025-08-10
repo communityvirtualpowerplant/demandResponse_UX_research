@@ -113,7 +113,7 @@ nav a:hover {
   width: 100%;
 }
 
-#eventDates a {
+.eventDateContainer a {
       margin-right: 20px; /* Adds 10px space to the right of each link */
 }
 
