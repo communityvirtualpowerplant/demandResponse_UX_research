@@ -79,7 +79,7 @@ async function makeDateLinks(perf){
 
         const filteredDatesStrC = []
         datesC.forEach(e=>{
-            filteredDatesStrD.push(formationTime(e));//.toISOString());
+            filteredDatesStrC.push(formationTime(e));//.toISOString());
         })
 
         const filteredDatesStrD = []
