@@ -56,10 +56,10 @@ class KasaDRUX():
         await dev.update()
 
         if dev.is_on:
-            print(dev.alias + ' is on. Turning off now...')
+            logging.debug(dev.alias + ' is on. Turning off now...')
             await dev.turn_off()
         else:
-            print(dev.alias + ' is off. Turning on now...')
+            logging.debug(dev.alias + ' is off. Turning on now...')
             await dev.turn_on()
 
     # flip state of outlet

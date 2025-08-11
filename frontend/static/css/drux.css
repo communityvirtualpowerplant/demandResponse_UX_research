@@ -131,7 +131,6 @@ nav a:hover {
 
 .typeContainer a:link, a:visited {
   /*background-color: hotpink;*/
-  color: white;
   padding: 5px 10px;
   text-align: center;
   text-decoration: none;
@@ -149,12 +148,10 @@ nav a:hover {
 
 .active-link {
   background-color: hotpink; /* highlight color */
-  color:white;
 }
 
 .inactive-link{
   background-color: lightgray;
-  color:black;
 }
 
 /* Responsive: stack vertically on small screens */

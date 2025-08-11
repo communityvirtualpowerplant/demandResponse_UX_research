@@ -163,6 +163,7 @@ class DRUX_Baseline(Helpers):
         #filter all data to event windows
         windowData = self.getEventWindows(data,eTime)
         windowDict= self.listToDict(windowData)
+        logging.debug(windowDict)
 
         windowDictBuckets = {}
         for k,v in windowDict.items():

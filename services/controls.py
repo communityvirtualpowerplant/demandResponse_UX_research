@@ -281,6 +281,12 @@ async def main():
                     eventCSRP['baselineTS']=False
 
                 if (eventCSRP['now']):
+                    # try:
+                    #     eventCSRP['baselineW']=await baseline.getCBL(eventDF,csrpTime)
+                    # except Exception as e:
+                    #     logging.error(e)
+                    #     eventCSRP['baselineW'] = 0
+
                     try:
                         await logPerformance(await baseline.getOngoingPerformance(csrpTime,'csrp',eventCSRP['baselineW'],buttonTracker))
                     except Exception as e:
