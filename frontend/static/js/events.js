@@ -153,8 +153,14 @@ async function makeDateLinks(perf){
             let link = document.createTextNode(d);
             // Append the text node to anchor element.
             a.appendChild(link);
+            a.href = "#"; 
+            a.classList.add('perfLink');
+            a.addEventListener('click', function (e) {
+                e.preventDefault(); // Prevent the # from scrolling
+                plotPerformance(d, this);
+                });
             // Set the href property.
-            a.href = "javascript:plotPerformance('"+d+"')";
+            //a.href = "javascript:plotPerformance('"+d+"')";
             // Append the anchor element to the body.
             eventDateCSRP.appendChild(a);
         })
@@ -168,7 +174,7 @@ async function makeDateLinks(perf){
             //a.href = "javascript:plotPerformance('"+d+"',this)";
             // Append the anchor element to the body.
             a.href = "#"; 
-            a.classList.add('.perfLink');
+            a.classList.add('perfLink');
             a.addEventListener('click', function (e) {
                 e.preventDefault(); // Prevent the # from scrolling
                 plotPerformance(d, this);
