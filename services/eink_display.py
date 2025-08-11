@@ -202,11 +202,13 @@ async def startCheck():
 # args: draw object, string to test, initial font size,width of space
 # returns font
 def checkTextWidth(drawObj,s:str,f:int,w:int):
-    if drawObj.textlength(s, f) > w:
+    fc = ImageFont.truetype(os.path.join(picdir, 'Font.ttc'), f)
+    if drawObj.textlength(s, fc) > w:
         while True:
             f -= 1
             print(f)
-            if drawObj.textlength(s, f) <= w:
+            fc = ImageFont.truetype(os.path.join(picdir, 'Font.ttc'), f)
+            if drawObj.textlength(s, fc) <= w:
                 return f
                 break
     return f
@@ -242,7 +244,8 @@ def upcomingScreen(f,s=None,p=None):
     sDraw = ImageDraw.Draw(sImage)
     epd.displayPartBaseImage(epd.getbuffer(sImage))
 
-    ft = ImageFont.truetype(os.path.join(picdir, 'Font.ttc'), 17)
+    ftSize = 17
+    ft = ImageFont.truetype(os.path.join(picdir, 'Font.ttc'), ftSize)
 
     sDraw.rectangle((0,0,screenWidth,screenHeight), fill = 255)
     if not soon:
@@ -274,7 +277,7 @@ def upcomingScreen(f,s=None,p=None):
 
     bottomVtop = (screenHeight/2)-10
     bottomVmid = bottomVtop + ((screenHeight - bottomVtop) * .5)
-    fs = checkTextWidth(sDraw,"Avg Perf:",ft,screenWidth/3)
+    fs = checkTextWidth(sDraw,"Avg Perf:",ftSize,screenWidth/3)
     sDraw.text((hOffset, bottomVmid), f'Avg Perf:\n{round(perc,2)}%', font = fs, anchor="lm", fill = 0)
 
     try:
@@ -282,7 +285,7 @@ def upcomingScreen(f,s=None,p=None):
     except:
         maxPay = 0
 
-    fs = checkTextWidth(sDraw,f"max: {round(bMax,2)}W",ft,screenWidth/3)
+    fs = checkTextWidth(sDraw,f"max: {round(bMax,2)}W",ftSize,screenWidth/3)
     sDraw.text(((2*screenWidth/3)+hOffset, bottomVmid), f'Baseline\nmin: {round(bMin,2)}W\nmax: {round(bMax,2)}W', font = fs, anchor="lm", fill = 0)
 
     # # baseline
@@ -291,7 +294,7 @@ def upcomingScreen(f,s=None,p=None):
     # sDraw.text(((screenWidth/3)+hOffset,screenHeight/2), f'Average\nBaseline:\n{avgBase}W', font = f, anchor="la",fill = 0)
 
     # payment
-    fs = checkTextWidth(sDraw,f"${round(estPay,2)}/m",ft,screenWidth/3)
+    fs = checkTextWidth(sDraw,f"${round(estPay,2)}/m",ftSize,screenWidth/3)
     sDraw.text(((screenWidth/3)+hOffset, bottomVmid), f'Est Pay:\n${round(estPay,2)}/m', font = fs, anchor="lm",fill = 0)
 
     sDraw.line([(0,bottomVtop),(screenWidth,bottomVtop)], fill=0,width=2, joint=None)
