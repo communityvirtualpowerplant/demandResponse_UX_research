@@ -143,7 +143,7 @@ class DRUX_Baseline(Helpers):
 
         # drop unnecessary columns
         try:
-            eDF = eDF.drop(columns=['modified','notes','network'])
+            eDF = eDF.drop(columns=['network'])
         except Exception as e:
             logging.error(e)
 

@@ -235,7 +235,9 @@ async def main():
                     "eventPause":{"datetime":datetime.now(), "state":False},
                     "relays":{'bat-in':True,'bat-out':True,'ac':True}}
     try:
-        eventDF = atEvents.parseListToDF(await atEvents.listRecords())
+        #eventDF = atEvents.parseListToDF(await atEvents.listRecords())
+        eventDF = atEvents.parseListToDF(await atEvents.listRecords()).drop(columns=['modified','notes'])
+
     except Exception as e:
         logging.error(f"Couldn't get event list: {e}")
         eventDF = None
