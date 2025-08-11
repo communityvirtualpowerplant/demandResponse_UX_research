@@ -1,7 +1,7 @@
 //let params = new URLSearchParams(document.location.search);
 const performanceEndPt = '/api/performance';
 
-const startDateStr = "2025-08-10"; // YYYY-MM-DD format
+const startDateStr = "2025-08-07"; // YYYY-MM-DD format
 const startDate = new Date(startDateStr);
 
 //getData('https://communityvirtualpowerplant.com/api/drux/gateway.php?table=events&key=12345')
