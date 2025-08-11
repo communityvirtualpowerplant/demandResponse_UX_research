@@ -41,7 +41,19 @@ logging.basicConfig(format='%(levelname)-8s [%(filename)s:%(lineno)d] %(message)
 freq = 60 * 5
 
 dataDirectory = f'/home/drux/demandResponse_UX_research/data/'
-# configFile = '../config/config.json'
+
+try:
+    repoRoot = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+    with open(os.path.join(repoRoot,'config.json')) as f:
+        config = json.load(f)
+except Exception as e:
+    logging.error(f"Error during reading config file: {e}")
+
+try:
+    pNum = int(config["participant"])
+except:
+    pNum = 0
+logging.info(f"Participation #{pNum}")
 
 # ============================
 # Utilities
@@ -55,6 +67,12 @@ def handle_signal(signal_num: int, frame: Any) -> None:
 # Main
 # ============================        
 async def main(SPS: SmartPowerStation) -> None:
+
+    # dont run on devices without power station connections
+    if pNum in [1,3]:
+        while True:
+            await asyncio.sleep(freq)
+
     scan_duration = 5
 
     while True:
