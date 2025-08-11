@@ -209,9 +209,9 @@ def checkTextWidth(drawObj,s:str,f:int,w:int):
             print(f)
             fc = ImageFont.truetype(os.path.join(picdir, 'Font.ttc'), f)
             if drawObj.textlength(s, fc) <= w:
-                return f
+                return fc
                 break
-    return f
+    return fc
 
 def upcomingScreen(f,s=None,p=None):
     estPay = s['csrp']['monthlyVal'] + s['dlrp']['monthlyVal']
