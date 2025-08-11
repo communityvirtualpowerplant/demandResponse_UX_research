@@ -295,7 +295,7 @@ def upcomingScreen(f,s=None,p=None):
 
     # payment
     fs = checkTextWidth(sDraw,f"Estimated",ftSize,screenWidth/3)
-    sDraw.text(((screenWidth/3)+hOffset, bottomVmid), f'Est.\nPay:\n${round(estPay,2)}/m', font = fs, anchor="lm",fill = 0)
+    sDraw.text(((screenWidth/3)+hOffset, bottomVmid), f'Estimated\nPay:\n${round(estPay,2)}/m', font = fs, anchor="lm",fill = 0)
 
     sDraw.line([(0,bottomVtop),(screenWidth,bottomVtop)], fill=0,width=2, joint=None)
     sDraw.line([((screenWidth/3),bottomVtop),(screenWidth/3,screenHeight)], fill=0,width=1, joint=None)
