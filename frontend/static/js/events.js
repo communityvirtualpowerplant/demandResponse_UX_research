@@ -75,11 +75,12 @@ async function makeDateLinks(perf){
         datesC.sort((a, b) => a - b);
         datesD.sort((a, b) => a - b);
 
-        //filter out entries prior to August 10th
-        const filteredDates = dates.filter(date => {
-          return date <= startDate;
-        });
+        // //filter out entries prior to August 10th
+        // const filteredDates = dates.filter(date => {
+        //   return date <= startDate;
+        // });
 
+        //format datetime strings
         const filteredDatesStrC = []
         datesC.forEach(e=>{
             filteredDatesStrC.push(formationTime(e));//.toISOString());
@@ -90,11 +91,27 @@ async function makeDateLinks(perf){
             filteredDatesStrD.push(formationTime(e));//.toISOString());
         })
 
+        cValue = 0
+        dValue = 0
+
+        filteredDatesStrC.forEach(e=>{
+            cValue = cValue + perf[e]['flexW_avg']
+        })
+
+        filteredDatesStrD.forEach(e=>{
+            dValue = dValue + perf[e]['flexW_avg']
+        })
+
+        cValue = cValue/filteredDatesStrC.length
+        dValue = dValue/filteredDatesStrD.length
+
         console.log('csrp:')
         console.log(filteredDatesStrC)
+        console.log(cValue)
 
         console.log('dlrp:')
         console.log(filteredDatesStrD)
+        console.log(dValue)
 
         eventDateCSRP = document.getElementById('eventDatesCSRP')
         eventDateCSRP.innerHTML  = ''
