@@ -144,7 +144,7 @@ class DRUX_Baseline(Helpers):
         # drop unnecessary columns
         try:
             eDF = eDF.drop(columns=['modified','notes','network'])
-        except:
+        except Exception as e:
             logging.error(e)
 
         pastEventsDF=eDF[eDF['date']<datetime.now().replace(hour=0,minute=0,second=0,microsecond=0)]
