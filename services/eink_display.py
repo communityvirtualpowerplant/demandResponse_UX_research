@@ -208,6 +208,12 @@ def upcomingScreen(f,s=None,p=None):
     except:
         perc = 0
 
+    try:
+        bMin = min(p['baselineW'])
+        bMax = max(p['baselineW'])
+    except:
+        perc = 0
+
     if s['csrp']['upcoming']:
         eTime = s['csrp']['upcoming']#.strftime("%I:%M %p")
     elif s['dlrp']['upcoming']:
@@ -261,7 +267,7 @@ def upcomingScreen(f,s=None,p=None):
     except:
         maxPay = 0
 
-    sDraw.text(((2*screenWidth/3)+hOffset, bottomVmid), f'Max Pay\nat 100%:\n${round(maxPay,2)}/m', font = fs, anchor="lm", fill = 0)
+    sDraw.text(((2*screenWidth/3)+hOffset, bottomVmid), f'Baseline\nmin: {round(bMin,2)}W\nmax: {round(bMax,2)}W', font = fs, anchor="lm", fill = 0)
 
     # # baseline
     # sDraw.line([((screenWidth/3),screenHeight/2),((screenWidth/3),screenHeight)], fill=0,width=1, joint=None)
