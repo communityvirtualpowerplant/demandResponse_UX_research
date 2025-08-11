@@ -120,7 +120,8 @@ nav a:hover {
 }
 
 .typeContainer a {
-  margin-right: 20px; /* Adds 10px space to the right of each link */
+  margin-bottom: 10px;
+  margin-right: 10px; /* Adds 10px space to the right of each link */
   border-radius: 10px;
 }
 
@@ -141,6 +142,10 @@ nav a:hover {
   padding: 10px; /* Adds 10px space to the right of each link */
   max-width: 50%;
 }
+
+.active-link {
+    color: blue; /* highlight color */
+  }
 
 /* Responsive: stack vertically on small screens */
 @media (max-width: 768px) {

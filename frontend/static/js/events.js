@@ -165,13 +165,24 @@ async function makeDateLinks(perf){
             // Append the text node to anchor element.
             a.appendChild(link);
             // Set the href property.
-            a.href = "javascript:plotPerformance('"+d+"')";
+            a.href = "javascript:plotPerformance('"+d+"',this)";
             // Append the anchor element to the body.
+            a.classList.add('.perfLink');
             eventDateDLRP.appendChild(a);
         })
 }
 
-async function plotPerformance(date){
+async function plotPerformance(date,ahref){
+
+    // remove the highlighted class link
+    document.querySelectorAll('.perfLink').forEach(link => {
+        link.classList.remove('active-link');
+        //link.classList.add('inactive-link');
+      });
+
+    // Make the clicked link active
+    //ahref.classList.remove('inactive-link');
+    ahref.classList.add('active-link');
     
     try{
         let myKey
