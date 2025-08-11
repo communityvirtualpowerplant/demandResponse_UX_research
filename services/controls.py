@@ -39,7 +39,7 @@ if not atKey:
     raise EnvironmentError("Missing Airtable credentials")
 
 kD = KasaDRUX(un,pw)
-atEvents = Airtable(atKey,'apptjKq3GAr5CVOQT','events')
+atEvents = Airtable(atKey,'apptjKq3GAr5CVOQT','test')
 baseline = DRUX_Baseline()
 
 try:
