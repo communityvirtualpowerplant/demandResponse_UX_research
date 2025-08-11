@@ -102,8 +102,9 @@ async function makeDateLinks(perf){
             dValue = dValue + perf[e]['flexW_avg']
         })
 
-        cValue = cValue/filteredDatesStrC.length
-        dValue = dValue/filteredDatesStrD.length
+        perfValuekW = 18
+        cValue = perfValuekW*(cValue*0.001)/filteredDatesStrC.length
+        dValue = perfValuekW*(dValue*0.001)/filteredDatesStrD.length
 
         console.log('csrp:')
         console.log(filteredDatesStrC)
@@ -112,6 +113,12 @@ async function makeDateLinks(perf){
         console.log('dlrp:')
         console.log(filteredDatesStrD)
         console.log(dValue)
+
+        eventValueCSRP = document.getElementById('csrpValue')
+        eventDateCSRP.innerHTML  = cValue
+
+        eventValueDLRP = document.getElementById('dlrpValue')
+        eventDateDLRP.innerHTML  = dValue
 
         eventDateCSRP = document.getElementById('eventDatesCSRP')
         eventDateCSRP.innerHTML  = ''
