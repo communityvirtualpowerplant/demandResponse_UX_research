@@ -125,6 +125,7 @@ nav a:hover {
 
 #typeContainer {
   margin-right: 20px; /* Adds 10px space to the right of each link */
+  max-width: 50%;
 }
 
 /* Responsive: stack vertically on small screens */
