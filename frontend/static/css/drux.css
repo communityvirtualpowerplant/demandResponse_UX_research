@@ -123,8 +123,8 @@ nav a:hover {
   margin-right: 20px; /* Adds 10px space to the right of each link */
 }
 
-#typeContainer {
-  margin-right: 20px; /* Adds 10px space to the right of each link */
+.typeContainer {
+  padding: 10px; /* Adds 10px space to the right of each link */
   max-width: 50%;
 }
 
