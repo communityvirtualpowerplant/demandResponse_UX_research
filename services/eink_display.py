@@ -277,8 +277,8 @@ def upcomingScreen(f,s=None,p=None):
 
     bottomVtop = (screenHeight/2)-10
     bottomVmid = bottomVtop + ((screenHeight - bottomVtop) * .5)
-    fs = checkTextWidth(sDraw,"Avg Perf:",ftSize,screenWidth/3)
-    sDraw.text((hOffset, bottomVmid), f'Avg Perf:\n{round(perc,2)}%', font = fs, anchor="lm", fill = 0)
+    fs = checkTextWidth(sDraw,"Performance:",ftSize,screenWidth/3)
+    sDraw.text((hOffset, bottomVmid), f'Avgerage\nPerformance:\n{round(perc*100,1)}%', font = fs, anchor="lm", fill = 0)
 
     try:
         maxPay = estPay / perc
@@ -286,7 +286,7 @@ def upcomingScreen(f,s=None,p=None):
         maxPay = 0
 
     fs = checkTextWidth(sDraw,f"max: {round(bMax,2)}W",ftSize,screenWidth/3)
-    sDraw.text(((2*screenWidth/3)+hOffset, bottomVmid), f'Baseline\nmin: {round(bMin,2)}W\nmax: {round(bMax,2)}W', font = fs, anchor="lm", fill = 0)
+    sDraw.text(((2*screenWidth/3)+hOffset, bottomVmid), f'Baseline\nmin: {round(bMin,1)}W\nmax: {round(bMax,2)}W', font = fs, anchor="lm", fill = 0)
 
     # # baseline
     # sDraw.line([((screenWidth/3),screenHeight/2),((screenWidth/3),screenHeight)], fill=0,width=1, joint=None)
@@ -294,8 +294,8 @@ def upcomingScreen(f,s=None,p=None):
     # sDraw.text(((screenWidth/3)+hOffset,screenHeight/2), f'Average\nBaseline:\n{avgBase}W', font = f, anchor="la",fill = 0)
 
     # payment
-    fs = checkTextWidth(sDraw,f"${round(estPay,2)}/m",ftSize,screenWidth/3)
-    sDraw.text(((screenWidth/3)+hOffset, bottomVmid), f'Est Pay:\n${round(estPay,2)}/m', font = fs, anchor="lm",fill = 0)
+    fs = checkTextWidth(sDraw,f"Estimated",ftSize,screenWidth/3)
+    sDraw.text(((screenWidth/3)+hOffset, bottomVmid), f'Estimated\nPayment:\n${round(estPay,2)}/m', font = fs, anchor="lm",fill = 0)
 
     sDraw.line([(0,bottomVtop),(screenWidth,bottomVtop)], fill=0,width=2, joint=None)
     sDraw.line([((screenWidth/3),bottomVtop),(screenWidth/3,screenHeight)], fill=0,width=1, joint=None)
