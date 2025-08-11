@@ -33,14 +33,10 @@ The username for all devices is
 
 Software
 * finalize interfaces
-* local front end
+* test event
 
 System
 * plan for sms and emails
-* design supplemental materials
-	* website
-	* system manual
-	* DR explainer, with value estimator
 
 Study
 * finalize change over plan
