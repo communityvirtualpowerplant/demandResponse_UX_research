@@ -199,6 +199,18 @@ async def startCheck():
 ### Screens ###
 ###############
 
+# args: draw object, string to test, initial font size,width of space
+# returns font
+def checkTextWidth(drawObj,s:str,f:int,w:int):
+    if drawObj.textlength(s, f) > w:
+        while True:
+            f -= 1
+            print(f)
+            if drawObj.textlength(s, f) <= w:
+                return f
+                break
+    return f
+
 def upcomingScreen(f,s=None,p=None):
     estPay = s['csrp']['monthlyVal'] + s['dlrp']['monthlyVal']
     estPay = round(estPay,2)
@@ -247,26 +259,30 @@ def upcomingScreen(f,s=None,p=None):
         return None
 
     hOffset = 2
+
     # performance
-    fs = ft #could make f none if not actually using it
-    if sDraw.textlength("Avg. Perf.:", ft) > screenWidth/3:
-        fontSize = 17
-        while True:
-            fontSize -= 1
-            print(fontSize)
-            fs = ImageFont.truetype(os.path.join(picdir, 'Font.ttc'), fontSize)
-            if sDraw.textlength("Avg. Perf.:", fs) <= screenWidth/3:
-                break
+    #fs = ft #could make f none if not actually using it
+
+    # if sDraw.textlength("Avg Perf:", ft) > screenWidth/3:
+    #     fontSize = 17
+    #     while True:
+    #         fontSize -= 1
+    #         print(fontSize)
+    #         fs = ImageFont.truetype(os.path.join(picdir, 'Font.ttc'), fontSize)
+    #         if sDraw.textlength("Avg. Perf.:", fs) <= screenWidth/3:
+    #             break
 
     bottomVtop = (screenHeight/2)-10
     bottomVmid = bottomVtop + ((screenHeight - bottomVtop) * .5)
-    sDraw.text((hOffset, bottomVmid), f'Avg. Perf.:\n{round(perc,2)}%', font = fs, anchor="lm", fill = 0)
+    fs = checkTextWidth(sDraw,"Avg Perf:",ft,screenWidth/3)
+    sDraw.text((hOffset, bottomVmid), f'Avg Perf:\n{round(perc,2)}%', font = fs, anchor="lm", fill = 0)
 
     try:
         maxPay = estPay / perc
     except:
         maxPay = 0
 
+    fs = checkTextWidth(sDraw,f"max: {round(bMax,2)}W",ft,screenWidth/3)
     sDraw.text(((2*screenWidth/3)+hOffset, bottomVmid), f'Baseline\nmin: {round(bMin,2)}W\nmax: {round(bMax,2)}W', font = fs, anchor="lm", fill = 0)
 
     # # baseline
@@ -275,7 +291,8 @@ def upcomingScreen(f,s=None,p=None):
     # sDraw.text(((screenWidth/3)+hOffset,screenHeight/2), f'Average\nBaseline:\n{avgBase}W', font = f, anchor="la",fill = 0)
 
     # payment
-    sDraw.text(((screenWidth/3)+hOffset, bottomVmid), f'Est. Pay:\n${round(estPay,2)}/m', font = fs, anchor="lm",fill = 0)
+    fs = checkTextWidth(sDraw,f"${round(estPay,2)}/m",ft,screenWidth/3)
+    sDraw.text(((screenWidth/3)+hOffset, bottomVmid), f'Est Pay:\n${round(estPay,2)}/m', font = fs, anchor="lm",fill = 0)
 
     sDraw.line([(0,bottomVtop),(screenWidth,bottomVtop)], fill=0,width=2, joint=None)
     sDraw.line([((screenWidth/3),bottomVtop),(screenWidth/3,screenHeight)], fill=0,width=1, joint=None)
@@ -473,7 +490,7 @@ def normalScreen(f,w=None,s=None,p=None):
 
     bottomVtop = (screenHeight/2)-10
     bottomVmid = bottomVtop + ((screenHeight - bottomVtop) * .5)
-    sDraw.text((hOffset, bottomVmid), f'Your Average\nPerformance:\n{perc}%', font = fs, anchor="lm", fill = 0)
+    sDraw.text((hOffset, bottomVmid), f'Your Average\nPerformance:\n{round(perc,2)}%', font = fs, anchor="lm", fill = 0)
 
     # # baseline
     # sDraw.line([((screenWidth/3),screenHeight/2),((screenWidth/3),screenHeight)], fill=0,width=1, joint=None)
@@ -481,7 +498,7 @@ def normalScreen(f,w=None,s=None,p=None):
     # sDraw.text(((screenWidth/3)+hOffset,screenHeight/2), f'Average\nBaseline:\n{avgBase}W', font = f, anchor="la",fill = 0)
 
     # payment
-    sDraw.text(((screenWidth/2)+hOffset, bottomVmid), f'Estimated\nPayment:\n${estPay}/m', font = fs, anchor="lm",fill = 0)
+    sDraw.text(((screenWidth/2)+hOffset, bottomVmid), f'Estimated\nPayment:\n${round(estPay,2)}/m', font = fs, anchor="lm",fill = 0)
 
     sDraw.line([(0,bottomVtop),(screenWidth,bottomVtop)], fill=0,width=2, joint=None)
     sDraw.line([((screenWidth/2),bottomVtop),(screenWidth/2,screenHeight)], fill=0,width=1, joint=None)
