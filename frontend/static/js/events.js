@@ -102,17 +102,20 @@ async function makeDateLinks(perf){
             dValue = dValue + perf[e]['flexW_avg']
         })
 
-        if (Number.isFinite(cValue)){
-            cValue = 0;
-        }
-
-        if (Number.isFinite(dValue)){
-            dValue = 0;
-        }
-
         perfValuekW = 18
         cValue = perfValuekW*(cValue*0.001)/filteredDatesStrC.length
         dValue = perfValuekW*(dValue*0.001)/filteredDatesStrD.length
+        
+        //replace NaN
+        if (!Number.isFinite(cValue)){
+            cValue = 0;
+        }
+
+        //replace NaN
+        if (!Number.isFinite(dValue)){
+            dValue = 0;
+        }
+
         let totValue = cValue + dValue
 
         console.log('csrp:')
