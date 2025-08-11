@@ -490,7 +490,7 @@ def normalScreen(f,w=None,s=None,p=None):
 
     bottomVtop = (screenHeight/2)-10
     bottomVmid = bottomVtop + ((screenHeight - bottomVtop) * .5)
-    sDraw.text((hOffset, bottomVmid), f'Your Average\nPerformance:\n{round(perc,2)}%', font = fs, anchor="lm", fill = 0)
+    sDraw.text((hOffset, bottomVmid), f'Your Average\nPerformance:\n{round(perc*100,2)}%', font = fs, anchor="lm", fill = 0)
 
     # # baseline
     # sDraw.line([((screenWidth/3),screenHeight/2),((screenWidth/3),screenHeight)], fill=0,width=1, joint=None)
