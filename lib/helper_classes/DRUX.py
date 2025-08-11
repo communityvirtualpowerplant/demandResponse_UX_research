@@ -137,7 +137,7 @@ class DRUX_Baseline(Helpers):
         self.pastEventDates = pe # past event dates
         self.DLRPrate = 18
         self.CSRPrate = 18
-        self.startDate = datetime(2025, 8, 11) # the first real event is August 8, 2025
+        self.startDate = datetime(2025, 8, 12) # the first real event is August 8, 2025
 
     async def getCBL(self,eDF,eTime):
         #self.eventStartTime = eTime

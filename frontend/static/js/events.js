@@ -75,19 +75,25 @@ async function makeDateLinks(perf){
         datesC.sort((a, b) => a - b);
         datesD.sort((a, b) => a - b);
 
-        // //filter out entries prior to August 10th
-        // const filteredDates = dates.filter(date => {
-        //   return date <= startDate;
-        // });
+        //filter out entries prior to August 10th
+        const filteredDatesC = datesC.filter(date => {
+          return date >= startDate;
+        });
+        console.log(filteredDatesC)
+
+        const filteredDatesD = datesD.filter(date => {
+          return date >= startDate;
+        });
+        console.log(filteredDatesD)
 
         //format datetime strings
         const filteredDatesStrC = []
-        datesC.forEach(e=>{
+        filteredDatesC.forEach(e=>{
             filteredDatesStrC.push(formationTime(e));//.toISOString());
         })
 
         const filteredDatesStrD = []
-        datesD.forEach(e=>{
+        filteredDatesD.forEach(e=>{
             filteredDatesStrD.push(formationTime(e));//.toISOString());
         })
 
