@@ -1,7 +1,7 @@
 //let params = new URLSearchParams(document.location.search);
 const performanceEndPt = '/api/performance';
 
-const startDateStr = "2025-08-06"; // YYYY-MM-DD format
+const startDateStr = "2025-08-12"; // YYYY-MM-DD format
 const startDate = new Date(startDateStr);
 
 //getData('https://communityvirtualpowerplant.com/api/drux/gateway.php?table=events&key=12345')
@@ -79,12 +79,12 @@ async function makeDateLinks(perf){
         const filteredDatesC = datesC.filter(date => {
           return date >= startDate;
         });
-        console.log(filteredDatesC)
+        //console.log(filteredDatesC)
 
         const filteredDatesD = datesD.filter(date => {
           return date >= startDate;
         });
-        console.log(filteredDatesD)
+        //console.log(filteredDatesD)
 
         //format datetime strings
         const filteredDatesStrC = []
