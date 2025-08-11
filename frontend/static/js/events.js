@@ -115,10 +115,10 @@ async function makeDateLinks(perf){
         console.log(dValue)
 
         eventValueCSRP = document.getElementById('csrpValue')
-        eventDateCSRP.innerHTML  = cValue
+        eventValueCSRP.innerHTML  = cValue
 
         eventValueDLRP = document.getElementById('dlrpValue')
-        eventDateDLRP.innerHTML  = dValue
+        eventValueDLRP.innerHTML  = dValue
 
         eventDateCSRP = document.getElementById('eventDatesCSRP')
         eventDateCSRP.innerHTML  = ''
