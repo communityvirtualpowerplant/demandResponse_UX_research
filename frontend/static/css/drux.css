@@ -113,8 +113,18 @@ nav a:hover {
   width: 100%;
 }
 
-.eventDateContainer a {
-      margin-right: 20px; /* Adds 10px space to the right of each link */
+#eventContainer{
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+}
+
+.typeContainer a {
+  margin-right: 20px; /* Adds 10px space to the right of each link */
+}
+
+#typeContainer {
+  margin-right: 20px; /* Adds 10px space to the right of each link */
 }
 
 /* Responsive: stack vertically on small screens */

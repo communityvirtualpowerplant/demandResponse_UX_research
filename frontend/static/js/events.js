@@ -187,7 +187,7 @@ async function plotPerformance(date){
         var dataE = [trace1E, trace2E];
 
         var layoutE = {barmode: 'group',
-            title: {text: date + " Event Performance (" + String(Math.round(eventData['flexW_avg']*100)/100) + "W)"},
+            title: {text: date + " Event Performance by Hour (Avg Flex: " + String(Math.round(eventData['flexW_avg']*100)/100) + "W)"},
             xaxis: { title: "Hours" },
             yaxis: { title: "Load" }
         }

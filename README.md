@@ -23,7 +23,6 @@ The username for all devices is
 
 #### User
 
-
 ### Additional Development Resources
 
 * https://www.waveshare.com/wiki/2.13inch_e-Paper_HAT+
@@ -33,11 +32,7 @@ The username for all devices is
 ## To do
 
 Software
-
-display
 * finalize interfaces
-
-backend
 * local front end
 
 System
@@ -53,8 +48,3 @@ Study
 To do, post install:
 * slow all processes down when not event upcoming (like airtable updater)
 * add in start date filter
-
-Stretch:
-* add QR code to IP screen
-* incorporate weather
-* add in a battery cutoff below 20%
