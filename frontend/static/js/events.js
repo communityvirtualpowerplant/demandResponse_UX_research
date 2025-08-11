@@ -115,16 +115,23 @@ async function makeDateLinks(perf){
         console.log(dValue)
 
         eventValueCSRP = document.getElementById('csrpValue')
-        eventValueCSRP.innerHTML  = cValue
+        eventValueCSRP.innerHTML  = Math.round(cValue*100)/100
 
         eventValueDLRP = document.getElementById('dlrpValue')
-        eventValueDLRP.innerHTML  = dValue
+        eventValueDLRP.innerHTML  = Math.round(dValue*100)/100
 
         eventDateCSRP = document.getElementById('eventDatesCSRP')
         eventDateCSRP.innerHTML  = ''
+        if (filteredDatesStrC.length ==0){
+            eventDateCSRP.innerHTML  = 'No events yet'
+        }
+        
 
         eventDateDLRP = document.getElementById('eventDatesDLRP')
         eventDateDLRP.innerHTML  = ''
+        if (filteredDatesStrD.length ==0){
+            eventDateDLRP.innerHTML  = 'No events yet'
+        }
 
         filteredDatesStrC.forEach(d=>{
             let a = document.createElement('a');
