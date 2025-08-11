@@ -187,8 +187,9 @@ async function makeDateLinks(perf){
 
 async function plotPerformance(date,ahref){
 
-    if (!ahref === undefined) {
-    
+    if (ahref === undefined) {
+        console.log('ahref undefined');
+    } else {    
         // remove the highlighted class link
         document.querySelectorAll('.perfLink').forEach(link => {
             link.classList.remove('active-link');
