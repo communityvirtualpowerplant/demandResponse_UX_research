@@ -126,7 +126,7 @@ nav a:hover {
 }
 
 .typeContainer a:link, a:visited {
-  background-color: hotpink;
+  /*background-color: hotpink;*/
   color: white;
   padding: 5px 10px;
   text-align: center;
@@ -144,8 +144,12 @@ nav a:hover {
 }
 
 .active-link {
-    color: blue; /* highlight color */
-  }
+  color: blue; /* highlight color */
+}
+
+.inactive-link{
+  background-color: hotpink;
+}
 
 /* Responsive: stack vertically on small screens */
 @media (max-width: 768px) {
