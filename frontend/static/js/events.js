@@ -91,8 +91,8 @@ async function makeDateLinks(perf){
             filteredDatesStrD.push(formationTime(e));//.toISOString());
         })
 
-        cValue = 0
-        dValue = 0
+        let cValue = 0
+        let dValue = 0
 
         filteredDatesStrC.forEach(e=>{
             cValue = cValue + perf[e]['flexW_avg']
@@ -102,9 +102,18 @@ async function makeDateLinks(perf){
             dValue = dValue + perf[e]['flexW_avg']
         })
 
+        if (Number.isFinite(cValue)){
+            cValue = 0;
+        }
+
+        if (Number.isFinite(dValue)){
+            dValue = 0;
+        }
+
         perfValuekW = 18
         cValue = perfValuekW*(cValue*0.001)/filteredDatesStrC.length
         dValue = perfValuekW*(dValue*0.001)/filteredDatesStrD.length
+        let totValue = cValue + dValue
 
         console.log('csrp:')
         console.log(filteredDatesStrC)
@@ -119,6 +128,9 @@ async function makeDateLinks(perf){
 
         eventValueDLRP = document.getElementById('dlrpValue')
         eventValueDLRP.innerHTML  = Math.round(dValue*100)/100
+
+        eventValueTot = document.getElementById('totValue')
+        eventValueTot.innerHTML  = Math.round((cValue+dValue)*100)/100
 
         eventDateCSRP = document.getElementById('eventDatesCSRP')
         eventDateCSRP.innerHTML  = ''
