@@ -173,6 +173,7 @@ async function makeDateLinks(perf){
 }
 
 async function plotPerformance(date,ahref){
+    console.log(ahref);
 
     // remove the highlighted class link
     document.querySelectorAll('.perfLink').forEach(link => {
