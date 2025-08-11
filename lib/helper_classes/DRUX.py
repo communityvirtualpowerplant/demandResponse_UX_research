@@ -137,6 +137,7 @@ class DRUX_Baseline(Helpers):
         self.pastEventDates = pe # past event dates
         self.DLRPrate = 18
         self.CSRPrate = 18
+        self.startDate = datetime(2025, 8, 12) # the first real event is August 8, 2025
 
     async def getCBL(self,eDF,eTime):
         #self.eventStartTime = eTime
@@ -475,7 +476,12 @@ class DRUX_Baseline(Helpers):
             if v['event']==eType:
                 #filter by month
                 if int(k.split('-')[1]) == mon:
-                    filteredPerformance[k] = v
+                    #filter by start date
+                    if datetime.fromisoformat(k)>= self.startDate:
+                        logging.info(f'date is good! {k}')
+                        filteredPerformance[k] = v
+                    else:
+                        logging.info(f'date is not good! {k}')
 
         # get all flexAvgs in kW
         allAvgFlexKW = []

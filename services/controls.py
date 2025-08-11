@@ -152,6 +152,7 @@ async def send_get_request(ip:str='localhost', port:int=5000,endpoint:str='',typ
                     await asyncio.sleep(1+attempt)
         return res
 
+# this should really be moved to the baseline class
 async def logPerformance(d:dict):
     try:
         try:
