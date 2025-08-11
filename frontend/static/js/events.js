@@ -155,6 +155,7 @@ async function makeDateLinks(perf){
             a.appendChild(link);
             a.href = "#"; 
             a.classList.add('perfLink');
+            a.classList.add('inactive-link');
             a.addEventListener('click', function (e) {
                 e.preventDefault(); // Prevent the # from scrolling
                 plotPerformance(d, this);
@@ -175,6 +176,7 @@ async function makeDateLinks(perf){
             // Append the anchor element to the body.
             a.href = "#"; 
             a.classList.add('perfLink');
+            a.classList.add('inactive-link');
             a.addEventListener('click', function (e) {
                 e.preventDefault(); // Prevent the # from scrolling
                 plotPerformance(d, this);
