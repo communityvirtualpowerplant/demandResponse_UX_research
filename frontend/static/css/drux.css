@@ -121,6 +121,20 @@ nav a:hover {
 
 .typeContainer a {
   margin-right: 20px; /* Adds 10px space to the right of each link */
+  border-radius: 10px;
+}
+
+.typeContainer a:link, a:visited {
+  background-color: hotpink;
+  color: white;
+  padding: 5px 10px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.typeContainer a:hover, a:active {
+  background-color: red;
 }
 
 .typeContainer {
