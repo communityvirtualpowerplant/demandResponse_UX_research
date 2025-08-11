@@ -186,17 +186,19 @@ async function makeDateLinks(perf){
 }
 
 async function plotPerformance(date,ahref){
-    console.log(ahref);
 
-    // remove the highlighted class link
-    document.querySelectorAll('.perfLink').forEach(link => {
-        link.classList.remove('active-link');
-        link.classList.add('inactive-link');
-      });
+    if (!ahref === undefined) {
+    
+        // remove the highlighted class link
+        document.querySelectorAll('.perfLink').forEach(link => {
+            link.classList.remove('active-link');
+            link.classList.add('inactive-link');
+          });
 
-    // Make the clicked link active
-    ahref.classList.remove('inactive-link');
-    ahref.classList.add('active-link');
+        // Make the clicked link active
+        ahref.classList.remove('inactive-link');
+        ahref.classList.add('active-link');
+    }
     
     try{
         let myKey

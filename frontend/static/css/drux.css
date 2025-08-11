@@ -149,10 +149,12 @@ nav a:hover {
 
 .active-link {
   background-color: hotpink; /* highlight color */
+  color:white;
 }
 
 .inactive-link{
-  background-color: orange;
+  background-color: lightgray;
+  color:black;
 }
 
 /* Responsive: stack vertically on small screens */
