@@ -53,7 +53,7 @@ try:
     pNum = int(config["participant"])
 except:
     pNum = 0
-logging.info(f"Participation #{pNum}")
+logging.info(f"Participant #{pNum}")
 
 # ============================
 # Utilities

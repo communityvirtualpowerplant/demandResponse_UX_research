@@ -33,7 +33,7 @@ The username for all devices is
 
 Software
 * finalize interfaces
-* test event
+* check no battery for frontend!
 
 System
 * plan for sms and emails
