@@ -11,7 +11,7 @@ import random
 import subprocess
 import os
 
-logging.basicConfig(format='%(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',level=logging.INFO)
+logging.basicConfig(format='%(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',level=logging.DEBUG)
 
 class Helpers():
     async def send_get_request(self,url:str='http://localhost:5000/',endpoint:str='',type:str='json',key=None,timeout=1):
