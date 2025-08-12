@@ -41,7 +41,7 @@ participantNumber = int(config["participant"])
 # assign aggregator
 if participantNumber == 0:
     aggregator = True
-except:
+else:
     aggregator = False
 
 AT = Airtable(key,'appqYfVvpJR5kBATE')
