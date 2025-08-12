@@ -230,8 +230,8 @@ async def main():
         stateDict = await send_get_request(endpoint='api/state')
     except Exception as e:
         logging.error(f"Couldn't initialize state: {e}")
-        stateDict={"csrp":{"baselineW":0,"baselineTS":False,"now":False,"upcoming":False,"avgPerf":0,"monthlyVal":0},
-                    "dlrp":{"baselineW":0,"baselineTS":False,"now":False,"upcoming":False,"avgPerf":0,"monthlyVal":0},
+        stateDict={"csrp":{"baselineW":0,"baselineTS":False,"now":False,"upcoming":False,"goalAvg":0,"monthlyVal":0},
+                    "dlrp":{"baselineW":0,"baselineTS":False,"now":False,"upcoming":False,"goalAvg":0,"monthlyVal":0},
                     "datetime":datetime.now(),
                     "eventPause":{"datetime":datetime.now(), "state":False},
                     "relays":{'bat-in':True,'bat-out':True,'ac':True}}

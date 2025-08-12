@@ -4,5 +4,6 @@
 	"csrp":16,
 	"csrpRatekW":18,
 	"dlrpRatekW":18,
-	"paymentStartDate":"2025-07-21"
+	"paymentStartDate":"2025-07-21",
+	"role":0
 }
