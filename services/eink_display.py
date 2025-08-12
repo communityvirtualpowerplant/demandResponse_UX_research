@@ -307,7 +307,7 @@ def eventScreen(f,s, p,paused=False):
 
     # performance percentage
     try:
-        percN = 0#min(1,p['goalAvg']) # update this!
+        percN = min(1,perc*1.05) # update this!
     except:
         percN = 0
 

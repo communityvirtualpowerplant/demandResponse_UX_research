@@ -478,10 +478,10 @@ class DRUX_Baseline(Helpers):
                 if int(k.split('-')[1]) == mon:
                     #filter by start date
                     if datetime.fromisoformat(k)>= self.startDate:
-                        logging.info(f'date is good! {k}')
+                        logging.debug(f'date is good! {k}')
                         filteredPerformance[k] = v
                     else:
-                        logging.info(f'date is not good! {k}')
+                        logging.debug(f'date is not good! {k}')
 
         # get all flexAvgs in kW
         allAvgFlexKW = []
