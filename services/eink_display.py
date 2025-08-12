@@ -223,8 +223,12 @@ def upcomingScreen(f,s=None,p=None):
         perc = 0
 
     try:
-        bMin = min(p['baselineW'])
-        bMax = max(p['baselineW'])
+        if s['csrp']['upcoming']:
+            bMin = min(s['csrp']['baselineW'])
+            bMax = max(s['csrp']['baselineW'])
+        elif s['dlrp']['upcoming']:
+            bMin = min(s['dlrp']['baselineW'])
+            bMax = max(s['dlrp']['baselineW'])
     except:
         bMin = 0
         bMax = 0
