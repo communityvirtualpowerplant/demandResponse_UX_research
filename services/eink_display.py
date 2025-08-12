@@ -226,7 +226,8 @@ def upcomingScreen(f,s=None,p=None):
         bMin = min(p['baselineW'])
         bMax = max(p['baselineW'])
     except:
-        perc = 0
+        bMin = 0
+        bMax = 0
 
     if s['csrp']['upcoming']:
         eTime = s['csrp']['upcoming']#.strftime("%I:%M %p")
