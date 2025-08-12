@@ -166,7 +166,7 @@ def stateUpdate(o, n)-> bool:
 
 async def getPerformance():
     # check for today's performance
-    todaysPerformance = {"goalAvg":0,""} # if using other keys in the screen functions, include them here as defaults
+    todaysPerformance = {"goalAvg":0} # if using other keys in the screen functions, include them here as defaults
     try:
         performance = await send_get_request(endpoint='api/performance')
         for k in performance.keys():
