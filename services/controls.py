@@ -277,6 +277,7 @@ async def main():
                 eventCSRP = isCSRPEventUpcoming(eventDF,csrpTime)
                 eventCSRP['baselineW']=csrpBaseline
                 eventCSRP['monthlyVal']=max(0,val[0])
+                eventCSRP['goalAvg']=0
 
                 if csrpBaselineTS:
                     eventCSRP['baselineTS']=csrpBaselineTS
@@ -302,10 +303,12 @@ async def main():
                         val = (0,0)
 
                     eventCSRP['monthlyVal']=max(0,val[0])
+                    eventCSRP['goalAvg']=0
 
 
                 eventDLRP = isDLRPEventUpcoming(eventDF)
                 eventDLRP['monthlyVal']=max(0,val[1])
+                eventDLRP['goalAvg']=0
 
                 # update DLRP baseline if needed
                 if (eventDLRP['upcoming']):
@@ -339,10 +342,12 @@ async def main():
                             val = (0,0)
 
                         eventDLRP['monthlyVal']=max(0,val[1])
+                        eventDLRP['goalAvg']=0
                 else:
                     try:
                         eventDLRP['baselineW']=stateDict['dlrp']['baselineW']
                         eventDLRP['monthlyVal']=max(0,val[1])
+                        eventDLRP['goalAvg']=0
                     except:
                         eventDLRP['baselineW']=0
                 stateDict['datetime'] = datetime.now()
