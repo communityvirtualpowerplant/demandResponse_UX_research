@@ -305,6 +305,12 @@ def eventScreen(f,s, p,paused=False):
     except:
         perc = 0
 
+    # performance percentage
+    try:
+        percN = 0#min(1,p['goalAvg']) # update this!
+    except:
+        percN = 0
+
     # elapsed time percentage
     try:
         et = datetime.now() - p['datetime']  #elapsed  time
@@ -351,7 +357,7 @@ def eventScreen(f,s, p,paused=False):
     # your goal
     centerX = 2*screenWidth/3  - (screenWidth/6) - 6
     sDraw.circle((centerX,centerY),circRad,fill=255, outline=0,width=1)
-    sDraw.pieslice((centerX-circRad,centerY-circRad,centerX+circRad,centerY+circRad), 0-90, int(360*perc)-90,fill=0)
+    sDraw.pieslice((centerX-circRad,centerY-circRad,centerX+circRad,centerY+circRad), 0-90, int(360*max(perc,0))-90,fill=0)
     sDraw.circle((centerX,centerY),circRad*.5,fill=255, outline=0,width=1)
     sDraw.text((centerX,centerY), f"{int(perc*100)}", font = f,  anchor="mm",fill = 0)
     sDraw.text((centerX,centerY+circRad+2), f"Your Goal", font = f,  anchor="ma",fill = 0)
@@ -359,9 +365,9 @@ def eventScreen(f,s, p,paused=False):
     # network avg
     centerX = 3*screenWidth/3 - (screenWidth/6) -2
     sDraw.circle((centerX,centerY),circRad,fill=255, outline=0,width=1)
-    sDraw.pieslice((centerX-circRad,centerY-circRad,centerX+circRad,centerY+circRad), -90, int(360*percT)-90,fill=0)
+    sDraw.pieslice((centerX-circRad,centerY-circRad,centerX+circRad,centerY+circRad), -90, int(360*max(percN,0))-90,fill=0)
     sDraw.circle((centerX,centerY),circRad*.5,fill=255, outline=0,width=1)
-    sDraw.text((centerX-1 ,centerY), f"{int(percT*100)}%", font = f,  anchor="mm",fill = 0)
+    sDraw.text((centerX-1 ,centerY), f"{int(percN*100)}%", font = f,  anchor="mm",fill = 0)
     sDraw.text((centerX,centerY+circRad+2), f"Network Avg", font = f,  anchor="ma",fill = 0)
 
     epd.displayPartial(epd.getbuffer(sImage))
