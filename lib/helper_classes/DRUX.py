@@ -497,8 +497,45 @@ class DRUX_Baseline(Helpers):
         return totAvgFlexKW
 
         #returns a tuple
+
+    async def getAvgPerformance(self,eType,mon):
+        performance = await self.send_get_request('http://localhost:5000/api/performance',type='json')
+
+        #filter performance by event type
+        filteredPerformance = {}
+        for k,v in performance.items():
+            if v['event']==eType:
+                #filter by month
+                if int(k.split('-')[1]) == mon:
+                    #filter by start date
+                    if datetime.fromisoformat(k)>= self.startDate:
+                        logging.debug(f'date is good! {k}')
+                        filteredPerformance[k] = v
+                    else:
+                        logging.debug(f'date is not good! {k}')
+
+        # get all flexAvgs in kW
+        allGoals = []
+        for k,v in filteredPerformance.items():
+            allAvgFlexKW.append(v['goalAvg'])
+
+        #totAvgFlexKW = mean(allAvgFlexKW)
+        if len(allGoals)>0:
+            overallGoalAvg = mean(allGoals)
+        else:
+            overallGoalAvg = 0
+
+        return overallGoalAvg
+
+    #returns a tuple
     async def getPerformanceDollarValue(self,mon,cR=18,dR=18):
         c = await self.getAvgReduction('csrp',mon)
         d = await self.getAvgReduction('dlrp',mon)
 
         return (c * cR,d * dR)
+
+    async def getPerformancePercent(self,mon):
+        c = await self.getAvgPerformance('csrp',mon)
+        d = await self.getAvgPerformance('dlrp',mon)
+
+        return (c,d)

@@ -49,7 +49,7 @@ try:
 except Exception as e:
     logging.error(f"Error during reading config file: {e}")
 
-csrpTime = int(config["csrp"])
+csrpTime = 16 #int(config["csrp"]) #hardcoded the time, because of participant 3...
 logging.debug(f'CSRP start time is {csrpTime}')
 
 # this should be initialized with all the state data!
@@ -180,7 +180,7 @@ async def main():
 
     await asyncio.sleep(20)
 
-    # check for update
+    # check for software update
     baseline.getUpdate()
 
     #delay start
@@ -244,6 +244,8 @@ async def main():
         eventDF = None
 
     val = (0,0) #initial value for both programs at $0
+    monthlyGoalAvg = (0,0) # initial performance percentage for both programs
+
     csrpBaselineTS = datetime.now()
     try:
         #baseline.eventStartTime = csrpTime
@@ -251,6 +253,7 @@ async def main():
         csrpBaseline = await baseline.getCBL(eventDF,csrpTime)
 
         val = await baseline.getPerformanceDollarValue(datetime.now().month) #returns a tuple
+        monthlyGoalAvg = await baseline.getPerformancePercent(datetime.now().month)
     except Exception as e:
         try:
             csrpBaseline = stateDict['csrp']['baselineW']
@@ -259,9 +262,10 @@ async def main():
         logging.error(e)
 
     count = 0
+    oldVal = val
     while True:
 
-        # check for update
+        # check for software update
         if count % 4 == 0:
             baseline.getUpdate()
 
@@ -273,11 +277,12 @@ async def main():
             eventDF = atEvents.parseListToDF(await atEvents.listRecords()).drop(columns=['modified','notes'])
 
             try:
+
                 # check for events
                 eventCSRP = isCSRPEventUpcoming(eventDF,csrpTime)
                 eventCSRP['baselineW']=csrpBaseline
                 eventCSRP['monthlyVal']=max(0,val[0])
-                eventCSRP['goalAvg']=0
+                eventCSRP['goalAvg']=monthlyGoalAvg[0]
 
                 if csrpBaselineTS:
                     eventCSRP['baselineTS']=csrpBaselineTS
@@ -298,17 +303,25 @@ async def main():
 
                     try:
                         val = await baseline.getPerformanceDollarValue(datetime.now().month) #returns a tuple
+
+                        if not oldVal == val:
+                            oldVal = val
+                            try:
+                                monthlyGoalAvg = await baseline.getPerformancePercent(datetime.now().month)
+                            except:
+                                monthlyGoalAvg = (0,0)
+
                     except Exception as e:
                         logging.error(e)
                         val = (0,0)
 
                     eventCSRP['monthlyVal']=max(0,val[0])
-                    eventCSRP['goalAvg']=0
+                    eventCSRP['goalAvg']=monthlyGoalAvg[0]
 
 
                 eventDLRP = isDLRPEventUpcoming(eventDF)
                 eventDLRP['monthlyVal']=max(0,val[1])
-                eventDLRP['goalAvg']=0
+                eventDLRP['goalAvg']=monthlyGoalAvg[1]
 
                 # update DLRP baseline if needed
                 if (eventDLRP['upcoming']):
@@ -337,17 +350,23 @@ async def main():
 
                         try:
                             val = await baseline.getPerformanceDollarValue(datetime.now().month) #returns a tuple
+                            if not oldVal == val:
+                                oldVal = val
+                                try:
+                                    monthlyGoalAvg = await baseline.getPerformancePercent(datetime.now().month)
+                                except:
+                                    monthlyGoalAvg = (0,0)
                         except Exception as e:
                             logging.error(e)
                             val = (0,0)
 
                         eventDLRP['monthlyVal']=max(0,val[1])
-                        eventDLRP['goalAvg']=0
+                        eventDLRP['goalAvg']=monthlyGoalAvg[1]
                 else:
                     try:
                         eventDLRP['baselineW']=stateDict['dlrp']['baselineW']
                         eventDLRP['monthlyVal']=max(0,val[1])
-                        eventDLRP['goalAvg']=0
+                        eventDLRP['goalAvg']=monthlyGoalAvg[1]
                     except:
                         eventDLRP['baselineW']=0
                 stateDict['datetime'] = datetime.now()
