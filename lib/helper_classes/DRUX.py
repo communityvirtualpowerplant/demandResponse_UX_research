@@ -517,7 +517,7 @@ class DRUX_Baseline(Helpers):
         # get all flexAvgs in kW
         allGoals = []
         for k,v in filteredPerformance.items():
-            allAvgFlexKW.append(v['goalAvg'])
+            allGoals.append(v['goalAvg'])
 
         #totAvgFlexKW = mean(allAvgFlexKW)
         if len(allGoals)>0:
