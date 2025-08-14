@@ -30,11 +30,11 @@ async function fetchState(endpoint) {
     eventStatusContainer.innerHTML = eStatus
         
     let eventValueCSRP = document.getElementById('csrpAvgGoal')
-    let cG = state['csrp']['goalAvg'] 
+    let cG = state['csrp']['goalAvg'] * 100
     eventValueCSRP.innerHTML  = cG
 
     let eventValueDLRP = document.getElementById('dlrpAvgGoal')
-    let dG = state['dlrp']['goalAvg'] 
+    let dG = state['dlrp']['goalAvg'] * 100
     eventValueDLRP.innerHTML  = dG
 
     // check if events have occurred
