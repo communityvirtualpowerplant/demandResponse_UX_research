@@ -218,7 +218,7 @@ def upcomingScreen(f,s=None,p=None):
     estPay = round(estPay,2)
 
     try:
-        perc = min(1,p['goalAvg'])
+        perc = perc = min(1,(s['csrp']['goalAvg']+s['dlrp']['goalAvg'])*.5) #min(1,p['goalAvg'])
     except:
         perc = 0
 
@@ -387,7 +387,7 @@ def normalScreen(f,w=None,s=None,p=None):
         return None
 
     try:
-        perc = min(1,p['goalAvg'])
+        perc = min(1,(s['csrp']['goalAvg']+s['dlrp']['goalAvg'])*.5)
     except:
         perc = 0
 
