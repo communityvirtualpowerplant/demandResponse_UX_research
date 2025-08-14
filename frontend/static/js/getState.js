@@ -28,6 +28,27 @@ async function fetchState(endpoint) {
 
     eventStatusContainer = document.getElementById('eventStatus')
     eventStatusContainer.innerHTML = eStatus
+        
+    let eventValueCSRP = document.getElementById('csrpAvgGoal')
+    let cG = state['csrp']['goalAvg'] 
+    eventValueCSRP.innerHTML  = cG
+
+    let eventValueDLRP = document.getElementById('dlrpAvgGoal')
+    let dG = state['dlrp']['goalAvg'] 
+    eventValueDLRP.innerHTML  = dG
+
+    // check if events have occurred
+    let eC = 0
+    if (dG = state['csrp']['count']){
+      eC = eC + 1
+    }
+    if (dG = state['dlrp']['count']){
+      eC = eC + 1
+    }
+    if (eC > 0){
+      eventValueTot = document.getElementById('totAvgGoal')
+      eventValueTot.innerHTML  = (cG + dG)/eC
+    }
 
   } catch (error) {
     console.error('Error fetching or showing state:', error);
