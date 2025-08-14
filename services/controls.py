@@ -255,7 +255,7 @@ async def main():
 
         val = await baseline.getPerformanceDollarValue(datetime.now().month) #returns a tuple
         monthlyGoalAvg = await baseline.getPerformancePercent(datetime.now().month)
-        eventCount = getEventCount(datetime.now().month)
+        eventCount = await baseline.getEventCount(datetime.now().month)
     except Exception as e:
         try:
             csrpBaseline = stateDict['csrp']['baselineW']
@@ -270,7 +270,7 @@ async def main():
 
         if count % 4 == 0:
             baseline.getUpdate()# check for software update
-            eventCount = getEventCount(datetime.now().month)
+            eventCount = await baseline.getEventCount(datetime.now().month)
 
         buttonTracker={'onPause':shortpresses,'offPause':longpresses}
 
