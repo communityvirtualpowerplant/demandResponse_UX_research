@@ -230,8 +230,8 @@ async def main():
         stateDict = await send_get_request(endpoint='api/state')
     except Exception as e:
         logging.error(f"Couldn't initialize state: {e}")
-        stateDict={"csrp":{"baselineW":0,"baselineTS":False,"now":False,"upcoming":False,"goalAvg":0,"monthlyVal":0},
-                    "dlrp":{"baselineW":0,"baselineTS":False,"now":False,"upcoming":False,"goalAvg":0,"monthlyVal":0},
+        stateDict={"csrp":{"baselineW":0,"baselineTS":False,"now":False,"upcoming":False,"goalAvg":0,"monthlyVal":0,"count":0},
+                    "dlrp":{"baselineW":0,"baselineTS":False,"now":False,"upcoming":False,"goalAvg":0,"monthlyVal":0,"count":0},
                     "datetime":datetime.now(),
                     "eventPause":{"datetime":datetime.now(), "state":False},
                     "relays":{'bat-in':True,'bat-out':True,'ac':True}}
@@ -245,6 +245,7 @@ async def main():
 
     val = (0,0) #initial value for both programs at $0
     monthlyGoalAvg = (0,0) # initial performance percentage for both programs
+    eventCount = (0,0)
 
     csrpBaselineTS = datetime.now()
     try:
@@ -254,6 +255,7 @@ async def main():
 
         val = await baseline.getPerformanceDollarValue(datetime.now().month) #returns a tuple
         monthlyGoalAvg = await baseline.getPerformancePercent(datetime.now().month)
+        eventCount = getEventCount(datetime.now().month)
     except Exception as e:
         try:
             csrpBaseline = stateDict['csrp']['baselineW']
@@ -265,9 +267,10 @@ async def main():
     oldVal = val
     while True:
 
-        # check for software update
+
         if count % 4 == 0:
-            baseline.getUpdate()
+            baseline.getUpdate()# check for software update
+            eventCount = getEventCount(datetime.now().month)
 
         buttonTracker={'onPause':shortpresses,'offPause':longpresses}
 
@@ -283,6 +286,7 @@ async def main():
                 eventCSRP['baselineW']=csrpBaseline
                 eventCSRP['monthlyVal']=max(0,val[0])
                 eventCSRP['goalAvg']=monthlyGoalAvg[0]
+                eventCSRP['count']=eventCount[0]
 
                 if csrpBaselineTS:
                     eventCSRP['baselineTS']=csrpBaselineTS
@@ -322,6 +326,7 @@ async def main():
                 eventDLRP = isDLRPEventUpcoming(eventDF)
                 eventDLRP['monthlyVal']=max(0,val[1])
                 eventDLRP['goalAvg']=monthlyGoalAvg[1]
+                eventDLRP['count']=eventCount[1]
 
                 # update DLRP baseline if needed
                 if (eventDLRP['upcoming']):

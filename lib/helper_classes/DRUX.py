@@ -527,6 +527,30 @@ class DRUX_Baseline(Helpers):
 
         return overallGoalAvg
 
+    async def getEventCount(self,mon):
+        performance = await self.send_get_request('http://localhost:5000/api/performance',type='json')
+
+        cCount = 0
+        dCount = 0
+
+        #filter performance by event type
+        filteredPerformance = {}
+        for k,v in performance.items():
+            if v['event']=='csrp':
+                #filter by month
+                if int(k.split('-')[1]) == mon:
+                    #filter by start date
+                    if datetime.fromisoformat(k)>= self.startDate:
+                        cCount = cCount + 1
+            elif v['event']=='dlrp':
+                #filter by month
+                if int(k.split('-')[1]) == mon:
+                    #filter by start date
+                    if datetime.fromisoformat(k)>= self.startDate:
+                        dCount = dCount + 1
+
+        return (cCount,dCount)
+
     #returns a tuple
     async def getPerformanceDollarValue(self,mon,cR=18,dR=18):
         c = await self.getAvgReduction('csrp',mon)
