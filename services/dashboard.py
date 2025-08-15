@@ -2,6 +2,7 @@ from flask import Flask, render_template, render_template_string, request, send_
 from flask_cors import CORS
 import csv
 import datetime
+from datetime import timedelta, date
 import os
 import sys
 import glob
@@ -239,7 +240,7 @@ def health_check():
         logDates = []
         duration = 3
         for d in range(duration):
-            dt = datetime.date.today()-timedelta(days=duration-d)
+            dt = date.today()-timedelta(days=duration-d)
             logDates.append(dt.strftime("%Y-%m-%d"))
         logging.info(f'dates:{logDates}')
 
