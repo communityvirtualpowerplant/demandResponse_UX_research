@@ -249,7 +249,7 @@ def health_check():
             for line in f:
                 for d in logDates:
                     if d in line: # and ("ERROR" in line or "CRITICAL" in line):
-                        controlLog.append(d)#line.strip())
+                        controlLog.append(line.strip())
 
     except Exception as e:
         controlLog = f"Error getting control log: {e}"
