@@ -233,6 +233,20 @@ def health_check():
     except Exception as e:
         branch = f"errpr{str(e)}"
 
+    controlLogFile = '/home/drux/demandResponse_UX_research/controls.log'
+    try:
+        # Today's date in the same format as your log's timestamp (YYYY-MM-DD)
+        today_str = datetime.date.today().strftime("%Y-%m-%d")
+
+        controlErr = []
+        with open(controlLogFile, "r", encoding="utf-8") as f:
+            for line in f:
+                if today_str in line: # and ("ERROR" in line or "CRITICAL" in line):
+                    todaysErrors.push(line.strip())
+
+    except Exception as e:
+        controlErr = f"Control Errors: {e}"
+
     return jsonify({
         "datetime": dt.strftime("%Y-%m-%d %H:%M:%S"),
         "cpu_tempC": cpu_tempC,
@@ -244,6 +258,7 @@ def health_check():
         "fileStatusPlugs":fileStatusPlugs,
         "fileStatusPowerStation":fileStatusPowerStation,
         "services":serviceDict,
+        "controlErrors":controlErr,
         "branch":branch,
         "commit":commit
     }), 200
