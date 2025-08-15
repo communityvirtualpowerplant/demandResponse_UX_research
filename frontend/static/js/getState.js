@@ -39,7 +39,7 @@ async function fetchState(endpoint) {
 
     // check if events have occurred
     let eC = 0
-    if (dG = state['csrp']['count']){
+    if (cG = state['csrp']['count']){
       eC = eC + 1
     }
     if (dG = state['dlrp']['count']){
