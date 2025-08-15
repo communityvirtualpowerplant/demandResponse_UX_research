@@ -174,11 +174,14 @@ async def main():
             logging.error(f"Error getting plugs: {e}")
             state["plugs"] = f"Error getting plugs: {e}"
 
-        try:
-            powerstation = await send_get_request(endpoint='api/data?date=now&source=powerstation')
-            state["powerstation"] = powerstation
-        except Exception as e:
-            state["powerstation"] = f"Error getting powerstation: {e}"
+        if participantNumber in [0,1,3]:
+            state["powerstation"] = f"Power station data not available"
+        else:
+            try:
+                powerstation = await send_get_request(endpoint='api/data?date=now&source=powerstation')
+                state["powerstation"] = powerstation
+            except Exception as e:
+                state["powerstation"] = f"Error getting powerstation: {e}"
 
         stateList = [state]
 
