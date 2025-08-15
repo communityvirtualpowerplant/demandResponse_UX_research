@@ -38,12 +38,6 @@ except Exception as e:
 
 participantNumber = int(config["participant"])
 
-# assign aggregator
-if participantNumber == 0:
-    aggregator = True
-else:
-    aggregator = False
-
 AT = Airtable(key,'appqYfVvpJR5kBATE')
 AT.names = [f'participant{participantNumber}']
 
