@@ -69,7 +69,7 @@ def handle_signal(signal_num: int, frame: Any) -> None:
 async def main(SPS: SmartPowerStation) -> None:
 
     # dont run on devices without power station connections
-    if pNum in [1,3]:
+    if pNum in [0,1,3]:
         while True:
             await asyncio.sleep(freq)
 
