@@ -238,14 +238,14 @@ def health_check():
         # Today's date in the same format as your log's timestamp (YYYY-MM-DD)
         today_str = datetime.date.today().strftime("%Y-%m-%d")
 
-        controlErr = []
+        controlLog = []
         with open(controlLogFile, "r", encoding="utf-8") as f:
             for line in f:
                 if today_str in line: # and ("ERROR" in line or "CRITICAL" in line):
-                    controlErr.append(line.strip())
+                    controlLog.append(line.strip())
 
     except Exception as e:
-        controlErr = f"Control Errors: {e}"
+        controlLog = f"Error getting control log: {e}"
 
     return jsonify({
         "datetime": dt.strftime("%Y-%m-%d %H:%M:%S"),
@@ -258,7 +258,7 @@ def health_check():
         "fileStatusPlugs":fileStatusPlugs,
         "fileStatusPowerStation":fileStatusPowerStation,
         "services":serviceDict,
-        "controlErrors":controlErr,
+        "controlLog":controlLog,
         "branch":branch,
         "commit":commit
     }), 200
