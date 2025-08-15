@@ -238,9 +238,9 @@ def health_check():
     try:
         # past 3 dates in format (YYYY-MM-DD)
         logDates = []
-        duration = 3
+        duration = 4
         for d in range(duration):
-            dt = date.today()-timedelta(days=duration-d)
+            dt = date.today()-timedelta(days=duration-d-1)
             logDates.append(dt.strftime("%Y-%m-%d"))
         logging.info(f'dates:{logDates}')
 
@@ -248,8 +248,8 @@ def health_check():
         with open(controlLogFile, "r", encoding="utf-8") as f:
             for line in f:
                 for d in logDates:
-                    #if d in line: # and ("ERROR" in line or "CRITICAL" in line):
-                    controlLog.append(d)#line.strip())
+                    if d in line: # and ("ERROR" in line or "CRITICAL" in line):
+                        controlLog.append(d)#line.strip())
 
     except Exception as e:
         controlLog = f"Error getting control log: {e}"
