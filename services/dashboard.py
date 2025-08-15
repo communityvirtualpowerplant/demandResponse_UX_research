@@ -235,14 +235,20 @@ def health_check():
 
     controlLogFile = '/home/drux/demandResponse_UX_research/controls.log'
     try:
-        # Today's date in the same format as your log's timestamp (YYYY-MM-DD)
-        today_str = datetime.date.today().strftime("%Y-%m-%d")
+        # past 3 dates in format (YYYY-MM-DD)
+        logDates = []
+        duration = 3
+        for d in range(duration):
+            dt = datetime.date.today()-timedelta(days=duration-d)
+            logDates.append(dt.strftime("%Y-%m-%d"))
+        logging.info(f'dates:{logDates}')
 
         controlLog = []
         with open(controlLogFile, "r", encoding="utf-8") as f:
             for line in f:
-                if today_str in line: # and ("ERROR" in line or "CRITICAL" in line):
-                    controlLog.append(line.strip())
+                for d in logDates:
+                    if d in line: # and ("ERROR" in line or "CRITICAL" in line):
+                        controlLog.append(line.strip())
 
     except Exception as e:
         controlLog = f"Error getting control log: {e}"
