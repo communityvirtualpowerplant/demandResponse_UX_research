@@ -311,13 +311,17 @@ class DRUX_Baseline(Helpers):
             checkDstr = checkD.strftime("%Y-%m-%d")
 
             if checkDstr in list(b.keys()):
-                if mean(b[checkDstr])> p * .25:
-                    if len(cblWindowAvg.keys()) == 0:
-                        p = mean(b[checkDstr])
-                    else:
-                        avgList.append(mean(b[checkDstr]))
-                        p = mean(avgList)
-                    cblWindowAvg[checkDstr]=mean(b[checkDstr])
+                try:
+                    if len(b[checkDstr])>0:
+                        if mean(b[checkDstr])> p * .25:
+                            if len(cblWindowAvg.keys()) == 0:
+                                p = mean(b[checkDstr])
+                            else:
+                                avgList.append(mean(b[checkDstr]))
+                                p = mean(avgList)
+                            cblWindowAvg[checkDstr]=mean(b[checkDstr])
+                except Exception as e:
+                    logging.error(e)
 
             if len(cblWindowAvg.keys()) >= 10:
                 break
@@ -331,7 +335,8 @@ class DRUX_Baseline(Helpers):
                 checkD = datetime.now().date() - timedelta(days=d)
                 checkDstr = checkD.strftime("%Y-%m-%d")
                 if checkDstr in list(b.keys()):
-                    cblWindowAvg[checkDstr]=mean(b[checkDstr])
+                    if len(b[checkDstr])>0:
+                        cblWindowAvg[checkDstr]=mean(b[checkDstr])
                 if len(cblWindowAvg.keys()) >= 10:
                     break
 
@@ -358,7 +363,11 @@ class DRUX_Baseline(Helpers):
             hourlyLists[3].append(buckets[d][3])
         hourlyAvg = []
         for h in hourlyLists:
-            hourlyAvg.append(mean(h))
+            try:
+                hourlyAvg.append(mean(h))
+            except Exception as e:
+                logging.error(e)
+                hourlyAvg.append(0)
 
         return hourlyAvg
 

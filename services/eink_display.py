@@ -514,10 +514,6 @@ async def main():
 
     try:
         power = await send_get_request(endpoint='api/data?date=now&source=plugs')
-        # try:
-        #     battery = await send_get_request(endpoint='api/data?date=now&source=powerstation')
-        # except Exception as e:
-        #     logging.error(f'Error getting battery data: {e}')
         state = await send_get_request(endpoint='api/state')
         todaysPerformance = await getPerformance()
     except Exception as e:
@@ -536,10 +532,6 @@ async def main():
         #  get most recent data
         if(datetime.now() - updateData> timedelta(minutes=5)):
             power = await send_get_request(endpoint='api/data?date=now&source=plugs')
-            # try:
-            #     battery = await send_get_request(endpoint='api/data?date=now&source=powerstation')
-            # except Exception as e:
-            #     logging.error(f'Error getting battery data: {e}')
             updateScreen = True
             updateData = datetime.now()
             state = await send_get_request(endpoint='api/state')

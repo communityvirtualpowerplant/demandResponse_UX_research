@@ -199,9 +199,9 @@ async def main():
 
         # if event is happening update every 10 minutes, else update every half-hour
         if (state['csrp']['now']) or (state['dlrp']['now']):
-            FREQ_SECONDS = 60 * 10
+            FREQ_SECONDS = 60 * (8 + random.randint(1,4))
         else:
-            FREQ_SECONDS = 60 * 30
+            FREQ_SECONDS = 60 * (28 +random.randint(1,6))
 
         logging.debug(f'Sleeping for {FREQ_SECONDS/60} minutes.')
 
