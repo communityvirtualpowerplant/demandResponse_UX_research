@@ -489,9 +489,12 @@ class DRUX_Baseline(Helpers):
             allAvgFlexKW.append(v['flexW_avg']*.001)
 
         #totAvgFlexKW = mean(allAvgFlexKW)
-        if len(allAvgFlexKW)>0:
-            totAvgFlexKW = mean(allAvgFlexKW)
-        else:
+        try:
+            if len(allAvgFlexKW)>0:
+                totAvgFlexKW = mean(allAvgFlexKW)
+            else:
+                totAvgFlexKW = 0
+        except:
             totAvgFlexKW = 0
 
         return totAvgFlexKW
@@ -520,9 +523,12 @@ class DRUX_Baseline(Helpers):
             allGoals.append(v['goalAvg'])
 
         #totAvgFlexKW = mean(allAvgFlexKW)
-        if len(allGoals)>0:
-            overallGoalAvg = mean(allGoals)
-        else:
+        try:
+            if len(allGoals)>0:
+                overallGoalAvg = mean(allGoals)
+            else:
+                overallGoalAvg = 0
+        except:
             overallGoalAvg = 0
 
         return overallGoalAvg

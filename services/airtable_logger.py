@@ -97,7 +97,7 @@ async def logPerformance(n,i):
 
 async def startCheck():
     #stagger the start randomlly
-    await asyncio.sleep(random.randint(20,80))
+    await asyncio.sleep(random.randint(20,100))
 
     count = 0
     while True:
