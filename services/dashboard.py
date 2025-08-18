@@ -271,6 +271,9 @@ def health_check():
                 for d in logDates:
                     if d in line and ("ERROR" in line or "CRITICAL" in line):
                         displayLog.append(line.strip())
+    except Exception as e:
+        displayLog = f"Error getting display log: {e}"
+
 
     airtableLogFile = '/home/drux/demandResponse_UX_research/airtable.log'
     try:
@@ -290,7 +293,7 @@ def health_check():
                         airtableLog.append(line.strip())
 
     except Exception as e:
-        displayLog = f"Error getting display log: {e}"
+        displayLog = f"Error getting airtable log: {e}"
 
     return jsonify({
         "datetime": dt.strftime("%Y-%m-%d %H:%M:%S"),
