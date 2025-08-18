@@ -272,6 +272,23 @@ def health_check():
                     if d in line and ("ERROR" in line or "CRITICAL" in line):
                         displayLog.append(line.strip())
 
+    airtableLogFile = '/home/drux/demandResponse_UX_research/airtable.log'
+    try:
+        # past 3 dates in format (YYYY-MM-DD)
+        logDates = []
+        duration = 4
+        for d in range(duration):
+            dt = date.today()-timedelta(days=duration-d-1)
+            logDates.append(dt.strftime("%Y-%m-%d"))
+        logging.info(f'dates:{logDates}')
+
+        airtableLog = []
+        with open(airtableLogFile, "r", encoding="utf-8") as f:
+            for line in f:
+                for d in logDates:
+                    if d in line and ("ERROR" in line or "CRITICAL" in line):
+                        airtableLog.append(line.strip())
+
     except Exception as e:
         displayLog = f"Error getting display log: {e}"
 
@@ -288,6 +305,7 @@ def health_check():
         "services":serviceDict,
         "controlLog":controlLog,
         "displayLog":displayLog,
+        "airtableLog":airtableLog,
         "branch":branch,
         "commit":commit
     }), 200

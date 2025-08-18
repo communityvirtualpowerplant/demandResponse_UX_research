@@ -13,9 +13,9 @@ import random
 debug = False
 
 if debug:
-    logging.basicConfig(format='%(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',level=logging.DEBUG)
+    logging.basicConfig(filename='/home/drux/demandResponse_UX_research/airtable.log',format='%(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',level=logging.DEBUG)
 else:
-    logging.basicConfig(format='%(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',level=logging.INFO)
+    logging.basicConfig(filename='/home/drux/demandResponse_UX_research/airtable.log',format='%(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',level=logging.INFO)
 
 libdir = '/home/drux/demandResponse_UX_research/lib/helper_classes'
 if os.path.exists(libdir):
