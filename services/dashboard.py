@@ -291,7 +291,6 @@ def health_check():
                 for d in logDates:
                     if d in line and ("ERROR" in line or "CRITICAL" in line):
                         airtableLog.append(line.strip())
-
     except Exception as e:
         displayLog = f"Error getting airtable log: {e}"
 
