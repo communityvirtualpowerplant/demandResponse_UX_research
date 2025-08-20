@@ -89,23 +89,22 @@ class Airtable():
             except Exception as e:
                 logging.error(f'Exception while formatting data: {e}')
 
-            pData={"records": records}
+        pData={"records": records}
 
-            logging.debug(pData)
+        logging.debug(pData)
 
-            try:
-
-                patch_status = 0
-                while patch_status < 3:
-                    # note that patch leaves unchanged data in place, while a post would delete old data in the record even if not being updated
-                    r = await self.send_patch_request(f'{self.baseURL}{self.base}/{table}',pData)
-                    if r != False:
-                        break
-                    await asyncio.sleep(1+patch_status)
-                    patch_status += 1
-                logging.debug(r)
-            except Exception as e:
-                logging.error(f'Exception while patching Airtable: {e}')
+        try:
+            patch_status = 0
+            while patch_status < 3:
+                # note that patch leaves unchanged data in place, while a post would delete old data in the record even if not being updated
+                r = await self.send_patch_request(f'{self.baseURL}{self.base}/{table}',pData)
+                if r != False:
+                    break
+                await asyncio.sleep(1+patch_status)
+                patch_status += 1
+            logging.debug(r)
+        except Exception as e:
+            logging.error(f'Exception while patching Airtable: {e}')
 
     async def updateBatchPerformance(self, names:List, recordIDs:List,data:List,table:str):
         if not table:

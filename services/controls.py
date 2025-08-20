@@ -228,6 +228,15 @@ async def main():
     # initialize state
     try:
         stateDict = await send_get_request(endpoint='api/state')
+
+        # try:
+        #     if stateDict['csrp']['baseline']==[0]:
+        #         stateDict['csrp']['baseline']=[0,0,0,0]
+        #     if stateDict['dlrp']['baseline']==[0]:
+        #         stateDict['dlrp']['baseline']=[0,0,0,0]
+        # except Exception as e:
+        #     logging.error(f'Error resetting baseline: {e}')
+
     except Exception as e:
         logging.error(f"Couldn't initialize state: {e}")
         stateDict={"csrp":{"baselineW":[0,0,0,0],"baselineTS":False,"now":False,"upcoming":False,"goalAvg":0,"monthlyVal":0,"count":0},
