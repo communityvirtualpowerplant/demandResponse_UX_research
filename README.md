@@ -28,19 +28,3 @@ The username for all devices is
 * https://www.waveshare.com/wiki/2.13inch_e-Paper_HAT+
 * https://pillow.readthedocs.io/en/latest/index.html
 
-
-## To do
-
-Software
-* finalize interfaces
-* check no battery for frontend!
-
-System
-* plan for sms and emails
-
-Study
-* finalize change over plan
-
-To do, post install:
-* slow all processes down when not event upcoming (like airtable updater)
-* add in start date filter
