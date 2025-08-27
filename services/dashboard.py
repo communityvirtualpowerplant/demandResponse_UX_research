@@ -18,7 +18,7 @@ if os.path.exists(libdir):
 
 from API import API
 
-logging.basicConfig(filename='/home/drux/demandResponse_UX_research/logs/dashboard.log',format='%(asctime)s - %(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',datefmt='%Y-%m-%d %H:%M:%S',level=logging.INFO)
+logging.basicConfig(filename='/home/drux/demandResponse_UX_research/logs/dashboard.log',format='%(asctime)s - %(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',datefmt='%Y-%m-%d %H:%M:%S',level=logging.WARNING)
 #logging.basicConfig(format='%(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',level=logging.INFO)
 
 repoRoot = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
@@ -41,7 +41,7 @@ app = Flask(
 )
 
 def onStart():
-    logging.info('starting dashboard')
+    logging.warning('starting dashboard')
     # disable wifi power saving
     os.system('sudo iw dev wlan0 set power_save off')
     #os.system('sudo /sbin/iwconfig wlan0 power off') # old way, still works but is depreciated
