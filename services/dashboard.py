@@ -13,7 +13,7 @@ import logging
 import subprocess
 
 
-logging.basicConfig(filename='/home/drux/demandResponse_UX_research/logs/dashboard.log',format='%(asctime)s - %(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',datefmt='%Y-%m-%d %H:%M:%S',level=logging.WARNING)
+logging.basicConfig(filename='/home/drux/demandResponse_UX_research/logs/dashboard.log',format='%(asctime)s - %(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',datefmt='%Y-%m-%d %H:%M:%S',level=logging.INFO)
 #logging.basicConfig(format='%(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',level=logging.INFO)
 
 libdir = '/home/drux/demandResponse_UX_research/lib/helper_classes'
