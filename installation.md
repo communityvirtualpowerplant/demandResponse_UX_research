@@ -113,6 +113,16 @@ Check for updates and reboot at 12:15am and 5am  with cron (DONT use sudo):
 To switch networks from command line, use network manager tool:
 * To see all networks: `nmcli connection show`
 
+## Logs
+
+System logs are not stored by default from one reboot to the next.
+1) Set system logs to persistent, for more indepth troubleshooting.
+* `sudo nano /etc/systemd/journald.conf`
+* `Storage=persistent`
+* `sudo systemctl restart systemd-journald`
+2) choose logs
+* `journalctl --list-boots`
+* use boot ID to view log: `journalctl -b <boot_id>`
 
 # On-site install
 

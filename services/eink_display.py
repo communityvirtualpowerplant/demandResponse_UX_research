@@ -522,7 +522,7 @@ async def main():
     updateScreen = True
 
     while True:
-        if(datetime.now() - updateState> timedelta(seconds=10)): #check state every 10 seconds
+        if(datetime.now() - updateState> timedelta(seconds=30)): #check state every 30 seconds
             oldState = state
             state = await send_get_request(endpoint='api/state')
             updateState = datetime.now()
