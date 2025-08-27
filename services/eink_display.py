@@ -522,7 +522,13 @@ async def main():
     updateScreen = True
 
     while True:
-        if(datetime.now() - updateState> timedelta(seconds=30)): #check state every 30 seconds
+        # set frequency based on event status
+        if (state['csrp']['now'] or state['dlrp']['now']):
+            freqSec = 30
+        else:
+            freqSec = 60 * 5
+
+        if(datetime.now() - updateState> timedelta(seconds=freqSec)): #check state every 60 seconds
             oldState = state
             state = await send_get_request(endpoint='api/state')
             updateState = datetime.now()
@@ -534,11 +540,10 @@ async def main():
             power = await send_get_request(endpoint='api/data?date=now&source=plugs')
             updateScreen = True
             updateData = datetime.now()
-            state = await send_get_request(endpoint='api/state')
-            updateState = datetime.now()
-            # if (state['csrp']['now']) or (state['dlrp']['now']):
-            #     todaysPerformance = await getPerformance()
+            # state = await send_get_request(endpoint='api/state')
+            # updateState = datetime.now()
 
+        # tracks how many partial refreshes have occurred
         if num >= 3:
             num = 0
             fullRefresh()
@@ -547,6 +552,11 @@ async def main():
         try:
             if updateScreen:
                 logging.debug('updating screen!')
+
+                # if no event, wake up screen because it has been sleeping
+                # this will ensure it is awake for the event
+                if (not state['csrp']['now']) and (not state['dlrp']['now']):
+                    epd.init()
 
                 if state['eventPause']['state']:
                     if (not state['csrp']['now']) or (not state['dlrp']['now']):
@@ -587,19 +597,15 @@ async def main():
 
         # full refresh should be greater than 3 minutes or after 3 partial refreshes
         updateScreen = False
-        await asyncio.sleep(1)
+
+        # if no event ongoing or upcoming, go to sleep
+        if (not state['csrp']['now']) and (not state['dlrp']['now']) and (not state['csrp']['upcoming']) and (not state['dlrp']['upcoming']):
+            epd.sleep()
+
+        await asyncio.sleep(30)
 
 try:
-    #main()
     asyncio.run(main())
-# except KeyboardInterrupt:
-#     epd.init()
-#     epd.Clear(0xFF)
-#     epd.sleep()
-# except:
-#     epd.init()
-#     epd.Clear(0xFF)
-#     epd.sleep()
 except IOError as e:
     logging.info(e)
 
