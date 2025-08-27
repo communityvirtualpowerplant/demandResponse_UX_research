@@ -30,7 +30,7 @@ if os.path.exists(libdir):
 from waveshare_epd import epd2in13_V4
 
 #logging.basicConfig(format='%(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',level=logging.INFO)
-logging.basicConfig(filename='/home/drux/demandResponse_UX_research/display.log',format='%(asctime)s - %(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',datefmt='%Y-%m-%d %H:%M:%S',level=logging.INFO)
+logging.basicConfig(filename='/home/drux/demandResponse_UX_research/logs/display.log',format='%(asctime)s - %(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',datefmt='%Y-%m-%d %H:%M:%S',level=logging.INFO)
 
 logging.info("DR Display")
 

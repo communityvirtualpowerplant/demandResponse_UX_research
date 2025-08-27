@@ -14,10 +14,10 @@ debug = False
 
 if debug:
     #logging.basicConfig(filename='/home/drux/demandResponse_UX_research/airtable.log',format='%(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',level=logging.DEBUG)
-    logging.basicConfig(filename='/home/drux/demandResponse_UX_research/airtable.log',format='%(asctime)s - %(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',datefmt='%Y-%m-%d %H:%M:%S',level=logging.DEBUG)
+    logging.basicConfig(filename='/home/drux/demandResponse_UX_research/logs/airtable.log',format='%(asctime)s - %(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',datefmt='%Y-%m-%d %H:%M:%S',level=logging.DEBUG)
 else:
     #logging.basicConfig(filename='/home/drux/demandResponse_UX_research/airtable.log',format='%(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',level=logging.INFO)
-    logging.basicConfig(filename='/home/drux/demandResponse_UX_research/airtable.log',format='%(asctime)s - %(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',datefmt='%Y-%m-%d %H:%M:%S',level=logging.INFO)
+    logging.basicConfig(filename='/home/drux/demandResponse_UX_research/logs/airtable.log',format='%(asctime)s - %(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',datefmt='%Y-%m-%d %H:%M:%S',level=logging.INFO)
 
 
 libdir = '/home/drux/demandResponse_UX_research/lib/helper_classes'

@@ -18,7 +18,7 @@ if os.path.exists(libdir):
 
 from API import API
 
-logging.basicConfig(filename='/home/drux/demandResponse_UX_research/dashboard.log',format='%(asctime)s - %(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',datefmt='%Y-%m-%d %H:%M:%S',level=logging.INFO)
+logging.basicConfig(filename='/home/drux/demandResponse_UX_research/logs/dashboard.log',format='%(asctime)s - %(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',datefmt='%Y-%m-%d %H:%M:%S',level=logging.INFO)
 #logging.basicConfig(format='%(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',level=logging.INFO)
 
 repoRoot = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
@@ -243,7 +243,7 @@ def health_check():
     except Exception as e:
         branch = f"errpr{str(e)}"
 
-    controlLogFile = '/home/drux/demandResponse_UX_research/controls.log'
+    controlLogFile = '/home/drux/demandResponse_UX_research/logs/controls.log'
     try:
         # past 3 dates in format (YYYY-MM-DD)
         logDates = []
@@ -264,7 +264,7 @@ def health_check():
         controlLog = f"Error getting control log: {e}"
 
 
-    displayLogFile = '/home/drux/demandResponse_UX_research/display.log'
+    displayLogFile = '/home/drux/demandResponse_UX_research/logs/display.log'
     try:
         # past 3 dates in format (YYYY-MM-DD)
         logDates = []
@@ -284,7 +284,7 @@ def health_check():
         displayLog = f"Error getting display log: {e}"
 
 
-    airtableLogFile = '/home/drux/demandResponse_UX_research/airtable.log'
+    airtableLogFile = '/home/drux/demandResponse_UX_research/logs/airtable.log'
     try:
         # past 3 dates in format (YYYY-MM-DD)
         logDates = []
@@ -303,7 +303,7 @@ def health_check():
     except Exception as e:
         displayLog = f"Error getting airtable log: {e}"
 
-    dashboardFile = '/home/drux/demandResponse_UX_research/dashboard.log'
+    dashboardFile = '/home/drux/demandResponse_UX_research/logs/dashboard.log'
     try:
         # past 3 dates in format (YYYY-MM-DD)
         logDates = []
@@ -314,13 +314,13 @@ def health_check():
         logging.info(f'dates:{logDates}')
 
         dashboardLog = []
-        with open(airtableLogFile, "r", encoding="utf-8") as f:
+        with open(dashboardFile, "r", encoding="utf-8") as f:
             for line in f:
                 for d in logDates:
                     if d in line and ("ERROR" in line or "CRITICAL" in line):
                         dashboardLog.append(line.strip())
     except Exception as e:
-        dashboardLog = f"Error getting airtable log: {e}"
+        dashboardLog = f"Error getting dashboard log: {e}"
 
     return jsonify({
         "datetime": dt.strftime("%Y-%m-%d %H:%M:%S"),

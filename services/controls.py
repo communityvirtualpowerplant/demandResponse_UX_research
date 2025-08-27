@@ -16,7 +16,7 @@ import math
 from statistics import mean
 import random
 
-logging.basicConfig(filename='/home/drux/demandResponse_UX_research/controls.log',format='%(asctime)s - %(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',datefmt='%Y-%m-%d %H:%M:%S',level=logging.INFO)
+logging.basicConfig(filename='/home/drux/demandResponse_UX_research/logs/controls.log',format='%(asctime)s - %(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',datefmt='%Y-%m-%d %H:%M:%S',level=logging.INFO)
 
 libdir = '/home/drux/demandResponse_UX_research/lib/helper_classes'
 if os.path.exists(libdir):
