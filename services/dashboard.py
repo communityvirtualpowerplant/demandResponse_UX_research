@@ -303,6 +303,25 @@ def health_check():
     except Exception as e:
         displayLog = f"Error getting airtable log: {e}"
 
+    dashboardFile = '/home/drux/demandResponse_UX_research/dashboard.log'
+    try:
+        # past 3 dates in format (YYYY-MM-DD)
+        logDates = []
+        duration = 4
+        for d in range(duration):
+            dt = date.today()-timedelta(days=duration-d-1)
+            logDates.append(dt.strftime("%Y-%m-%d"))
+        logging.info(f'dates:{logDates}')
+
+        dashboardLog = []
+        with open(airtableLogFile, "r", encoding="utf-8") as f:
+            for line in f:
+                for d in logDates:
+                    if d in line and ("ERROR" in line or "CRITICAL" in line):
+                        dashboardLog.append(line.strip())
+    except Exception as e:
+        dashboardLog = f"Error getting airtable log: {e}"
+
     return jsonify({
         "datetime": dt.strftime("%Y-%m-%d %H:%M:%S"),
         "cpu_tempC": cpu_tempC,
@@ -317,6 +336,7 @@ def health_check():
         "controlLog":controlLog,
         "displayLog":displayLog,
         "airtableLog":airtableLog,
+        "dashboardLog":dashboardLog,
         "branch":branch,
         "commit":commit
     }), 200
