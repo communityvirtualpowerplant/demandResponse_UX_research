@@ -284,7 +284,7 @@ def upcomingScreen(f,s=None,p=None):
     bottomVtop = (screenHeight/2)-10
     bottomVmid = bottomVtop + ((screenHeight - bottomVtop) * .5)
     fs = checkTextWidth(sDraw,"Your Avg.",ftSize,screenWidth/3)
-    sDraw.text((hOffset, bottomVmid), f'Network\nPerf.:\n{round(perc*100,1)}%', font = fs, anchor="lm", fill = 0)
+    sDraw.text((hOffset, bottomVmid), f'Your\nPerf.:\n{round(perc*100,1)}%', font = fs, anchor="lm", fill = 0)
 
     try:
         maxPay = estPay / perc
