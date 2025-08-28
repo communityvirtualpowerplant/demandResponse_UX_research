@@ -478,6 +478,7 @@ async def displayIP(f):
     await startCheck() #needs to wait for the API to spin up before moving on
 
 def fullRefresh():
+    epd = epd2in13_V4.EPD()
     epd.init()
     epd.Clear(0xFF)
 
@@ -556,6 +557,7 @@ async def main():
                 # if no event, wake up screen because it has been sleeping
                 # this will ensure it is awake for the event
                 #if (not state['csrp']['now']) and (not state['dlrp']['now']):
+                epd = epd2in13_V4.EPD()
                 epd.init()
 
                 if state['eventPause']['state']:
