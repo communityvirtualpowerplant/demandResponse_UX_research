@@ -599,8 +599,8 @@ async def main():
         updateScreen = False
 
         # if no event ongoing or upcoming, go to sleep
-        if (not state['csrp']['now']) and (not state['dlrp']['now']) and (not state['csrp']['upcoming']) and (not state['dlrp']['upcoming']):
-            epd.sleep()
+        # if (not state['csrp']['now']) and (not state['dlrp']['now']) and (not state['csrp']['upcoming']) and (not state['dlrp']['upcoming']):
+        #     epd.sleep()
 
         await asyncio.sleep(30)
 
