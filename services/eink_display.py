@@ -555,8 +555,8 @@ async def main():
 
                 # if no event, wake up screen because it has been sleeping
                 # this will ensure it is awake for the event
-                if (not state['csrp']['now']) and (not state['dlrp']['now']):
-                    epd.init()
+                #if (not state['csrp']['now']) and (not state['dlrp']['now']):
+                epd.init()
 
                 if state['eventPause']['state']:
                     if (not state['csrp']['now']) or (not state['dlrp']['now']):
@@ -600,7 +600,7 @@ async def main():
 
         # if no event ongoing or upcoming, go to sleep
         # if (not state['csrp']['now']) and (not state['dlrp']['now']) and (not state['csrp']['upcoming']) and (not state['dlrp']['upcoming']):
-        #     epd.sleep()
+        epd.sleep()
 
         await asyncio.sleep(30)
 
