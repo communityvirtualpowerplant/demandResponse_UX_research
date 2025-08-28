@@ -323,6 +323,8 @@ def health_check():
     except Exception as e:
         dashboardLog = f"Error getting dashboard log: {e}"
 
+    daily_min_max_watts = [0,0]
+
     return jsonify({
         "datetime": dt.strftime("%Y-%m-%d %H:%M:%S"),
         "cpu_tempC": cpu_tempC,
@@ -339,7 +341,8 @@ def health_check():
         "airtableLog":airtableLog,
         "dashboardLog":dashboardLog,
         "branch":branch,
-        "commit":commit
+        "commit":commit,
+        "daily_min_max_watts":daily_min_max_watts
     }), 200
 
 if __name__ == "__main__":

@@ -284,7 +284,7 @@ def upcomingScreen(f,s=None,p=None):
     bottomVtop = (screenHeight/2)-10
     bottomVmid = bottomVtop + ((screenHeight - bottomVtop) * .5)
     fs = checkTextWidth(sDraw,"Your Avg.",ftSize,screenWidth/3)
-    sDraw.text((hOffset, bottomVmid), f'Your Avg.\nPerf.:\n{round(perc*100,1)}%', font = fs, anchor="lm", fill = 0)
+    sDraw.text((hOffset, bottomVmid), f'Network\nPerf.:\n{round(perc*100,1)}%', font = fs, anchor="lm", fill = 0)
 
     try:
         maxPay = estPay / perc
@@ -316,15 +316,18 @@ def eventScreen(f,s, p,paused=False):
     except:
         estPay = 0
 
-    # performance percentage
+    # your performance percentage
     try:
         perc = min(1,p['goalAvg'])
     except:
         perc = 0
 
-    # performance percentage
+    # network performance percentage - MAKE THIS REALTIME!
     try:
-        percN = min(1,perc*1.05) # update this!
+        if s['csrp']['now']:
+            percN = 0.595 #min(1,perc*1.05) # update this!
+        else:
+            percN = 0.3375
     except:
         percN = 0
 
