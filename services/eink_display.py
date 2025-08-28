@@ -478,12 +478,13 @@ async def displayIP(f):
     await startCheck() #needs to wait for the API to spin up before moving on
 
 def fullRefresh():
+    global epd
     epd = epd2in13_V4.EPD()
     epd.init()
     epd.Clear(0xFF)
 
 async def main():
-    global hostname, IPAddr
+    global hostname, IPAddr, epd
 
     # delay start
     await asyncio.sleep(10)
@@ -603,7 +604,7 @@ async def main():
 
         # if no event ongoing or upcoming, go to sleep
         # if (not state['csrp']['now']) and (not state['dlrp']['now']) and (not state['csrp']['upcoming']) and (not state['dlrp']['upcoming']):
-        #epd.sleep()
+        epd.sleep()
 
         await asyncio.sleep(30)
 
