@@ -548,7 +548,7 @@ async def main():
         # tracks how many partial refreshes have occurred
         if num >= 3:
             num = 0
-            #fullRefresh()
+            fullRefresh()
             updateScreen = True
 
         try:
@@ -560,7 +560,7 @@ async def main():
                 #if (not state['csrp']['now']) and (not state['dlrp']['now']):
                 # epd = epd2in13_V4.EPD()
                 # epd.init()
-                fullRefresh()
+                #fullRefresh()
 
                 if state['eventPause']['state']:
                     if (not state['csrp']['now']) or (not state['dlrp']['now']):
@@ -604,7 +604,7 @@ async def main():
 
         # if no event ongoing or upcoming, go to sleep
         # if (not state['csrp']['now']) and (not state['dlrp']['now']) and (not state['csrp']['upcoming']) and (not state['dlrp']['upcoming']):
-        epd.sleep()
+        #     epd.sleep() # this seems to break for some reason :(
 
         await asyncio.sleep(30)
 
