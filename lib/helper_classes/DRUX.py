@@ -120,9 +120,10 @@ class Helpers():
     def rebootMe(self):
         os.system('sudo reboot')
 
-    async def startCheck(self,rebootCount = False):
+    async def startCheck(self,rebootCount = False,stagger=True):
         #stagger the start randomly
-        await asyncio.sleep(random.randint(0,60))
+        if stagger:
+            await asyncio.sleep(random.randint(0,60))
 
         count = 0
         while True:
@@ -136,7 +137,7 @@ class Helpers():
                 logging.error(e)
             logging.info('still waiting!')
             count = count + 1
-            if (count > 30) and (rebootCount):
+            if (count > 25) and (rebootCount):
                 self.rebootMe()
             await asyncio.sleep(20+(count**2))
 

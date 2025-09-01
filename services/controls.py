@@ -182,7 +182,10 @@ async def main():
 
     # check for software update
     baseline.getUpdate()
-    baseline.runUpdate('update_sept1.sh')
+    try:
+        baseline.runUpdate('update_sept1.sh')
+    except Exception as e:
+        logging.error(f"Couldn't run update script: {e}")
 
     #delay start
     await baseline.startCheck(True)
@@ -279,6 +282,7 @@ async def main():
 
 
         if count % 4 == 0:
+            drux.startCheck(True,False)# check network status
             baseline.getUpdate()# check for software update
             eventCount = await baseline.getEventCount(datetime.now().month)
 
