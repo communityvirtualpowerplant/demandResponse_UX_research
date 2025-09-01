@@ -95,7 +95,7 @@ class Helpers():
                 stderr=subprocess.PIPE,
                 text=True
             )
-        logging.debug(result)
+        logging.info(result)
 
         return None
 
