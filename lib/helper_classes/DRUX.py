@@ -97,12 +97,6 @@ class Helpers():
             )
         logging.debug(result)
 
-        if not 'Already up to date' in result.stdout:
-            logging.info('Pulled update... rebooting now')
-            self.rebootMe()
-        else:
-            logging.debug('Already up to date :)')
-
         return None
 
     def getUpdate(self)->None:
