@@ -393,6 +393,7 @@ def eventScreen(f,s, p,paused=False):
     epd.displayPartial(epd.getbuffer(sImage))
 
 def normalScreen(f,w=None,s=None,p=None):
+
     try:
         estPay = s['csrp']['monthlyVal'] + s['dlrp']['monthlyVal']
         estPay = round(estPay,2)
@@ -427,7 +428,7 @@ def normalScreen(f,w=None,s=None,p=None):
     sDraw.rectangle((0,0, screenWidth,screenHeight/2), fill = 255)
     sDraw.text((screenWidth/2,0), f'No upcoming events', anchor='ma',font = ft, fill = 0)
 
-    sDraw.text((screenWidth/2,28), f'AC power draw: {round(w,2)}W', anchor='ma',font = f, fill = 0)
+
 
     # bottom
     sDraw.rectangle((0,(screenHeight/2)-10,screenWidth,screenHeight), fill = 255)
@@ -437,6 +438,8 @@ def normalScreen(f,w=None,s=None,p=None):
             sDraw.text((screenHeight/2, screenHeight/2), f'Data Missing :(', font = f, anchor="ma",fill = 0)
             epd.displayPartial(epd.getbuffer(sImage))
             return None
+
+    sDraw.text((screenWidth/2,28), f'AC power draw: {round(w,2)}W', anchor='ma',font = f, fill = 0)
 
     hOffset = 2
     # performance

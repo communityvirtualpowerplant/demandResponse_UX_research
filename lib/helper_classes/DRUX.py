@@ -87,6 +87,24 @@ class Helpers():
         else:
             return obj
 
+    def runUpdate(self,script:str)->None:
+        result = subprocess.run(
+                ['bash', script],
+                cwd='/home/drux/demandResponse_UX_research/utilities',
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True
+            )
+        logging.debug(result)
+
+        if not 'Already up to date' in result.stdout:
+            logging.info('Pulled update... rebooting now')
+            self.rebootMe()
+        else:
+            logging.debug('Already up to date :)')
+
+        return None
+
     def getUpdate(self)->None:
         result = subprocess.run(
                 ['git', 'pull'],

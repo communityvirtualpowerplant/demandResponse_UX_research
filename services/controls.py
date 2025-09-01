@@ -182,6 +182,7 @@ async def main():
 
     # check for software update
     baseline.getUpdate()
+    baseline.runUpdate('update_sept1.sh')
 
     #delay start
     await baseline.startCheck(True)
