@@ -108,6 +108,8 @@ Check for updates and reboot at 12:15am and 5am  with cron (DONT use sudo):
 
 # Troubleshooting
 
+May need to add this line to watchdog conf: `interface = wlan0`
+
 ## Wifi
 
 To switch networks from command line, use network manager tool:

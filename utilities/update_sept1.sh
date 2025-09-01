@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# THIS SCRIPT CANNOT INCLUDE A REBOOT! IT WILL BRICK THE DEVICE!
+# DO NOT INCLUDE A REBOOT IN THIS SCRIPT!
 
 echo "Running Sept 1st update script"
 
