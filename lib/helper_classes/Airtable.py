@@ -72,7 +72,7 @@ class Airtable():
 
         records = []
         for n in range(len(names)):
-            if data[n]=={}:
+            if (data[n]=={}) or (data[n]==None):
                 continue
             try:
                 logging.debug(f'{names[n]}!')
